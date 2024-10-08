@@ -2,6 +2,16 @@
   "root": true,
   "ignorePatterns": ["!**/*"],
   "plugins": ["@nx"],
+  "rules": {
+    "no-unused-vars": "error",
+    "object-shorthand": "error",
+    "curly": "error",
+    "no-redeclare": "error",
+    "quotes": ["error", "single"],
+    "keyword-spacing": ["error", { "after": true, "before": false }],
+    "eqeqeq": "error",
+    "no-unreachable": "error"
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
