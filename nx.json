@@ -57,6 +57,8 @@
       "standalone": true
     },
     "@nx/angular:library": {
+      "linter": "eslint",
+      "unitTestRunner": "jest",
       "style": "less",
       "changeDetection": "OnPush",
       "standalone": true
