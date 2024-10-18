@@ -24,6 +24,7 @@
     {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nx/typescript"],
+<<<<<<< HEAD
       "rules": {
         "comma-dangle": "error",
         "@typescript-eslint/no-unused-vars": "error",
@@ -35,6 +36,9 @@
         "eqeqeq": "error",
         "no-unreachable": "error"
       }
+=======
+      "rules": {}
+>>>>>>> 72f40c7 (feat(authorization): start working with authorization library)
     },
     {
       "files": ["*.js", "*.jsx"],
