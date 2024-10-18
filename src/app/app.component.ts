@@ -12,6 +12,4 @@ import { RouterModule } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.less',
 })
-export class AppComponent {
-  title = 'social';
-}
+export class AppComponent {}
