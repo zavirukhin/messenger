@@ -50,6 +50,16 @@
       "linter": "eslint",
       "style": "less",
       "unitTestRunner": "jest"
+    },
+    "@nx/angular:component": {
+      "style": "less",
+      "changeDetection": "OnPush",
+      "standalone": true
+    },
+    "@nx/angular:library": {
+      "style": "less",
+      "changeDetection": "OnPush",
+      "standalone": true
     }
   },
   "defaultProject": "social"
