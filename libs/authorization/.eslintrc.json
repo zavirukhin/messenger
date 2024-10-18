@@ -1,23 +1,7 @@
 {
+  "extends": ["../../.eslintrc.base.json"],
   "ignorePatterns": ["!**/*"],
   "overrides": [
-    {
-      "files": ["*.ts", "*.tsx"],
-      "rules": {
-        "no-unused-vars": "error",
-        "object-shorthand": "error",
-        "curly": "error",
-        "no-redeclare": "error",
-        "quotes": ["error", "single"],
-        "keyword-spacing": "error",
-        "eqeqeq": "error",
-        "no-unreachable": "error"
-      }
-    },
-    {
-      "files": ["*.js", "*.jsx"],
-      "rules": {}
-    },
     {
       "files": ["*.ts"],
       "extends": [
@@ -29,7 +13,7 @@
           "error",
           {
             "type": "attribute",
-            "prefix": "app",
+            "prefix": "lib",
             "style": "camelCase"
           }
         ],
@@ -37,7 +21,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "app",
+            "prefix": "lib",
             "style": "kebab-case"
           }
         ]
@@ -48,6 +32,5 @@
       "extends": ["plugin:@nx/angular-template"],
       "rules": {}
     }
-  ],
-  "extends": ["./.eslintrc.base.json"]
+  ]
 }
