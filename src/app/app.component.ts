@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterModule, TuiRoot],
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.less',
+  templateUrl: './app.component.html'
 })
 export class AppComponent {}

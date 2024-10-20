@@ -1,0 +1,27 @@
+<section
+  class="container"
+  tuiCardLarge
+  tuiAppearance="floating"
+>
+  <div tuiHeader>
+    <h1 tuiTitle>
+      Sign in
+      <span tuiSubtitle>Enter phone number input below</span>
+    </h1>
+  </div>
+
+  <form [formGroup]="phoneForm">
+    <tui-input-phone-international
+      class="number-input"
+      formControlName="phone"
+      [countries]="countries"
+    >
+      Phone number
+    </tui-input-phone-international>
+    <button
+      tuiButton
+      iconStart="@tui.chevron-right"
+    >
+    </button>
+  </form>
+</section>

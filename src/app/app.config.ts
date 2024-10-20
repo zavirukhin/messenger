@@ -13,7 +13,7 @@ export const appConfig: ApplicationConfig = {
     NG_EVENT_PLUGINS,
     {
       provide: ErrorHandler,
-      useValue: Sentry.createErrorHandler(),
+      useValue: Sentry.createErrorHandler()
     },
     {
       provide: Sentry.TraceService,
@@ -26,5 +26,5 @@ export const appConfig: ApplicationConfig = {
       deps: [Sentry.TraceService],
       multi: true
     }
-  ],
+  ]
 };
