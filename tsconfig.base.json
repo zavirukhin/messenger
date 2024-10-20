@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@social/*": ["src/app/*"],
       "@social/authorization": ["libs/authorization/src/index.ts"]
     }
   },

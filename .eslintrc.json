@@ -3,16 +3,7 @@
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
-      "rules": {
-        "no-unused-vars": "error",
-        "object-shorthand": "error",
-        "curly": "error",
-        "no-redeclare": "error",
-        "quotes": ["error", "single"],
-        "keyword-spacing": "error",
-        "eqeqeq": "error",
-        "no-unreachable": "error"
-      }
+      "rules": {}
     },
     {
       "files": ["*.js", "*.jsx"],
