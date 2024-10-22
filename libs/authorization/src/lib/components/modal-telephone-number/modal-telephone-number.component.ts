@@ -1,16 +1,15 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { defer } from 'rxjs';
-import { TuiCardLarge, TuiHeader } from '@taiga-ui/layout';
+import { defer, Observable } from 'rxjs';
+import { TuiHeader } from '@taiga-ui/layout';
 import { TuiCountryIsoCode } from '@taiga-ui/i18n';
+import { PlatformService, Screen } from '../../services/platform.service';
 
 import {
-  TuiAppearance,
   TuiButton,
   TuiIcon,
   TuiTitle
 } from '@taiga-ui/core';
-
 
 import {
   FormControl,
@@ -30,8 +29,6 @@ import {
     CommonModule,
     ReactiveFormsModule,
     TuiInputPhoneInternational,
-    TuiCardLarge,
-    TuiAppearance,
     TuiHeader,
     TuiTitle,
     TuiButton,
@@ -49,7 +46,7 @@ import {
   ]
 })
 export class ModalTelephoneNumberComponent {
-  readonly countries: ReadonlyArray<TuiCountryIsoCode> = [
+  public readonly countries: ReadonlyArray<TuiCountryIsoCode> = [
     'RU',
     'KZ',
     'UA',
@@ -59,4 +56,10 @@ export class ModalTelephoneNumberComponent {
   public readonly phoneForm = new FormGroup({
     phone: new FormControl('')
   });
+
+  private readonly platformService = inject(PlatformService);
+
+  public readonly screen$: Observable<Screen> = this.platformService.getScreenType();
+
+  public readonly Screen = Screen;
 }

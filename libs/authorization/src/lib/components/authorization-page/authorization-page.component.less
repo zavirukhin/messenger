@@ -1,0 +1,20 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  background: var(--tui-background-neutral-2);
+}
+
+section {
+  width: 100%;
+  max-width: 580px;
+  background: var(--tui-background-base);
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    background: var(--tui-background-base);
+  }
+}
