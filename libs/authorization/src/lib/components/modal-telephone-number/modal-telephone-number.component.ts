@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { defer, Observable } from 'rxjs';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TuiCountryIsoCode } from '@taiga-ui/i18n';
-import { provideTranslocoScope, TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { PlatformService, Screen } from '@social/shared';
-import { loader } from '../../transloco-loader';
 
 import {
   TuiButton,
+  TuiError,
   TuiIcon,
   TuiTitle
 } from '@taiga-ui/core';
@@ -16,12 +16,15 @@ import {
 import {
   FormControl,
   FormGroup,
-  ReactiveFormsModule 
+  ReactiveFormsModule, 
+  Validators
 } from '@angular/forms';
 
 import { 
+  TUI_VALIDATION_ERRORS,
+  TuiFieldErrorPipe,
   TuiInputPhoneInternational,
-  tuiInputPhoneInternationalOptionsProvider 
+  tuiInputPhoneInternationalOptionsProvider
 } from '@taiga-ui/kit';
 
 @Component({
@@ -35,7 +38,9 @@ import {
     TuiHeader,
     TuiTitle,
     TuiButton,
-    TuiIcon
+    TuiIcon,
+    TuiError,
+    TuiFieldErrorPipe
   ],
   templateUrl: './modal-telephone-number.component.html',
   styleUrl: './modal-telephone-number.component.less',
@@ -46,10 +51,16 @@ import {
         import('libphonenumber-js/max/metadata').then((m) => m.default)
       )
     }),
-    provideTranslocoScope({
-      scope: 'authorization',
-      loader
-    })
+    {
+      provide: TUI_VALIDATION_ERRORS,
+      deps: [TranslocoService],
+      useFactory: (translocoService: TranslocoService) => {
+        return {
+          required: translocoService.translate('authorization.required'),
+          minlength: translocoService.translate('authorization.minlength')
+        }
+      }
+    }
   ]
 })
 export class ModalTelephoneNumberComponent {
@@ -61,7 +72,10 @@ export class ModalTelephoneNumberComponent {
   ];
 
   public readonly phoneForm = new FormGroup({
-    phone: new FormControl('')
+    phone: new FormControl('', [
+      Validators.required, 
+      Validators.minLength(15)
+    ])
   });
 
   private readonly platformService = inject(PlatformService);
@@ -69,4 +83,11 @@ export class ModalTelephoneNumberComponent {
   public readonly screen$: Observable<Screen> = this.platformService.getScreenType();
 
   public readonly Screen = Screen;
+
+  public onSubmit(): void {
+    console.log(this.phoneForm.controls.phone.errors);
+    if (this.phoneForm.invalid) {
+      this.phoneForm.markAllAsTouched();
+    }
+  }
 }

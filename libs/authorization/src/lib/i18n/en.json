@@ -2,5 +2,7 @@
   "signIn": "Sign in",
   "signInSubtitle": "Enter phone number input below",
   "phone": "Phone number",
-  "next": "Next"
+  "next": "Next",
+  "required": "Enter phone number",
+  "minlength": "Number shoud be 15 digits"
 }

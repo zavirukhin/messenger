@@ -8,23 +8,39 @@
     </h1>
   </div>
 
-  <form [formGroup]="phoneForm">
-    <tui-input-phone-international
-      class="number-input"
-      formControlName="phone"
-      [countries]="countries"
-    >
-      {{ t('authorization.phone') }}
-    </tui-input-phone-international>
-    @if (screen <= Screen.Tablet) {
-      <button tuiButton>{{ t('authorization.next') }}</button>
-    }
-    @else {
-      <button
-        tuiButton
-        iconStart="@tui.chevron-right"
+  <form
+    (ngSubmit)="onSubmit()"
+    [formGroup]="phoneForm"
+  >
+    <div class="form-control">
+      <tui-input-phone-international
+        class="number-input"
+        formControlName="phone"
+        [countries]="countries"
       >
-      </button>
-    }
+        {{ t('authorization.phone') }}
+      </tui-input-phone-international>
+      @if (screen <= Screen.Tablet) {
+        <button
+          tuiButton
+          type="submit"  
+        >
+          {{ t('authorization.next') }}
+        </button>
+      }
+      @else {
+        <button
+          tuiButton
+          type="submit"
+          iconStart="@tui.chevron-right"
+        >
+        </button>
+      }
+    </div>
+
+    <tui-error
+      formControlName="phone"
+      [error]="[] | tuiFieldError | async"
+    />
   </form>
 </ng-container>
