@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@social/*": ["src/app/*"],
-      "@social/authorization": ["libs/authorization/src/index.ts"]
+      "@social/authorization": ["libs/authorization/src/index.ts"],
+      "@social/shared": ["libs/shared/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

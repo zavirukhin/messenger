@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { defer, Observable } from 'rxjs';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TuiCountryIsoCode } from '@taiga-ui/i18n';
-import { PlatformService, Screen } from '../../services/platform.service';
+import { provideTranslocoScope, TranslocoDirective } from '@jsverse/transloco';
+import { PlatformService, Screen } from '@social/shared';
+import { loader } from '../../transloco-loader';
 
 import {
   TuiButton,
@@ -28,6 +30,7 @@ import {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    TranslocoDirective,
     TuiInputPhoneInternational,
     TuiHeader,
     TuiTitle,
@@ -42,6 +45,10 @@ import {
       metadata: defer(async () => 
         import('libphonenumber-js/max/metadata').then((m) => m.default)
       )
+    }),
+    provideTranslocoScope({
+      scope: 'authorization',
+      loader
     })
   ]
 })

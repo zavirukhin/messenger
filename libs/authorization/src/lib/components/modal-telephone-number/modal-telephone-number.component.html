@@ -1,28 +1,30 @@
 @let screen = (screen$ | async)!;
 
-<div tuiHeader>
-  <h1 tuiTitle>
-    Sign in
-    <span tuiSubtitle>Enter phone number input below</span>
-  </h1>
-</div>
+<ng-container *transloco="let t;">
+  <div tuiHeader>
+    <h1 tuiTitle>
+      {{ t('authorization.signIn') }}
+      <span tuiSubtitle>{{ t('authorization.signInSubtitle') }}</span>
+    </h1>
+  </div>
 
-<form [formGroup]="phoneForm">
-  <tui-input-phone-international
-    class="number-input"
-    formControlName="phone"
-    [countries]="countries"
-  >
-    Phone number
-  </tui-input-phone-international>
-  @if (screen <= Screen.Tablet) {
-    <button tuiButton>Next</button>
-  }
-  @else {
-    <button
-      tuiButton
-      iconStart="@tui.chevron-right"
+  <form [formGroup]="phoneForm">
+    <tui-input-phone-international
+      class="number-input"
+      formControlName="phone"
+      [countries]="countries"
     >
-    </button>
-  }
-</form>
+      {{ t('authorization.phone') }}
+    </tui-input-phone-international>
+    @if (screen <= Screen.Tablet) {
+      <button tuiButton>{{ t('authorization.next') }}</button>
+    }
+    @else {
+      <button
+        tuiButton
+        iconStart="@tui.chevron-right"
+      >
+      </button>
+    }
+  </form>
+</ng-container>
