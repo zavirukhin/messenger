@@ -1,8 +1,16 @@
 import { NG_EVENT_PLUGINS } from '@taiga-ui/event-plugins';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, Router } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideTransloco } from '@jsverse/transloco';
 import * as Sentry from '@sentry/angular';
+import {
+  APP_INITIALIZER,
+  ApplicationConfig,
+  ErrorHandler,
+  provideZoneChangeDetection,
+  isDevMode
+} from '@angular/core';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -25,6 +33,16 @@ export const appConfig: ApplicationConfig = {
       useFactory: () => () => {},
       deps: [Sentry.TraceService],
       multi: true
-    }
+    },
+    provideHttpClient(),
+    provideTransloco({
+      config: { 
+        availableLangs: ['en', 'ru'],
+        defaultLang: 'en',
+        // Remove this option if your application doesn't support changing language in runtime.
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode()
+      }
+    })
   ]
 };
