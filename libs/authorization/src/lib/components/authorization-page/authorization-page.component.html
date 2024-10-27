@@ -2,7 +2,7 @@
   tuiCardLarge
 >
   @if (step === 'phone') {
-    <lib-modal-telephone-number [@tuiHeightCollapse]="getAnimation(600)" (phoneChanged)="onPhoneChanged($event)" />
+    <lib-modal-telephone-number (phoneChanged)="onPhoneChanged($event)" />
   }
   @else if (step === 'verify') {
     TODO
