@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { TuiCardLarge } from '@taiga-ui/layout';
 import { ModalTelephoneNumberComponent } from '../modal-telephone-number/modal-telephone-number.component';
 
+type Step = 'phone' | 'verify' | 'create';
+
 @Component({
   selector: 'lib-authorization-page',
   standalone: true,
@@ -10,9 +12,18 @@ import { ModalTelephoneNumberComponent } from '../modal-telephone-number/modal-t
     CommonModule,
     TuiCardLarge,
     ModalTelephoneNumberComponent
-],
+  ],
   templateUrl: './authorization-page.component.html',
   styleUrl: './authorization-page.component.less',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AuthorizationPageComponent {}
+export class AuthorizationPageComponent {
+  public phone = '';
+
+  public step: Step = 'phone';
+
+  public onPhoneChanged(phone: string) {
+    this.phone = phone;
+    this.step = 'verify';
+  }
+}

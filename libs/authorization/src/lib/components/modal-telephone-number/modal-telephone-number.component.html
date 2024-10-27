@@ -21,20 +21,26 @@
         {{ t('authorization.phone') }}
       </tui-input-phone-international>
       @if (screen <= Screen.Tablet) {
-        <button
-          tuiButton
-          type="submit"  
-        >
-          {{ t('authorization.next') }}
-        </button>
+        <tui-loader [showLoader]="isLoading()">
+          <button
+            tuiButton
+            type="submit"
+            class="button-submit"
+          >
+            {{ t('authorization.next') }}
+          </button>
+        </tui-loader>
       }
       @else {
-        <button
-          tuiButton
-          type="submit"
-          iconStart="@tui.chevron-right"
-        >
-        </button>
+        <tui-loader [showLoader]="isLoading()">
+          <button
+            tuiButton
+            type="submit"
+            iconStart="@tui.chevron-right"
+            class="button-submit"
+          >
+          </button>
+        </tui-loader>
       }
     </div>
 

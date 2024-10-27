@@ -1,15 +1,37 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { defer, Observable } from 'rxjs';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TuiCountryIsoCode } from '@taiga-ui/i18n';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { PlatformService, Screen } from '@social/shared';
+import { AuthorizationService } from '../../services/authorization/authorization.service';
 
 import {
+  catchError,
+  defer,
+  Observable,
+  takeUntil
+} from 'rxjs';
+
+import {
+  DestroyService,
+  PlatformService,
+  RequestError,
+  Screen
+} from '@social/shared';
+
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  output,
+  signal
+} from '@angular/core';
+
+import {
+  TuiAlertService,
   TuiButton,
   TuiError,
   TuiIcon,
+  TuiLoader,
   TuiTitle
 } from '@taiga-ui/core';
 
@@ -40,7 +62,8 @@ import {
     TuiButton,
     TuiIcon,
     TuiError,
-    TuiFieldErrorPipe
+    TuiFieldErrorPipe,
+    TuiLoader
   ],
   templateUrl: './modal-telephone-number.component.html',
   styleUrl: './modal-telephone-number.component.less',
@@ -56,14 +79,16 @@ import {
       deps: [TranslocoService],
       useFactory: (translocoService: TranslocoService) => {
         return {
-          required: translocoService.translate('authorization.required'),
-          minlength: translocoService.translate('authorization.minlength')
+          required: translocoService.translate('authorization.required')
         }
       }
-    }
+    },
+    DestroyService
   ]
 })
 export class ModalTelephoneNumberComponent {
+  phoneChanged = output<string>();
+
   public readonly countries: ReadonlyArray<TuiCountryIsoCode> = [
     'RU',
     'KZ',
@@ -72,21 +97,55 @@ export class ModalTelephoneNumberComponent {
   ];
 
   public readonly phoneForm = new FormGroup({
-    phone: new FormControl('', [
-      Validators.required, 
-      Validators.minLength(15)
-    ])
+    phone: new FormControl('', [Validators.required]) // Нужен ли валидатор ?
   });
 
   private readonly platformService = inject(PlatformService);
 
-  public readonly screen$: Observable<Screen> = this.platformService.getScreenType();
+  private readonly authorizationService = inject(AuthorizationService);
+
+  private readonly alerts = inject(TuiAlertService);
+
+  private readonly translocoService = inject(TranslocoService);
+
+  private readonly destroy$ = inject(DestroyService);
+
+  public readonly screen$: Observable<Screen> = this.platformService.getScreenType()
+    .pipe(takeUntil(this.destroy$));
 
   public readonly Screen = Screen;
 
+  public readonly isLoading = signal(false);
+
   public onSubmit(): void {
-    console.log(this.phoneForm.controls.phone.errors);
-    if (this.phoneForm.invalid) {
+    if (this.phoneForm.valid) {
+      this.isLoading.set(true);
+      this.phoneForm.disable();
+
+      const phone = this.phoneForm.get('phone')?.value ?? '';
+      this.authorizationService.sendSms(phone)
+        .pipe(
+          catchError((error: RequestError) => {
+            this.isLoading.set(false);
+            this.phoneForm.enable();
+
+            this.alerts
+              .open(error.message, { 
+                label: this.translocoService.translate('error') 
+              })
+              .subscribe();
+
+            return []; // ???
+          })
+        )
+        .subscribe(() => {
+          this.isLoading.set(false);
+          this.phoneForm.enable();
+
+          this.phoneChanged.emit(phone);
+        });
+    }
+    else {
       this.phoneForm.markAllAsTouched();
     }
   }
