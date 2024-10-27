@@ -15,8 +15,12 @@ type Step = 'phone' | 'verify' | 'create';
   imports: [
     CommonModule,
     TuiCardLarge,
+<<<<<<< HEAD
     ModalTelephoneNumberComponent,
     ModalVerifyComponent
+=======
+    ModalTelephoneNumberComponent
+>>>>>>> 9e43f79 (feat(authorization): done auth page)
   ],
   templateUrl: './authorization-page.component.html',
   styleUrl: './authorization-page.component.less',

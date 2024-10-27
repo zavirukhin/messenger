@@ -70,7 +70,6 @@ import { Router } from '@angular/router';
         import('libphonenumber-js/min/metadata').then((m) => m.default)
       )
     }),
-<<<<<<< HEAD
     {
       provide: TUI_VALIDATION_ERRORS,
       deps: [TranslocoService],
@@ -80,12 +79,6 @@ import { Router } from '@angular/router';
         }
       }
     }
-=======
-    provideTranslocoScope({
-      scope: 'authorization',
-      loader
-    })
->>>>>>> 4f67347 (feat: transloco and translation for en and ru lang)
   ]
 })
 export class ModalTelephoneNumberComponent {
