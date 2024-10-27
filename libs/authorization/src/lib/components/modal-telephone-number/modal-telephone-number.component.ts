@@ -71,7 +71,8 @@ import { Router } from '@angular/router';
           required: translocoService.translate('required')
         }
       }
-    }
+    },
+    DestroyService
   ]
 })
 export class ModalTelephoneNumberComponent {
@@ -95,6 +96,8 @@ export class ModalTelephoneNumberComponent {
   private readonly translocoService = inject(TranslocoService);
 
   private readonly router = inject(Router);
+
+  public readonly isLoading = signal(false);
 
   public readonly isLoading = signal(false);
 

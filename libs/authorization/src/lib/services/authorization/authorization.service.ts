@@ -1,9 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+<<<<<<< HEAD
 import { environment } from '@env';
 import { NextAttempt } from '../../interfaces/next-attempt.interface';
 import { Token } from '../../interfaces/token.interface';
+=======
+import { NextAttempt } from '../../interfaces/next-attempt.interface';
+>>>>>>> 0f53e50 (feat(authorization): done auth page)
 
 @Injectable({
   providedIn: 'root'

@@ -7,6 +7,8 @@ import { ModalTelephoneNumberComponent } from '../modal-telephone-number/modal-t
 import { ModalVerifyComponent } from '../modal-verify/modal-verify.component';
 import { PhoneVerify } from '../../interfaces/phone.interface';
 
+type Step = 'phone' | 'verify' | 'create';
+
 @Component({
   selector: 'lib-authorization-page',
   standalone: true,
