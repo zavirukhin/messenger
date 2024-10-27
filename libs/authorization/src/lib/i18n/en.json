@@ -4,5 +4,5 @@
   "phone": "Phone number",
   "next": "Next",
   "required": "Enter phone number",
-  "minlength": "Number shoud be 15 digits"
+  "minlength": "Number shoud be {{ requiredLength }} digits"
 }

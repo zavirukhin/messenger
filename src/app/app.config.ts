@@ -1,9 +1,10 @@
 import { NG_EVENT_PLUGINS } from '@taiga-ui/event-plugins';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, Router } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideTransloco } from '@jsverse/transloco';
 import * as Sentry from '@sentry/angular';
+import { errorHandlerInterceptor } from '@social/shared';
 import {
   APP_INITIALIZER,
   ApplicationConfig,
@@ -34,15 +35,17 @@ export const appConfig: ApplicationConfig = {
       deps: [Sentry.TraceService],
       multi: true
     },
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([errorHandlerInterceptor])
+    ),
     provideTransloco({
       config: { 
         availableLangs: ['en', 'ru'],
         defaultLang: 'en',
-        // Remove this option if your application doesn't support changing language in runtime.
         reRenderOnLangChange: true,
         prodMode: !isDevMode()
-      }
+      },
+      loader: TranslocoHttpLoader
     })
   ]
 };
