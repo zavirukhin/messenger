@@ -2,21 +2,9 @@ import { CommonModule } from '@angular/common';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TuiCountryIsoCode } from '@taiga-ui/i18n';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { catchError, defer } from 'rxjs';
+import { RequestError} from '@social/shared';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
-
-import {
-  catchError,
-  defer,
-  Observable,
-  takeUntil
-} from 'rxjs';
-
-import {
-  DestroyService,
-  PlatformService,
-  RequestError,
-  Screen
-} from '@social/shared';
 
 import {
   ChangeDetectionStrategy,
@@ -82,8 +70,7 @@ import {
           required: translocoService.translate('authorization.required')
         }
       }
-    },
-    DestroyService
+    }
   ]
 })
 export class ModalTelephoneNumberComponent {
@@ -100,20 +87,11 @@ export class ModalTelephoneNumberComponent {
     phone: new FormControl('', [Validators.required]) // Нужен ли валидатор ?
   });
 
-  private readonly platformService = inject(PlatformService);
-
   private readonly authorizationService = inject(AuthorizationService);
 
   private readonly alerts = inject(TuiAlertService);
 
   private readonly translocoService = inject(TranslocoService);
-
-  private readonly destroy$ = inject(DestroyService);
-
-  public readonly screen$: Observable<Screen> = this.platformService.getScreenType()
-    .pipe(takeUntil(this.destroy$));
-
-  public readonly Screen = Screen;
 
   public readonly isLoading = signal(false);
 

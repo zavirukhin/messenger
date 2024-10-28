@@ -1,5 +1,3 @@
-@let screen = (screen$ | async)!;
-
 <ng-container *transloco="let t;">
   <div tuiHeader>
     <h1 tuiTitle>
@@ -20,28 +18,22 @@
       >
         {{ t('authorization.phone') }}
       </tui-input-phone-international>
-      @if (screen <= Screen.Tablet) {
         <tui-loader [showLoader]="isLoading()">
           <button
             tuiButton
             type="submit"
-            class="button-submit"
+            class="button-submit button-mobile"
           >
             {{ t('authorization.next') }}
           </button>
-        </tui-loader>
-      }
-      @else {
-        <tui-loader [showLoader]="isLoading()">
           <button
             tuiButton
             type="submit"
             iconStart="@tui.chevron-right"
-            class="button-submit"
+            class="button-submit button-desktop"
           >
           </button>
         </tui-loader>
-      }
     </div>
 
     <tui-error
