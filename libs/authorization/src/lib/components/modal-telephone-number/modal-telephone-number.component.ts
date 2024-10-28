@@ -71,8 +71,7 @@ import { Router } from '@angular/router';
           required: translocoService.translate('required')
         }
       }
-    },
-    DestroyService
+    }
   ]
 })
 export class ModalTelephoneNumberComponent {
