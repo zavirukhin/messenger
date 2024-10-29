@@ -13,6 +13,7 @@ export class AuthorizationService {
     /*
       maybe use interceptor and get the base url from environment, but transloco
       request use httpClient (maybe) and this request handle by interceptors
+      APP_INIT TOKEN
     */
     return this.http.post<NextAttempt>('http://localhost:3000/auth/send-sms', { phone });
   }

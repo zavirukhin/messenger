@@ -6,12 +6,7 @@ import { AuthorizationPageComponent } from './components/authorization-page/auth
 export const authorizationRoutes: Route[] = [
   {
     path: '',
-    children: [
-      { 
-        path: '',
-        component: AuthorizationPageComponent
-      }
-    ],
+    component: AuthorizationPageComponent,
     providers: [
       provideTranslocoScope({
         scope: 'authorization',

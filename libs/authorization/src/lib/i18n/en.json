@@ -3,6 +3,5 @@
   "signInSubtitle": "Enter phone number input below",
   "phone": "Phone number",
   "next": "Next",
-  "required": "Enter phone number",
-  "minlength": "Number shoud be {{ requiredLength }} digits"
+  "required": "Enter phone number"
 }
