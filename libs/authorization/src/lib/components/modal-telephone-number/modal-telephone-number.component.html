@@ -1,15 +1,36 @@
-<ng-container *transloco="let t;">
-  <div tuiHeader>
+<div
+  class="header-container"
+  tuiHeader
+>
+  <ng-container *transloco="let t; loadingTpl: loadingHeader">
     <h1 tuiTitle>
       {{ t('authorization.signIn') }}
-      <span tuiSubtitle>{{ t('authorization.signInSubtitle') }}</span>
     </h1>
-  </div>
+    <span tuiSubtitle>
+      {{ t('authorization.signInSubtitle') }}
+    </span>
+  </ng-container>
+  <ng-template #loadingHeader>
+    <h1
+    tuiTitle
+    [tuiSkeleton]="true"
+    >
+      Sign in
+    </h1>
+    <span
+      tuiSubtitle
+      [tuiSkeleton]="true"
+    >
+      Enter phone number input below
+    </span>
+  </ng-template>
+</div>
 
-  <form
-    (ngSubmit)="onSubmit()"
-    [formGroup]="phoneForm"
-  >
+<form
+  (ngSubmit)="onSubmit()"
+  [formGroup]="phoneForm"
+>
+  <ng-container *transloco="let t; loadingTpl: loaderMain">
     <div class="form-control">
       <tui-input-phone-international
         class="number-input"
@@ -18,27 +39,59 @@
       >
         {{ t('authorization.phone') }}
       </tui-input-phone-international>
-        <tui-loader [showLoader]="isLoading()">
-          <button
-            tuiButton
-            type="submit"
-            class="button-submit button-mobile"
-          >
-            {{ t('authorization.next') }}
-          </button>
-          <button
-            tuiButton
-            type="submit"
-            iconStart="@tui.chevron-right"
-            class="button-submit button-desktop"
-          >
-          </button>
-        </tui-loader>
+      <div>
+        <button
+          tuiButton
+          type="submit"
+          class="button-submit button-mobile"
+        >
+          {{ t('authorization.next') }}
+        </button>
+        <button
+          tuiButton
+          type="submit"
+          iconStart="@tui.chevron-right"
+          class="button-submit button-desktop"
+        >
+        </button>
+      </div>
     </div>
-
     <tui-error
       formControlName="phone"
       [error]="[] | tuiFieldError | async"
     />
-  </form>
-</ng-container>
+  </ng-container>
+
+  <ng-template #loaderMain>
+    <div class="form-control">
+      <tui-input-phone-international
+        class="number-input"
+        formControlName="phone"
+        transloco="authorization.phone"
+        [countries]="countries"
+        [tuiSkeleton]="true"
+      >
+        Phone number
+      </tui-input-phone-international>
+      <div>
+        <button
+          tuiButton
+          type="submit"
+          class="button-submit button-mobile"
+          transloco="authorization.next"
+          [tuiSkeleton]="true"
+        >
+          Next
+        </button>
+        <button
+          tuiButton
+          type="submit"
+          iconStart="@tui.chevron-right"
+          class="button-submit button-desktop"
+          [tuiSkeleton]="true"
+        >
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</form>

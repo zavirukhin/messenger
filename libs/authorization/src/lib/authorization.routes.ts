@@ -1,16 +1,15 @@
 import { Route } from '@angular/router';
 import { provideTranslocoScope } from '@jsverse/transloco';
 import { loader } from './transloco-loader';
+import { AuthorizationPageComponent } from './components/authorization-page/authorization-page.component';
 
 export const authorizationRoutes: Route[] = [
   {
     path: '',
-    loadComponent: () => import('./authorization.component').then(m => m.AuthorizationComponent),
     children: [
       { 
         path: '',
-        loadComponent: () => import('./components/authorization-page/authorization-page.component')
-          .then(m => m.AuthorizationPageComponent)
+        component: AuthorizationPageComponent
       }
     ],
     providers: [
