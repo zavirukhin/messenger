@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TuiCountryIsoCode } from '@taiga-ui/i18n';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { catchError, defer } from 'rxjs';
+import { catchError, defer, of } from 'rxjs';
 import { RequestError} from '@social/shared';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 
@@ -115,7 +115,7 @@ export class ModalTelephoneNumberComponent {
               })
               .subscribe();
 
-            return []; // ???
+            return of();
           })
         )
         .subscribe(() => {
