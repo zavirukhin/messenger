@@ -34,7 +34,8 @@ import {
   TUI_VALIDATION_ERRORS,
   TuiFieldErrorPipe,
   TuiInputPhoneInternational,
-  tuiInputPhoneInternationalOptionsProvider
+  tuiInputPhoneInternationalOptionsProvider,
+  TuiSkeleton
 } from '@taiga-ui/kit';
 
 @Component({
@@ -51,7 +52,8 @@ import {
     TuiIcon,
     TuiError,
     TuiFieldErrorPipe,
-    TuiLoader
+    TuiLoader,
+    TuiSkeleton
   ],
   templateUrl: './modal-telephone-number.component.html',
   styleUrl: './modal-telephone-number.component.less',
@@ -59,7 +61,7 @@ import {
   providers: [
     tuiInputPhoneInternationalOptionsProvider({
       metadata: defer(async () => 
-        import('libphonenumber-js/max/metadata').then((m) => m.default)
+        import('libphonenumber-js/min/metadata').then((m) => m.default)
       )
     }),
     {
