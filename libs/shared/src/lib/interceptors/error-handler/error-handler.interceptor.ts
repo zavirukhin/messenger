@@ -15,20 +15,20 @@ export const errorHandlerInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       const statusCode = error.status;
 
-      if (statusCode === 0) {
+      if (statusCode === 0 && window.navigator.onLine === false) {
         return throwError(() => new RequestError({
           errorText: translocoService.translate('noInternetConnection'),
           statusCode
         }));
       }
-      else if (error.error?.errorText) {
+      else if (statusCode === 0) {
         return throwError(() => new RequestError({
-          errorText: error.error.errorText,
+          errorText: translocoService.translate('unknownError'),
           statusCode
         }));
       }
       return throwError(() => new RequestError({
-        errorText: translocoService.translate('unknownError'),
+        errorText: error.error.errorText,
         statusCode
       }));
     })
