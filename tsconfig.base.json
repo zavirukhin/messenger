@@ -16,7 +16,6 @@
     "baseUrl": ".",
     "paths": {
       "@env": ["src/environments/index.ts"],
-      "@social/*": ["src/app/*"],
       "@social/authorization": ["libs/authorization/src/index.ts"],
       "@social/shared": ["libs/shared/src/index.ts"]
     }
