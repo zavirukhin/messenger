@@ -39,22 +39,20 @@
       >
         {{ t('authorization.phone') }}
       </tui-input-phone-international>
-      <div>
-        <button
-          tuiButton
-          type="submit"
-          class="button-submit button-mobile"
-        >
-          {{ t('authorization.next') }}
-        </button>
-        <button
-          tuiButton
-          type="submit"
-          iconStart="@tui.chevron-right"
-          class="button-submit button-desktop"
-        >
-        </button>
-      </div>
+      <button
+        tuiButton
+        type="submit"
+        class="button-mobile"
+      >
+        {{ t('authorization.next') }}
+      </button>
+      <button
+        tuiButton
+        type="submit"
+        iconStart="@tui.chevron-right"
+        class="button-desktop"
+      >
+      </button>
     </div>
     <tui-error
       formControlName="phone"
@@ -67,31 +65,27 @@
       <tui-input-phone-international
         class="number-input"
         formControlName="phone"
-        transloco="authorization.phone"
         [countries]="countries"
         [tuiSkeleton]="true"
       >
         Phone number
       </tui-input-phone-international>
-      <div>
-        <button
-          tuiButton
-          type="submit"
-          class="button-submit button-mobile"
-          transloco="authorization.next"
-          [tuiSkeleton]="true"
-        >
-          Next
-        </button>
-        <button
-          tuiButton
-          type="submit"
-          iconStart="@tui.chevron-right"
-          class="button-submit button-desktop"
-          [tuiSkeleton]="true"
-        >
-        </button>
-      </div>
+      <button
+        tuiButton
+        type="submit"
+        class="button-mobile"
+        [tuiSkeleton]="true"
+      >
+        Next
+      </button>
+      <button
+        tuiButton
+        type="submit"
+        iconStart="@tui.chevron-right"
+        class="button-desktop"
+        [tuiSkeleton]="true"
+      >
+      </button>
     </div>
   </ng-template>
 </form>

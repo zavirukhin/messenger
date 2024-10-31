@@ -5,7 +5,6 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { catchError, defer, of } from 'rxjs';
 import { RequestError} from '@social/shared';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,7 +12,6 @@ import {
   output,
   signal
 } from '@angular/core';
-
 import {
   TuiAlertService,
   TuiButton,
@@ -22,14 +20,12 @@ import {
   TuiLoader,
   TuiTitle
 } from '@taiga-ui/core';
-
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule, 
   Validators
 } from '@angular/forms';
-
 import { 
   TUI_VALIDATION_ERRORS,
   TuiFieldErrorPipe,
