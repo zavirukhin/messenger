@@ -5,10 +5,6 @@ import { catchError, throwError } from 'rxjs';
 import { RequestError } from '../../errors/request.error';
 
 export const errorHandlerInterceptor: HttpInterceptorFn = (req, next) => {
-  /*
-    Need use transloco service in interceptor, for translation common error,
-    but i think not good idea how use service here
-  */
   const translocoService = inject(TranslocoService);
 
   return next(req).pipe(
