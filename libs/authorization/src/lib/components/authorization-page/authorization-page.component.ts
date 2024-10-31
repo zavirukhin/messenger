@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TuiCardLarge } from '@taiga-ui/layout';
 import { ModalTelephoneNumberComponent } from '../modal-telephone-number/modal-telephone-number.component';
-
-type Step = 'phone' | 'verify' | 'create';
+import { Step } from '../../types/step.type';
 
 @Component({
   selector: 'lib-authorization-page',

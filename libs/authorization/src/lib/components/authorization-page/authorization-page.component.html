@@ -1,4 +1,7 @@
-<section tuiCardLarge>
+<section
+  tuiCardLarge
+  class="section-container"
+>
   @if (step === 'phone') {
     <lib-modal-telephone-number (phoneChanged)="onPhoneChanged($event)" />
   }
