@@ -13,3 +13,21 @@
   display: flex;
   gap: 8px;
 }
+
+.button-mobile {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .button-mobile {
+    display: block;
+  }
+
+  .button-desktop {
+    display: none;
+  }
+
+  .form-control {
+    flex-direction: column;
+  }
+}
