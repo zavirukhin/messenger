@@ -95,3 +95,7 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Доступ к документации
+
+Документация API доступна по следующему адресу: http://localhost:3000/api-docs
