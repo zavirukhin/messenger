@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TUI_VALIDATION_ERRORS, TuiFieldErrorPipe } from '@taiga-ui/kit';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { catchError, of } from 'rxjs';
 import {
   ChangeDetectionStrategy,
@@ -39,7 +39,8 @@ import { NextAttempt } from '../../interfaces/next-attempt.interface';
     TuiTextfield,
     TuiLink,
     TuiError,
-    TuiFieldErrorPipe
+    TuiFieldErrorPipe,
+    TranslocoDirective
   ],
   templateUrl: './modal-verify.component.html',
   styleUrl: './modal-verify.component.less',

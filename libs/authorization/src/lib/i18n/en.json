@@ -3,6 +3,7 @@
   "signInSubtitle": "Enter phone number input below",
   "phone": "Phone number",
   "next": "Next",
-  "success": "Success",
-  "codeSuccessSend": "Code sent"
+  "codeSubtitle": "We send code, new code after {{ nextAttempt }} seconds",
+  "resendCode": "Resend code ?",
+  "code": "Code"
 }
