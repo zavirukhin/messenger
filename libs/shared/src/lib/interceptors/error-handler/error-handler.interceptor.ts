@@ -23,8 +23,19 @@ export const errorHandlerInterceptor: HttpInterceptorFn = (req, next) => {
           statusCode
         }));
       }
+      else if (error.error.errorCode && error.error.errorText) {
+        const translateError = translocoService.translate(error.error.errorCode);
+        const errorText = error.error.errorCode === translateError ?
+          error.error.errorText :
+          translateError;
+
+        return throwError(() => new RequestError({
+          errorText,
+          statusCode
+        }));
+      }
       return throwError(() => new RequestError({
-        errorText: error.error.errorText,
+        errorText: translocoService.translate('unknownError'),
         statusCode
       }));
     })

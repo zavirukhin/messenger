@@ -1,5 +1,6 @@
 {
   "error": "Error",
   "noInternetConnection": "No internet connection",
-  "unknownError": "Unknown error"
+  "unknownError": "Unknown error",
+  "required": "Field is required"
 }

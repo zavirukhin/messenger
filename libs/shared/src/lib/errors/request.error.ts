@@ -4,8 +4,13 @@ interface RequestErrorOptions {
 }
 
 export class RequestError extends Error {
+  public statusCode: number;
+
+  public errorText: string;
+
   constructor(error: RequestErrorOptions) {
     super(error.errorText);
-    Object.setPrototypeOf(this, RequestError.prototype);
+    this.errorText = error.errorText;
+    this.statusCode = error.statusCode;
   }
 }

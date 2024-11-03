@@ -4,7 +4,19 @@
     tuiHeader
   >
     <h1 tuiTitle>Sign in</h1>
-    <span tuiSubtitle>We send code, new code after {{ phoneVerify().nextAttempt }} seconds</span>
+    @if (nextAttempt() > 0) {
+      <span tuiSubtitle>We send code, new code after {{ nextAttempt() }} seconds</span>
+    }
+    @else {
+      <button
+        tuiLink
+        type="button"
+        [pseudo]="true"
+        [disabled]="form.disabled"
+      >
+        Resend code ?
+      </button>
+    }
   </div>
 
   <form [formGroup]="form">
@@ -18,5 +30,9 @@
         />
       </tui-textfield>
     </div>
+    <tui-error
+      formControlName="code"
+      [error]="[] | tuiFieldError | async"
+    />
   </form>
 </div>

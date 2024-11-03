@@ -34,7 +34,7 @@ import {
 } from '@taiga-ui/kit';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { NextAttempt } from '../../interfaces/next-attempt.interface';
-import { PhoneVerify } from '../../interfaces/phone-verify.interface';
+import { PhoneVerify } from '../../interfaces/phone.interface';
 
 @Component({
   selector: 'lib-modal-telephone-number',
@@ -67,7 +67,7 @@ import { PhoneVerify } from '../../interfaces/phone-verify.interface';
       deps: [TranslocoService],
       useFactory: (translocoService: TranslocoService) => {
         return {
-          required: translocoService.translate('authorization.required')
+          required: translocoService.translate('required')
         }
       }
     }
@@ -84,7 +84,7 @@ export class ModalTelephoneNumberComponent {
   ];
 
   public readonly phoneForm = new FormGroup({
-    phone: new FormControl('', [Validators.required]) // Нужен ли валидатор ?
+    phone: new FormControl('', [Validators.required])
   });
 
   private readonly authorizationService = inject(AuthorizationService);
@@ -101,14 +101,14 @@ export class ModalTelephoneNumberComponent {
       this.phoneForm.disable();
 
       const phone = this.phoneForm.get('phone')?.value ?? '';
-      this.authorizationService.sendSms(phone)
+      this.authorizationService.sendCode(phone)
         .pipe(
           catchError((error: RequestError) => {
             this.isLoading.set(false);
             this.phoneForm.enable();
 
             this.alerts
-              .open(error.message, { 
+              .open(error.errorText, { 
                 label: this.translocoService.translate('error') 
               })
               .subscribe();
