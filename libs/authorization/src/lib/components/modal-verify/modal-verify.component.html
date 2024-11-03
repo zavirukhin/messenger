@@ -1,0 +1,34 @@
+<div
+  class="header-container"
+  tuiHeader
+>
+  <h1 tuiTitle>Sign in</h1>
+  <span tuiSubtitle>We send sms with 6-digit code</span>
+</div>
+
+<form [formGroup]="form">
+  <div class="form-control">
+    <tui-textfield class="code-input">
+      <label tuiLabel>Code</label>
+      <input
+        tuiTextfield
+        formControlName="code"
+        maxLength="6"
+      />
+    </tui-textfield>
+    <button
+      tuiButton
+      type="submit"
+      class="button-mobile"
+    >
+      Next
+    </button>
+    <button
+      tuiButton
+      type="submit"
+      iconStart="@tui.chevron-right"
+      class="button-desktop"
+    >
+    </button>
+  </div>
+</form>
