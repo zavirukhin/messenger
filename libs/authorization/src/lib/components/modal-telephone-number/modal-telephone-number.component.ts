@@ -3,7 +3,6 @@ import { TuiHeader } from '@taiga-ui/layout';
 import { TuiCountryIsoCode } from '@taiga-ui/i18n';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { catchError, defer, of } from 'rxjs';
-import { RequestError} from '@social/shared';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,7 +11,6 @@ import {
   signal
 } from '@angular/core';
 import {
-  TuiAlertService,
   TuiButton,
   TuiError,
   TuiIcon,
@@ -89,10 +87,6 @@ export class ModalTelephoneNumberComponent {
 
   private readonly authorizationService = inject(AuthorizationService);
 
-  private readonly alerts = inject(TuiAlertService);
-
-  private readonly translocoService = inject(TranslocoService);
-
   public readonly isLoading = signal(false);
 
   public onSubmit(): void {
@@ -103,16 +97,9 @@ export class ModalTelephoneNumberComponent {
       const phone = this.phoneForm.get('phone')?.value ?? '';
       this.authorizationService.sendCode(phone)
         .pipe(
-          catchError((error: RequestError) => {
+          catchError(() => {
             this.isLoading.set(false);
             this.phoneForm.enable();
-
-            this.alerts
-              .open(error.errorText, { 
-                label: this.translocoService.translate('error') 
-              })
-              .subscribe();
-
             return of();
           })
         )

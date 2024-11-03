@@ -3,7 +3,6 @@ import { TuiHeader } from '@taiga-ui/layout';
 import { TUI_VALIDATION_ERRORS, TuiFieldErrorPipe } from '@taiga-ui/kit';
 import { TranslocoService } from '@jsverse/transloco';
 import { catchError, of } from 'rxjs';
-import { RequestError } from '@social/shared';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,7 +11,6 @@ import {
   OnInit
 } from '@angular/core';
 import {
-  TuiAlertService,
   TuiError,
   TuiLink,
   TuiTextfield,
@@ -58,10 +56,6 @@ import { Token } from '../../interfaces/token.interface';
 export class ModalVerifyComponent implements OnInit {
   private readonly authorizationService = inject(AuthorizationService);
 
-  private readonly translocoService = inject(TranslocoService);
-
-  private readonly alerts = inject(TuiAlertService);
-
   public readonly nextAttempt = input.required<number>();
 
   public readonly phone = input.required<string>();
@@ -70,27 +64,31 @@ export class ModalVerifyComponent implements OnInit {
     code: new FormControl('', [Validators.required, Validators.maxLength(6)])
   });
 
+  public sendCode() {
+    this.form.disable();
+    this.authorizationService.sendCode(this.phone()).pipe(
+      catchError(() => {
+        this.form.enable();
+        return of();
+      })
+    ).subscribe(() => {
+      this.form.reset();
+    });
+  }
+
   ngOnInit() {
     this.form.controls.code.valueChanges.subscribe((code) => {
       if (code?.length === 6) {
         this.form.disable({ emitEvent: false });
 
         this.authorizationService.verifyPhone(this.phone(), code).pipe(
-          catchError((error: RequestError) => {
-            this.alerts
-              .open(error.errorText, {
-                label: this.translocoService.translate('error')
-              })
-              .subscribe();
-
+          catchError(() => {
             this.form.enable({ emitEvent: false });
-
             return of();
           })
         )
         .subscribe((token: Token) => {
           this.form.enable({ emitEvent: false });
-
           this.authorizationService.saveToken(token.token);
         });
       }
