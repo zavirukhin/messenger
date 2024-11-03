@@ -72,7 +72,7 @@ import { PhoneVerify } from '../../interfaces/phone.interface';
   ]
 })
 export class ModalTelephoneNumberComponent {
-  phoneChanged = output<PhoneVerify>();
+  public phoneChanged = output<PhoneVerify>();
 
   public readonly countries: ReadonlyArray<TuiCountryIsoCode> = [
     'RU',

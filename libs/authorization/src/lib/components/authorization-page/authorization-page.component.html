@@ -5,8 +5,9 @@
   @if (step === 'phone') {
     <lib-modal-telephone-number (phoneChanged)="onPhoneChanged($event)" />
   }
-  @else if (step === 'verify' && phoneVerify) {
+  @else if (step === 'verify') {
     <lib-modal-verify
+      (phoneChanged)="onPhoneChanged($event)"
       [nextAttempt]="phoneVerify().nextAttempt"
       [phone]="phoneVerify().phone"
     />

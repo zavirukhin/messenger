@@ -8,7 +8,8 @@ import {
   Component,
   inject,
   input,
-  OnInit
+  OnInit,
+  output
 } from '@angular/core';
 import {
   TuiError,
@@ -24,6 +25,8 @@ import {
 } from '@angular/forms';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { Token } from '../../interfaces/token.interface';
+import { PhoneVerify } from '../../interfaces/phone.interface';
+import { NextAttempt } from '../../interfaces/next-attempt.interface';
 
 @Component({
   selector: 'lib-modal-verify',
@@ -54,6 +57,8 @@ import { Token } from '../../interfaces/token.interface';
   ]
 })
 export class ModalVerifyComponent implements OnInit {
+  public phoneChanged = output<PhoneVerify>();
+
   private readonly authorizationService = inject(AuthorizationService);
 
   public readonly nextAttempt = input.required<number>();
@@ -65,14 +70,16 @@ export class ModalVerifyComponent implements OnInit {
   });
 
   public sendCode() {
-    this.form.disable();
+    this.form.disable({ emitEvent: false });
     this.authorizationService.sendCode(this.phone()).pipe(
       catchError(() => {
-        this.form.enable();
+        this.form.enable({ emitEvent: false });
         return of();
       })
-    ).subscribe(() => {
+    ).subscribe((nextAttempt: NextAttempt) => {
       this.form.reset();
+      this.form.enable({ emitEvent: false });
+      this.phoneChanged.emit({ phone: this.phone(), ...nextAttempt });
     });
   }
 
