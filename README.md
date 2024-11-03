@@ -9,6 +9,8 @@
 - `JWT_SECRET`: Секретный ключ, используемый для подписи JWT токенов.
   - **Пример**: `MYSECRET`
 
+- `JWT_EXPIRATION`: Длительность жизни JWT токена.
+  - **Пример**: `5m`
 ## Настройки базы данных
 
 ### PostgreSQL
@@ -46,6 +48,7 @@
 
 ```plaintext
 JWT_SECRET='MYSECRET'
+JWT_EXPIRATION = '5m'
 
 DB_TYPE=postgres
 DB_HOST=localhost
