@@ -25,9 +25,9 @@ build:
 lint:
   stage: lint
   script:
-    - nx run-many --all --target=lint
+    - npx nx run-many --all --target=lint
 
 test:
   stage: test
   script:
-    - nx run-many --all --target=test
+    - npx nx run-many --all --target=test
