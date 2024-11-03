@@ -22,13 +22,11 @@ export class UserInit1730566248080 implements MigrationInterface {
             name: 'first_name',
             type: 'varchar',
             length: '50',
-            isNullable: true,
           },
           {
             name: 'last_name',
             type: 'varchar',
             length: '50',
-            isNullable: true,
           },
           {
             name: 'last_activity',
@@ -36,7 +34,7 @@ export class UserInit1730566248080 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'avatar',
+            name: 'avatar_base64',
             type: 'text',
             isNullable: true,
           },

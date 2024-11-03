@@ -1,16 +1,12 @@
-import { IsString, Length, Matches } from 'class-validator';
+import { IsPhoneNumber, IsString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ValidateCodeDto {
   @ApiProperty({
-    description:
-      'Номер телефона пользователя в формате международного стандарта E.164',
     example: '+12345678901',
+    description: 'Телефонный номер пользователя',
   })
-  @IsString()
-  @Matches(/^\+\d{10,15}$/, {
-    message: 'Номер телефона должен быть в международном формате (E.164)',
-  })
+  @IsPhoneNumber(null)
   phone: string;
 
   @ApiProperty({
@@ -19,7 +15,7 @@ export class ValidateCodeDto {
   })
   @IsString()
   @Length(6, 6, {
-    message: 'Код должен быть 6-значным числом',
+    message: 'Код должен содержать 6 символов',
   })
   code: string;
 }
