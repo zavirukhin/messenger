@@ -4,7 +4,7 @@ import { ErrorCode } from '../error-codes';
 export class InvalidCodeException extends HttpException {
   constructor() {
     const message = 'Предоставленный код недействителен.';
-    const status = HttpStatus.UNAUTHORIZED;
+    const status = HttpStatus.FORBIDDEN;
     super(
       { message, errorCode: ErrorCode.INVALID_CODE, statusCode: status },
       status,
