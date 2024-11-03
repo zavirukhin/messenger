@@ -17,7 +17,7 @@ install:
 build:
   stage: build
   script:
-    - nx build
+    - npx nx build
   artifacts:
     paths:
       - dist/
