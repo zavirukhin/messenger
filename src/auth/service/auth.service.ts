@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../entity/user.entity';
-import { MyJwtService } from './jwt.service';
+import { User } from '../../entity/user.entity';
+import { MyJwtService } from '../../jwt/service/jwt.service';
 import { CodeCooldownException } from '../exception/code-cooldown.exception';
 import { CodeExpiredException } from '../exception/code-expired.exception';
 import { InvalidCodeException } from '../exception/invalid-code.exception';

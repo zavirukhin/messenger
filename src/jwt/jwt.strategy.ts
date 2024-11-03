@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { User } from './entity/user.entity';
-import { AuthService } from './service/auth.service';
+import { User } from '../entity/user.entity';
+import { AuthService } from '../auth/service/auth.service';
 import * as dotenv from 'dotenv';
 
 dotenv.config();

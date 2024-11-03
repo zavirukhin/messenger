@@ -1,4 +1,4 @@
-import { User } from './src/auth/entity/user.entity';
+import { User } from './src/entity/user.entity';
 import { UserInit1730566248080 } from './src/migrations/1730566248080-UserInit';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';

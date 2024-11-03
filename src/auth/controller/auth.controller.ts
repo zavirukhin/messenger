@@ -11,12 +11,13 @@ import { AuthService } from '../service/auth.service';
 import { SendCodeDto } from '../dto/send-code.dto';
 import { ValidateCodeDto } from '../dto/validate-code.dto';
 import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../../jwt/guard/jwt-auth.guard';
 import { ErrorCode } from '../error-codes';
-import { User } from '../entity/user.entity';
+import { User } from '../../entity/user.entity';
 import { CreateUserDto } from '../dto/create-user.fto';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
-import { MyJwtService } from '../service/jwt.service';
+import { MyJwtService } from '../../jwt/service/jwt.service';
+import { InvalidTokenException } from '../exception/invalid-token.exception';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -222,7 +223,13 @@ export class AuthController {
   async refreshToken(
     @Body() refreshTokenDto: RefreshTokenDto,
   ): Promise<{ token: string }> {
-    return this.jwtService.refreshToken(refreshTokenDto);
+    try {
+      const payload = this.jwtService.verifyToken(refreshTokenDto.oldToken);
+      const newToken = this.jwtService.generateToken(payload.sub);
+      return { token: newToken };
+    } catch {
+      throw new InvalidTokenException();
+    }
   }
 
   @UseGuards(JwtAuthGuard)

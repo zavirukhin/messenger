@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './service/auth.service';
 import { AuthController } from './controller/auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entity/user.entity';
+import { User } from '../entity/user.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt.strategy';
-import { MyJwtService } from './service/jwt.service';
+import { JwtStrategy } from '../jwt/jwt.strategy';
+import { MyJwtService } from '../jwt/service/jwt.service';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
