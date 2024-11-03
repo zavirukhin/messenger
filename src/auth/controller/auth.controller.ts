@@ -15,11 +15,16 @@ import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { ErrorCode } from '../error-codes';
 import { User } from '../entity/user.entity';
 import { CreateUserDto } from '../dto/create-user.fto';
+import { RefreshTokenDto } from '../dto/refresh-token.dto';
+import { MyJwtService } from '../service/jwt.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly jwtService: MyJwtService,
+  ) {}
 
   @Post('send-code')
   @ApiResponse({
@@ -187,6 +192,37 @@ export class AuthController {
       createUserDto.first_name,
       createUserDto.last_name,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post('refresh-token')
+  @Post('validate-code')
+  @ApiResponse({
+    status: 201,
+    description: 'Токен успешно обновлен',
+    schema: {
+      example: {
+        token: 'jwt-token-example',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Предоставленный токен недействителен',
+    schema: {
+      example: {
+        message: 'Предоставленный токен недействителен.',
+        errorCode: ErrorCode.INVALID_TOKEN,
+        statusCode: HttpStatus.FORBIDDEN,
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  async refreshToken(
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ): Promise<{ token: string }> {
+    return this.jwtService.refreshToken(refreshTokenDto);
   }
 
   @UseGuards(JwtAuthGuard)
