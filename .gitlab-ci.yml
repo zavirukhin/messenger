@@ -1,0 +1,33 @@
+image: node:20-alpine
+
+stages:
+  - install
+  - build
+  - lint
+  - test
+
+install:
+  stage: install
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+
+build:
+  stage: build
+  script:
+    - nx build
+  artifacts:
+    paths:
+      - dist/
+
+lint:
+  stage: lint
+  script:
+    - nx run-many --all --target=lint
+
+test:
+  stage: test
+  script:
+    - nx run-many --all --target=test
