@@ -1,13 +1,13 @@
-<div
-  class="header-container"
-  tuiHeader
->
-  <h1 tuiTitle>Sign in</h1>
-  <span tuiSubtitle>We send sms with 6-digit code, enter this code</span>
-</div>
+<div class="modal-container">
+  <div
+    class="header-container"
+    tuiHeader
+  >
+    <h1 tuiTitle>Sign in</h1>
+    <span tuiSubtitle>We send code, new code after {{ phoneVerify().nextAttempt }} seconds</span>
+  </div>
 
-<form [formGroup]="form">
-  <div class="form-control">
+  <form [formGroup]="form">
     <div class="code-input">
       <tui-textfield>
         <label tuiLabel>Code</label>
@@ -18,19 +18,5 @@
         />
       </tui-textfield>
     </div>
-    <button
-      tuiButton
-      type="submit"
-      class="button-mobile"
-    >
-      Next
-    </button>
-    <button
-      tuiButton
-      type="submit"
-      iconStart="@tui.chevron-right"
-      class="button-desktop"
-    >
-    </button>
-  </div>
-</form>
+  </form>
+</div>

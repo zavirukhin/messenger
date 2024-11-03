@@ -6,6 +6,6 @@
     <lib-modal-telephone-number (phoneChanged)="onPhoneChanged($event)" />
   }
   @else if (step === 'verify') {
-    <lib-modal-verify />
+    <lib-modal-verify [phoneVerify]="phoneVerify!" />
   }
 </section>

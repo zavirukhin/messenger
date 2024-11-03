@@ -4,7 +4,6 @@ import { TuiCountryIsoCode } from '@taiga-ui/i18n';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { catchError, defer, of } from 'rxjs';
 import { RequestError} from '@social/shared';
-import { AuthorizationService } from '../../services/authorization/authorization.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -33,6 +32,9 @@ import {
   tuiInputPhoneInternationalOptionsProvider,
   TuiSkeleton
 } from '@taiga-ui/kit';
+import { AuthorizationService } from '../../services/authorization/authorization.service';
+import { NextAttempt } from '../../interfaces/next-attempt.interface';
+import { PhoneVerify } from '../../interfaces/phone-verify.interface';
 
 @Component({
   selector: 'lib-modal-telephone-number',
@@ -72,7 +74,7 @@ import {
   ]
 })
 export class ModalTelephoneNumberComponent {
-  phoneChanged = output<string>();
+  phoneChanged = output<PhoneVerify>();
 
   public readonly countries: ReadonlyArray<TuiCountryIsoCode> = [
     'RU',
@@ -114,11 +116,11 @@ export class ModalTelephoneNumberComponent {
             return of();
           })
         )
-        .subscribe(() => {
+        .subscribe((nextAttempt: NextAttempt) => {
           this.isLoading.set(false);
           this.phoneForm.enable();
 
-          this.phoneChanged.emit(phone);
+          this.phoneChanged.emit({...nextAttempt, phone});
         });
     }
     else {
