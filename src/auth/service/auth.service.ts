@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entity/user.entity';
@@ -23,7 +23,9 @@ export class AuthService {
     { code: string; expiresAt: number; lastSentAt: number }
   >();
 
-  async sendCode(phone: string): Promise<void> {
+  async sendCode(
+    phone: string,
+  ): Promise<{ nextAttempt: number; message: string; statusCode: HttpStatus }> {
     const now = Date.now();
     const cooldownPeriod = 60 * 1000; // 60 секунд
     const storedData = this.codes.get(phone);
@@ -37,6 +39,11 @@ export class AuthService {
 
     this.codes.set(phone, { code, expiresAt, lastSentAt: now });
     console.log(`Отправлен код ${code} для телефона ${phone}`);
+    return {
+      nextAttempt: cooldownPeriod,
+      message: 'Код успешно отправлен',
+      statusCode: HttpStatus.CREATED,
+    };
   }
 
   async validateCode(phone: string, code: string): Promise<{ token: string }> {

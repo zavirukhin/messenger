@@ -33,6 +33,7 @@ export class AuthController {
     description: 'Код успешно отправлен',
     schema: {
       example: {
+        nextAttempt: 60000,
         message: 'Код успешно отправлен',
         statusCode: HttpStatus.CREATED,
       },
@@ -62,9 +63,8 @@ export class AuthController {
   })
   async sendCode(
     @Body() sendCodeDto: SendCodeDto,
-  ): Promise<{ message: string; statusCode: HttpStatus }> {
-    await this.authService.sendCode(sendCodeDto.phone);
-    return { message: 'Код успешно отправлен', statusCode: HttpStatus.CREATED };
+  ): Promise<{ nextAttempt: number; message: string; statusCode: HttpStatus }> {
+    return this.authService.sendCode(sendCodeDto.phone);
   }
 
   @Post('validate-code')
