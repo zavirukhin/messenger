@@ -1,11 +1,15 @@
+import { Router } from '@angular/router';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TuiHeader } from '@taiga-ui/layout';
-import { TuiButton, TuiError, TuiTextfield, TuiTitle } from '@taiga-ui/core';
+import { TuiAlertService, TuiButton, TuiError, TuiTextfield, TuiTitle } from '@taiga-ui/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TUI_VALIDATION_ERRORS, TuiFieldErrorPipe } from '@taiga-ui/kit';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { catchError, of } from 'rxjs';
+import { RequestError } from '@social/shared';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
+import { Token } from '../../interfaces/token.interface';
 
 @Component({
   selector: 'lib-modal-create',
@@ -41,6 +45,12 @@ export class ModalCreateComponent {
 
   private readonly authorizationService = inject(AuthorizationService);
 
+  private readonly router = inject(Router);
+
+  private readonly alerts = inject(TuiAlertService);
+
+  private readonly translocoService = inject(TranslocoService);
+
   public readonly form = new FormGroup({
     lastName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
     firstName: new FormControl('', [Validators.required, Validators.maxLength(50)])
@@ -48,13 +58,33 @@ export class ModalCreateComponent {
 
   onSubmit(): void {
     if (this.form.valid) {
+      this.form.disable();
+
       this.authorizationService.createProfile({
         lastName: this.form.value.firstName ?? '',
         firstName: this.form.value.lastName ?? '',
         phone: this.phone(),
         code: this.code()
       })
-      .subscribe();
+      .pipe(
+        catchError((error: RequestError) => {
+          this.form.enable();
+
+          this.alerts.open(error.message, {
+            label: this.translocoService.translate('error'),
+            appearance: 'error'
+          })
+          .subscribe();
+
+          return of();
+        })
+      )
+      .subscribe((token: Token) => {
+        this.form.enable();
+        this.authorizationService.saveToken(token.token);
+        
+        this.router.navigate(['/messenger']);
+      });
     }
     else {
       this.form.markAllAsTouched();
