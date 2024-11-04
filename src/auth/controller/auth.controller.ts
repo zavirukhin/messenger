@@ -17,7 +17,6 @@ import { User } from '../../entity/user.entity';
 import { CreateUserDto } from '../dto/create-user.fto';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { MyJwtService } from '../../jwt/service/jwt.service';
-import { InvalidTokenException } from '../exception/invalid-token.exception';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -198,7 +197,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post('refresh-token')
-  @Post('validate-code')
   @ApiResponse({
     status: 201,
     description: 'Токен успешно обновлен',
@@ -219,17 +217,22 @@ export class AuthController {
       },
     },
   })
+  @ApiResponse({
+    status: 400,
+    schema: {
+      example: {
+        message: ['Message'],
+        error: 'Bad Request',
+        statusCode: HttpStatus.BAD_REQUEST,
+      },
+    },
+    description: 'Неверные входные данные',
+  })
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   async refreshToken(
     @Body() refreshTokenDto: RefreshTokenDto,
   ): Promise<{ token: string }> {
-    try {
-      const payload = this.jwtService.verifyToken(refreshTokenDto.oldToken);
-      const newToken = this.jwtService.generateToken(payload.sub);
-      return { token: newToken };
-    } catch {
-      throw new InvalidTokenException();
-    }
+    return this.authService.refreshToken(refreshTokenDto.oldToken);
   }
 
   @UseGuards(JwtAuthGuard)
