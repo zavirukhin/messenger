@@ -31,13 +31,15 @@ export class AuthorizationPageComponent implements OnDestroy {
 
   public code = signal<string>('');
 
-  public step: Step = 'create';
+  public step: Step = 'phone';
 
   public destroy$ = new Subject<void>();
 
   public onPhoneChanged(phoneVerify: PhoneVerify) {
+    const nextAttempt = Math.floor(phoneVerify.nextAttempt / 1000); 
+
     this.destroy$.next();
-    this.phoneVerify.set(phoneVerify);
+    this.phoneVerify.set({...phoneVerify, nextAttempt});
     this.startTimer();
     this.step = 'verify';
   }

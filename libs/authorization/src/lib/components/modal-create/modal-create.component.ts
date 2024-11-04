@@ -61,8 +61,8 @@ export class ModalCreateComponent {
       this.form.disable();
 
       this.authorizationService.createProfile({
-        lastName: this.form.value.firstName ?? '',
-        firstName: this.form.value.lastName ?? '',
+        last_name: this.form.value.firstName ?? '',
+        first_name: this.form.value.lastName ?? '',
         phone: this.phone(),
         code: this.code()
       })

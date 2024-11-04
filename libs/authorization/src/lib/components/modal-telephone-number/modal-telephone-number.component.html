@@ -28,7 +28,7 @@
 
 <form
   (ngSubmit)="onSubmit()"
-  [formGroup]="phoneForm"
+  [formGroup]="form"
 >
   <ng-container *transloco="let t; loadingTpl: loaderMain">
     <div class="form-container">
@@ -43,6 +43,7 @@
         tuiButton
         type="submit"
         class="button-mobile"
+        [disabled]="form.disabled"
       >
         {{ t('authorization.next') }}
       </button>
@@ -51,6 +52,7 @@
         type="submit"
         iconStart="@tui.chevron-right"
         class="button-desktop"
+        [disabled]="form.disabled"
       >
       </button>
     </div>

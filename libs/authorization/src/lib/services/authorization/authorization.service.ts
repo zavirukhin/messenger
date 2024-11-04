@@ -29,6 +29,6 @@ export class AuthorizationService {
   }
 
   public createProfile(profile: CreateProfile): Observable<Token> {
-    return this.http.post<Token>(environment.apiUrl + '/auth/create-profile', profile);
+    return this.http.post<Token>(environment.apiUrl + '/auth/create-user', profile);
   }
 }

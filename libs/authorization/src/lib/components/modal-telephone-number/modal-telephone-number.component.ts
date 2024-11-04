@@ -42,7 +42,6 @@ import { RequestError } from '@social/shared';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { NextAttempt } from '../../interfaces/next-attempt.interface';
 import { PhoneVerify } from '../../interfaces/phone.interface';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'lib-modal-telephone-number',
@@ -89,7 +88,7 @@ export class ModalTelephoneNumberComponent {
     'BY'
   ];
 
-  public readonly phoneForm = new FormGroup({
+  public readonly form = new FormGroup({
     phone: new FormControl('', [Validators.required])
   });
 
@@ -99,23 +98,21 @@ export class ModalTelephoneNumberComponent {
 
   private readonly translocoService = inject(TranslocoService);
 
-  private readonly router = inject(Router);
-
   public readonly isLoading = signal(false);
 
   public readonly isLoading = signal(false);
 
   public onSubmit(): void {
-    if (this.phoneForm.valid) {
+    if (this.form.valid) {
       this.isLoading.set(true);
-      this.phoneForm.disable();
+      this.form.disable();
 
-      const phone = this.phoneForm.get('phone')?.value ?? '';
+      const phone = this.form.get('phone')?.value ?? '';
       this.authorizationService.sendCode(phone)
         .pipe(
           catchError((error: RequestError) => {
             this.isLoading.set(false);
-            this.phoneForm.enable();
+            this.form.enable();
 
             this.alerts.open(error.message, {
               label: this.translocoService.translate('error'),
@@ -128,15 +125,13 @@ export class ModalTelephoneNumberComponent {
         )
         .subscribe((nextAttempt: NextAttempt) => {
           this.isLoading.set(false);
-          this.phoneForm.enable();
-
-          this.router.navigate(['/messenger']);
+          this.form.enable();
 
           this.phoneChanged.emit({...nextAttempt, phone});
         });
     }
     else {
-      this.phoneForm.markAllAsTouched();
+      this.form.markAllAsTouched();
     }
   }
 }
