@@ -29,6 +29,7 @@ import { AuthorizationService } from '../../services/authorization/authorization
 import { Token } from '../../interfaces/token.interface';
 import { PhoneVerify } from '../../interfaces/phone.interface';
 import { NextAttempt } from '../../interfaces/next-attempt.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'lib-modal-verify',
@@ -67,6 +68,8 @@ export class ModalVerifyComponent implements OnInit {
   private readonly translocoService = inject(TranslocoService);
 
   private readonly alerts = inject(TuiAlertService);
+
+  private readonly router = inject(Router);
 
   public readonly nextAttempt = input.required<number>();
 
@@ -123,6 +126,8 @@ export class ModalVerifyComponent implements OnInit {
         .subscribe((token: Token) => {
           this.form.enable({ emitEvent: false });
           this.authorizationService.saveToken(token.token);
+
+          this.router.navigate(['/messenger']);
         });
       }
     });

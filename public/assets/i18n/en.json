@@ -4,5 +4,9 @@
   "unknownError": "Unknown error",
   "required": "Field is required",
   "CODE_COOLDOWN": "Please wait before requesting a new code",
-  "USER_NOT_FOUND": "User not found"
+  "USER_NOT_FOUND": "User not found",
+  "CODE_EXPIRED": "Code expired",
+  "INVALID_CODE": "Invalid code",
+  "INVALID_TOKEN": "Invalid token",
+  "USER_ALREADY_EXISTS": "User already exists"
 }
