@@ -13,5 +13,4 @@ export class MyJwtService {
   verifyToken(token: string): JwtPayload {
     return this.jwtService.verify(token);
   }
-
 }
