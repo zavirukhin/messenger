@@ -19,7 +19,7 @@ build:
   stage: build
   script:
     - npx nx build
-    - mv dist/social public
+    - mv dist/social/* public
   artifacts:
     paths:
       - public
