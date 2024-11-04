@@ -35,6 +35,7 @@ import { RequestError } from '@social/shared';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { NextAttempt } from '../../interfaces/next-attempt.interface';
 import { PhoneVerify } from '../../interfaces/phone.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'lib-modal-telephone-number',
@@ -93,6 +94,8 @@ export class ModalTelephoneNumberComponent {
 
   private readonly translocoService = inject(TranslocoService);
 
+  private readonly router = inject(Router);
+
   public readonly isLoading = signal(false);
 
   public onSubmit(): void {
@@ -119,6 +122,8 @@ export class ModalTelephoneNumberComponent {
         .subscribe((nextAttempt: NextAttempt) => {
           this.isLoading.set(false);
           this.phoneForm.enable();
+
+          this.router.navigate(['/messenger']);
 
           this.phoneChanged.emit({...nextAttempt, phone});
         });
