@@ -51,11 +51,9 @@ import { NextAttempt } from '../../interfaces/next-attempt.interface';
     {
       provide: TUI_VALIDATION_ERRORS,
       deps: [TranslocoService],
-      useFactory: (translocoService: TranslocoService) => {
-        return {
-          required: translocoService.translate('required')
-        }
-      }
+      useFactory: (translocoService: TranslocoService) => ({
+        required: translocoService.translate('required')
+      })
     }
   ]
 })

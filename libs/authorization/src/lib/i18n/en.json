@@ -5,5 +5,9 @@
   "next": "Next",
   "codeSubtitle": "We send code, new code after {{ nextAttempt }} seconds",
   "resendCode": "Resend code ?",
-  "code": "Code"
+  "code": "Code",
+  "createProfile": "Create profile",
+  "lastName": "Last name",
+  "firstName": "First name",
+  "create": "Create"
 }

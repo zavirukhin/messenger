@@ -73,11 +73,9 @@ import { Router } from '@angular/router';
     {
       provide: TUI_VALIDATION_ERRORS,
       deps: [TranslocoService],
-      useFactory: (translocoService: TranslocoService) => {
-        return {
-          required: translocoService.translate('required')
-        }
-      }
+      useFactory: (translocoService: TranslocoService) => ({
+        required: translocoService.translate('required')
+      })
     }
   ]
 })

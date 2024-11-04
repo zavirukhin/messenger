@@ -31,7 +31,7 @@ export class AuthorizationPageComponent implements OnDestroy {
 
   public code = signal<string>('');
 
-  public step: Step = 'phone';
+  public step: Step = 'create';
 
   public destroy$ = new Subject<void>();
 
