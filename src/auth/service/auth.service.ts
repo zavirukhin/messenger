@@ -40,11 +40,6 @@ export class AuthService {
   }
 
   async validateCode(phone: string, code: string): Promise<{ token: string }> {
-    const user = await this.userRepository.findOne({ where: { phone } });
-    if (!user) {
-      throw new UserNotFoundException();
-    }
-
     const storedCodeData = this.codes.get(phone);
 
     if (!storedCodeData) {
@@ -58,6 +53,11 @@ export class AuthService {
 
     if (storedCodeData.code !== code) {
       throw new InvalidCodeException();
+    }
+
+    const user = await this.userRepository.findOne({ where: { phone } });
+    if (!user) {
+      throw new UserNotFoundException();
     }
 
     this.codes.delete(phone);
@@ -72,13 +72,6 @@ export class AuthService {
     first_name: string,
     last_name: string,
   ): Promise<{ token: string }> {
-    const existingUser = await this.userRepository.findOne({
-      where: { phone },
-    });
-    if (existingUser) {
-      throw new UserAlreadyExistsException();
-    }
-
     const storedCodeData = this.codes.get(phone);
 
     if (!storedCodeData) {
@@ -92,6 +85,13 @@ export class AuthService {
 
     if (storedCodeData.code !== code) {
       throw new InvalidCodeException();
+    }
+
+    const existingUser = await this.userRepository.findOne({
+      where: { phone },
+    });
+    if (existingUser) {
+      throw new UserAlreadyExistsException();
     }
 
     this.codes.delete(phone);
