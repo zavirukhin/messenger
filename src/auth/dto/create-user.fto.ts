@@ -1,19 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsPhoneNumber, Length } from 'class-validator';
+import { IsString, IsPhoneNumber, Length, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
     example: '+12345678901',
     description: 'Телефонный номер пользователя',
   })
-  @IsPhoneNumber(null)
+  @IsNotEmpty({ message: 'Номер телефона не может быть пустым' })
+  @IsPhoneNumber(null, { message: 'Неверный формат номера телефона' })
   phone: string;
 
   @ApiProperty({
     example: '123456',
     description: '6-значный код подтверждения',
   })
-  @IsString()
+  @IsString({ message: 'Код должен быть строкой' })
   @Length(6, 6, { message: 'Код должен содержать 6 символов' })
   code: string;
 
@@ -21,7 +22,7 @@ export class CreateUserDto {
     example: 'Иван',
     description: 'Имя пользователя',
   })
-  @IsString()
+  @IsString({ message: 'Имя должно быть строкой' })
   @Length(1, 50, { message: 'Имя должно быть длиной от 1 до 50 символов' })
   first_name: string;
 
@@ -29,7 +30,7 @@ export class CreateUserDto {
     example: 'Иванов',
     description: 'Фамилия пользователя',
   })
-  @IsString()
+  @IsString({ message: 'Фамилия должна быть строкой' })
   @Length(1, 50, { message: 'Фамилия должна быть длиной от 1 до 50 символов' })
   last_name: string;
 }

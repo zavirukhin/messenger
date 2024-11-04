@@ -1,76 +1,34 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entity/user.entity';
 import { MyJwtService } from '../../jwt/service/jwt.service';
-import { CodeCooldownException } from '../exception/code-cooldown.exception';
-import { CodeExpiredException } from '../exception/code-expired.exception';
-import { InvalidCodeException } from '../exception/invalid-code.exception';
 import { UserNotFoundException } from '../exception/user-not-found.exception';
-import { generateCode } from '../utils/utils';
 import { UserAlreadyExistsException } from '../exception/user-already-exists.exception';
+import { InvalidTokenException } from '../exception/invalid-token.exception';
+import { CodeService } from './code.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
     private readonly jwtService: MyJwtService,
+    private readonly codeService: CodeService,
   ) {}
 
-  private codes = new Map<
-    string,
-    { code: string; expiresAt: number; lastSentAt: number }
-  >();
-
-  async sendCode(
-    phone: string,
-  ): Promise<{ nextAttempt: number; message: string; statusCode: HttpStatus }> {
-    const now = Date.now();
-    const cooldownPeriod = 60 * 1000; // 60 секунд
-    const storedData = this.codes.get(phone);
-    if (storedData && now - storedData.lastSentAt < cooldownPeriod) {
-      throw new CodeCooldownException();
-    }
-
-    const code = generateCode();
-    const expiresIn = 5 * 60 * 1000; // 5 минут
-    const expiresAt = now + expiresIn;
-
-    this.codes.set(phone, { code, expiresAt, lastSentAt: now });
-    console.log(`Отправлен код ${code} для телефона ${phone}`);
-    return {
-      nextAttempt: cooldownPeriod,
-      message: 'Код успешно отправлен',
-      statusCode: HttpStatus.CREATED,
-    };
+  async sendCode(phone: string) {
+    return this.codeService.sendCode(phone);
   }
 
-  async validateCode(phone: string, code: string): Promise<{ token: string }> {
-    const storedCodeData = this.codes.get(phone);
-
-    if (!storedCodeData) {
-      throw new CodeExpiredException();
-    }
-
-    if (Date.now() > storedCodeData.expiresAt) {
-      this.codes.delete(phone);
-      throw new CodeExpiredException();
-    }
-
-    if (storedCodeData.code !== code) {
-      throw new InvalidCodeException();
-    }
-
+  async validateCode(phone: string, code: string) {
+    await this.codeService.validateCode(phone, code, false);
     const user = await this.userRepository.findOne({ where: { phone } });
     if (!user) {
       throw new UserNotFoundException();
     }
-
-    this.codes.delete(phone);
-
-    const token = this.jwtService.generateToken(user.id);
-    return { token };
+    this.codeService.deleteCode(phone);
+    return { token: this.jwtService.generateToken(user.id) };
   }
 
   async create(
@@ -79,20 +37,7 @@ export class AuthService {
     first_name: string,
     last_name: string,
   ): Promise<{ token: string }> {
-    const storedCodeData = this.codes.get(phone);
-
-    if (!storedCodeData) {
-      throw new CodeExpiredException();
-    }
-
-    if (Date.now() > storedCodeData.expiresAt) {
-      this.codes.delete(phone);
-      throw new CodeExpiredException();
-    }
-
-    if (storedCodeData.code !== code) {
-      throw new InvalidCodeException();
-    }
+    await this.codeService.validateCode(phone, code, false);
 
     const existingUser = await this.userRepository.findOne({
       where: { phone },
@@ -100,8 +45,7 @@ export class AuthService {
     if (existingUser) {
       throw new UserAlreadyExistsException();
     }
-
-    this.codes.delete(phone);
+    this.codeService.deleteCode(phone);
 
     const newUser = await this.userRepository.save({
       phone,
@@ -116,5 +60,14 @@ export class AuthService {
 
   async validateUserById(userId: number): Promise<User | null> {
     return this.userRepository.findOne({ where: { id: userId } });
+  }
+
+  async refreshToken(oldToken: string) {
+    try {
+      const newToken = this.jwtService.refreshToken(oldToken);
+      return { token: newToken };
+    } catch {
+      throw new InvalidTokenException();
+    }
   }
 }

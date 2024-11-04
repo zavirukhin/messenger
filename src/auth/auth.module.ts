@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from '../jwt/jwt.strategy';
 import { MyJwtService } from '../jwt/service/jwt.service';
 import * as dotenv from 'dotenv';
+import { CodeService } from './service/code.service';
 
 dotenv.config();
 @Module({
@@ -17,7 +18,7 @@ dotenv.config();
       signOptions: { expiresIn: process.env.JWT_EXPIRATION },
     }),
   ],
-  providers: [AuthService, JwtStrategy, MyJwtService],
+  providers: [AuthService, JwtStrategy, MyJwtService, CodeService],
   controllers: [AuthController],
 })
 export class AuthModule {}

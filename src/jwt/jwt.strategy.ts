@@ -4,13 +4,9 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from '../entity/user.entity';
 import { AuthService } from '../auth/service/auth.service';
 import * as dotenv from 'dotenv';
+import { JwtPayload } from './jwt-payload';
 
 dotenv.config();
-export interface JwtPayload {
-  sub: number;
-  phone: string;
-}
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
