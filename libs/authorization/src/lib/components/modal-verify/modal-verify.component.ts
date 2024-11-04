@@ -12,6 +12,7 @@ import {
   output
 } from '@angular/core';
 import {
+  TuiAlertService,
   TuiError,
   TuiLink,
   TuiTextfield,
@@ -23,6 +24,7 @@ import {
   ReactiveFormsModule, 
   Validators 
 } from '@angular/forms';
+import { RequestError } from '@social/shared';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { Token } from '../../interfaces/token.interface';
 import { PhoneVerify } from '../../interfaces/phone.interface';
@@ -60,7 +62,13 @@ import { NextAttempt } from '../../interfaces/next-attempt.interface';
 export class ModalVerifyComponent implements OnInit {
   public phoneChanged = output<PhoneVerify>();
 
+  public codeChanged = output<string>();
+
   private readonly authorizationService = inject(AuthorizationService);
+
+  private readonly translocoService = inject(TranslocoService);
+
+  private readonly alerts = inject(TuiAlertService);
 
   public readonly nextAttempt = input.required<number>();
 
@@ -73,8 +81,15 @@ export class ModalVerifyComponent implements OnInit {
   public sendCode() {
     this.form.disable({ emitEvent: false });
     this.authorizationService.sendCode(this.phone()).pipe(
-      catchError(() => {
+      catchError((error: RequestError) => {
         this.form.enable({ emitEvent: false });
+
+        this.alerts.open(error.message, {
+          label: this.translocoService.translate('error'),
+          appearance: 'error'
+        })
+        .subscribe();
+
         return of();
       })
     ).subscribe((nextAttempt: NextAttempt) => {
@@ -90,8 +105,20 @@ export class ModalVerifyComponent implements OnInit {
         this.form.disable({ emitEvent: false });
 
         this.authorizationService.verifyPhone(this.phone(), code).pipe(
-          catchError(() => {
+          catchError((error: RequestError) => {
             this.form.enable({ emitEvent: false });
+
+            if (error.statusCode === 404 && error.errorCode === 'USER_NOT_FOUND') {
+              this.codeChanged.emit(code);
+              return of();
+            }
+
+            this.alerts.open(error.message, {
+              label: this.translocoService.translate('error'),
+              appearance: 'error'
+            })
+            .subscribe();
+
             return of();
           })
         )

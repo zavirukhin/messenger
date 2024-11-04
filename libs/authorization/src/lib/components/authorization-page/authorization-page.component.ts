@@ -23,6 +23,8 @@ import { PhoneVerify } from '../../interfaces/phone.interface';
 export class AuthorizationPageComponent implements OnDestroy {
   public phoneVerify = signal<PhoneVerify>({phone: '', nextAttempt: 0});
 
+  public code = signal<string>('');
+
   public step: Step = 'phone';
 
   public destroy$ = new Subject<void>();
@@ -32,6 +34,11 @@ export class AuthorizationPageComponent implements OnDestroy {
     this.phoneVerify.set(phoneVerify);
     this.startTimer();
     this.step = 'verify';
+  }
+
+  public onCodeChanged(code: string) {
+    this.code.set(code);
+    this.step = 'create';
   }
 
   private startTimer(): void {

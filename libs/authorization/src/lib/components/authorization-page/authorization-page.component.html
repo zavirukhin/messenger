@@ -7,9 +7,13 @@
   }
   @else if (step === 'verify') {
     <lib-modal-verify
+      (codeChanged)="onCodeChanged($event)"
       (phoneChanged)="onPhoneChanged($event)"
       [nextAttempt]="phoneVerify().nextAttempt"
       [phone]="phoneVerify().phone"
     />
+  }
+  @else if (step === 'create') {
+    TODO
   }
 </section>

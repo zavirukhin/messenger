@@ -11,6 +11,7 @@ import {
   signal
 } from '@angular/core';
 import {
+  TuiAlertService,
   TuiButton,
   TuiError,
   TuiIcon,
@@ -30,6 +31,7 @@ import {
   tuiInputPhoneInternationalOptionsProvider,
   TuiSkeleton
 } from '@taiga-ui/kit';
+import { RequestError } from '@social/shared';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { NextAttempt } from '../../interfaces/next-attempt.interface';
 import { PhoneVerify } from '../../interfaces/phone.interface';
@@ -87,6 +89,10 @@ export class ModalTelephoneNumberComponent {
 
   private readonly authorizationService = inject(AuthorizationService);
 
+  private readonly alerts = inject(TuiAlertService);
+
+  private readonly translocoService = inject(TranslocoService);
+
   public readonly isLoading = signal(false);
 
   public onSubmit(): void {
@@ -97,9 +103,16 @@ export class ModalTelephoneNumberComponent {
       const phone = this.phoneForm.get('phone')?.value ?? '';
       this.authorizationService.sendCode(phone)
         .pipe(
-          catchError(() => {
+          catchError((error: RequestError) => {
             this.isLoading.set(false);
             this.phoneForm.enable();
+
+            this.alerts.open(error.message, {
+              label: this.translocoService.translate('error'),
+              appearance: 'error'
+            })
+            .subscribe();
+
             return of();
           })
         )
