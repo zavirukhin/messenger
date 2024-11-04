@@ -19,9 +19,10 @@ build:
   stage: build
   script:
     - npx nx build
+    - mv dist/social public
   artifacts:
     paths:
-      - dist/social
+      - public
 
 lint:
   stage: lint
@@ -39,8 +40,8 @@ deploy:
   script:
     - gem install bundler
     - bundle install
-    - bundle exec jekyll build -d dist/social
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
-      - dist/social
+      - public
 
