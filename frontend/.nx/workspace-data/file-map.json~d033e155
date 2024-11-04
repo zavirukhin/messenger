@@ -1,0 +1,743 @@
+{
+  "version": "6.0",
+  "nxVersion": "19.5.0",
+  "deps": {
+    "@angular/animations": "~18.1.0",
+    "@angular/common": "~18.1.0",
+    "@angular/compiler": "~18.1.0",
+    "@angular/core": "~18.1.0",
+    "@angular/forms": "~18.1.0",
+    "@angular/platform-browser": "~18.1.0",
+    "@angular/platform-browser-dynamic": "~18.1.0",
+    "@angular/router": "~18.1.0",
+    "@jsverse/transloco": "^7.5.0",
+    "@nx/angular": "19.5.0",
+    "@sentry/angular": "^8.36.0",
+    "@taiga-ui/cdk": "^4.10.0",
+    "@taiga-ui/core": "^4.10.0",
+    "@taiga-ui/event-plugins": "^4.0.2",
+    "@taiga-ui/icons": "^4.10.0",
+    "@taiga-ui/kit": "^4.10.0",
+    "@taiga-ui/layout": "^4.10.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.3",
+    "@angular-devkit/build-angular": "~18.1.0",
+    "@angular-devkit/core": "~18.1.0",
+    "@angular-devkit/schematics": "~18.1.0",
+    "@angular-eslint/eslint-plugin": "^18.0.1",
+    "@angular-eslint/eslint-plugin-template": "^18.0.1",
+    "@angular-eslint/template-parser": "^18.0.1",
+    "@angular/cli": "~18.1.0",
+    "@angular/compiler-cli": "~18.1.0",
+    "@angular/language-service": "~18.1.0",
+    "@nx/eslint": "19.5.0",
+    "@nx/eslint-plugin": "19.5.0",
+    "@nx/jest": "19.5.0",
+    "@nx/js": "19.5.0",
+    "@nx/workspace": "19.5.0",
+    "@schematics/angular": "~18.1.0",
+    "@sentry/webpack-plugin": "^2.22.6",
+    "@swc-node/register": "~1.9.1",
+    "@swc/core": "~1.5.7",
+    "@swc/helpers": "~0.5.11",
+    "@types/jest": "^29.4.0",
+    "@types/node": "18.16.9",
+    "@typescript-eslint/eslint-plugin": "^7.16.0",
+    "@typescript-eslint/parser": "^7.16.0",
+    "@typescript-eslint/utils": "^7.16.0",
+    "eslint": "~8.57.0",
+    "eslint-config-prettier": "^9.0.0",
+    "jest": "^29.4.1",
+    "jest-environment-jsdom": "^29.4.1",
+    "jest-preset-angular": "~14.1.0",
+    "nx": "19.5.0",
+    "prettier": "^2.6.2",
+    "stylelint": "^16.10.0",
+    "stylelint-config-standard": "^36.0.1",
+    "ts-jest": "^29.1.0",
+    "ts-node": "10.9.1",
+    "typescript": "~5.5.2"
+  },
+  "pathMappings": {
+    "@env": [
+      "src/environments/index.ts"
+    ],
+    "@social/authorization": [
+      "libs/authorization/src/index.ts"
+    ],
+    "@social/messenger": [
+      "libs/messenger/src/index.ts"
+    ],
+    "@social/settings": [
+      "libs/settings/src/index.ts"
+    ],
+    "@social/shared": [
+      "libs/shared/src/index.ts"
+    ]
+  },
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "nonProjectFiles": [],
+    "projectFileMap": {
+      "settings": [
+        {
+          "file": "libs/settings/.eslintrc.json",
+          "hash": "8593564790774553184"
+        },
+        {
+          "file": "libs/settings/README.md",
+          "hash": "9527427837524247309"
+        },
+        {
+          "file": "libs/settings/jest.config.ts",
+          "hash": "18064274916227024154"
+        },
+        {
+          "file": "libs/settings/project.json",
+          "hash": "6796842669942060580"
+        },
+        {
+          "file": "libs/settings/src/index.ts",
+          "hash": "4762660161902277167"
+        },
+        {
+          "file": "libs/settings/src/test-setup.ts",
+          "hash": "12935735732682149507",
+          "deps": [
+            "npm:jest-preset-angular"
+          ]
+        },
+        {
+          "file": "libs/settings/tsconfig.json",
+          "hash": "16080732135631761468"
+        },
+        {
+          "file": "libs/settings/tsconfig.lib.json",
+          "hash": "5796668385415907511"
+        },
+        {
+          "file": "libs/settings/tsconfig.spec.json",
+          "hash": "2927375835638640771"
+        },
+        {
+          "file": "libs/settings/src/lib/components/settings-page/settings-page.component.ts",
+          "hash": "3145069968607183568",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@taiga-ui/kit",
+            "npm:@taiga-ui/core"
+          ]
+        },
+        {
+          "file": "libs/settings/src/lib/components/settings-page/settings-page.component.html",
+          "hash": "3854718468790588117"
+        },
+        {
+          "file": "libs/settings/src/lib/components/settings-page/settings-page.component.less",
+          "hash": "16189826004628685858"
+        }
+      ],
+      "messenger": [
+        {
+          "file": "libs/messenger/.eslintrc.json",
+          "hash": "8593564790774553184"
+        },
+        {
+          "file": "libs/messenger/jest.config.ts",
+          "hash": "2427419842606607813"
+        },
+        {
+          "file": "libs/messenger/project.json",
+          "hash": "18291134991877522733"
+        },
+        {
+          "file": "libs/messenger/src/index.ts",
+          "hash": "8802588592823691666"
+        },
+        {
+          "file": "libs/messenger/src/lib/components/messenger/messenger.component.html",
+          "hash": "3967977107797976009"
+        },
+        {
+          "file": "libs/messenger/src/lib/components/messenger/messenger.component.less",
+          "hash": "6704419390955241986"
+        },
+        {
+          "file": "libs/messenger/src/lib/components/messenger/messenger.component.spec.ts",
+          "hash": "13185671148536009359",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/messenger/src/lib/components/messenger/messenger.component.ts",
+          "hash": "8134152115488756946",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "libs/messenger/src/lib/components/navigation-bar/navigation-bar.component.html",
+          "hash": "14217907763949167395"
+        },
+        {
+          "file": "libs/messenger/src/lib/components/navigation-bar/navigation-bar.component.less",
+          "hash": "3575079458923863716"
+        },
+        {
+          "file": "libs/messenger/src/lib/components/navigation-bar/navigation-bar.component.ts",
+          "hash": "3154455051716192532",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@taiga-ui/core"
+          ]
+        },
+        {
+          "file": "libs/messenger/src/lib/messenger.routes.ts",
+          "hash": "1853082157822899277",
+          "deps": [
+            "npm:@angular/router",
+            [
+              "settings",
+              "dynamic"
+            ]
+          ]
+        },
+        {
+          "file": "libs/messenger/src/lib/types/tab.type.ts",
+          "hash": "15766986464547264365"
+        },
+        {
+          "file": "libs/messenger/src/test-setup.ts",
+          "hash": "12935735732682149507",
+          "deps": [
+            "npm:jest-preset-angular"
+          ]
+        },
+        {
+          "file": "libs/messenger/tsconfig.json",
+          "hash": "16080732135631761468"
+        },
+        {
+          "file": "libs/messenger/tsconfig.lib.json",
+          "hash": "5796668385415907511"
+        },
+        {
+          "file": "libs/messenger/tsconfig.spec.json",
+          "hash": "2927375835638640771"
+        }
+      ],
+      "authorization": [
+        {
+          "file": "libs/authorization/.eslintrc.json",
+          "hash": "13009607952643197126"
+        },
+        {
+          "file": "libs/authorization/jest.config.ts",
+          "hash": "16331046915658917965"
+        },
+        {
+          "file": "libs/authorization/project.json",
+          "hash": "10842598018290265997"
+        },
+        {
+          "file": "libs/authorization/src/index.ts",
+          "hash": "11727063644795007960"
+        },
+        {
+          "file": "libs/authorization/src/lib/authorization.routes.ts",
+          "hash": "3493193985300139838",
+          "deps": [
+            "npm:@angular/router",
+            "npm:@jsverse/transloco"
+          ]
+        },
+        {
+          "file": "libs/authorization/src/lib/components/authorization-page/authorization-page.component.html",
+          "hash": "15736968919234471324"
+        },
+        {
+          "file": "libs/authorization/src/lib/components/authorization-page/authorization-page.component.less",
+          "hash": "4789444808975446055"
+        },
+        {
+          "file": "libs/authorization/src/lib/components/authorization-page/authorization-page.component.ts",
+          "hash": "17233849061017225583",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@taiga-ui/layout",
+            "npm:rxjs",
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/authorization/src/lib/components/modal-create/modal-create.component.html",
+          "hash": "5616059964322103514"
+        },
+        {
+          "file": "libs/authorization/src/lib/components/modal-create/modal-create.component.less",
+          "hash": "12556993158416060546"
+        },
+        {
+          "file": "libs/authorization/src/lib/components/modal-create/modal-create.component.ts",
+          "hash": "6839099950162536561",
+          "deps": [
+            "npm:@angular/router",
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@taiga-ui/layout",
+            "npm:@taiga-ui/core",
+            "npm:@angular/forms",
+            "npm:@taiga-ui/kit",
+            "npm:@jsverse/transloco",
+            "npm:rxjs",
+            "shared"
+          ]
+        },
+        {
+          "file": "libs/authorization/src/lib/components/modal-telephone-number/modal-telephone-number.component.html",
+          "hash": "17296681125577921832"
+        },
+        {
+          "file": "libs/authorization/src/lib/components/modal-telephone-number/modal-telephone-number.component.less",
+          "hash": "10121037604632206498"
+        },
+        {
+          "file": "libs/authorization/src/lib/components/modal-telephone-number/modal-telephone-number.component.ts",
+          "hash": "10986946950555054870",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@taiga-ui/layout",
+            "npm:@taiga-ui/i18n",
+            "npm:@jsverse/transloco",
+            "npm:rxjs",
+            "npm:@angular/core",
+            "npm:@taiga-ui/core",
+            "npm:@angular/forms",
+            "npm:@taiga-ui/kit",
+            "shared",
+            [
+              "npm:libphonenumber-js",
+              "dynamic"
+            ]
+          ]
+        },
+        {
+          "file": "libs/authorization/src/lib/components/modal-verify/modal-verify.component.html",
+          "hash": "15443233938144227726"
+        },
+        {
+          "file": "libs/authorization/src/lib/components/modal-verify/modal-verify.component.less",
+          "hash": "4107845066234335073"
+        },
+        {
+          "file": "libs/authorization/src/lib/components/modal-verify/modal-verify.component.ts",
+          "hash": "4416353868753451610",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@taiga-ui/layout",
+            "npm:@taiga-ui/kit",
+            "npm:@jsverse/transloco",
+            "npm:rxjs",
+            "npm:@angular/core",
+            "npm:@taiga-ui/core",
+            "npm:@angular/forms",
+            "shared",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "libs/authorization/src/lib/i18n/en.json",
+          "hash": "249469353205377897"
+        },
+        {
+          "file": "libs/authorization/src/lib/i18n/ru.json",
+          "hash": "2701990174905390805"
+        },
+        {
+          "file": "libs/authorization/src/lib/interfaces/create-profile.interface.ts",
+          "hash": "14980662080614641536"
+        },
+        {
+          "file": "libs/authorization/src/lib/interfaces/next-attempt.interface.ts",
+          "hash": "15757458080973748070"
+        },
+        {
+          "file": "libs/authorization/src/lib/interfaces/phone.interface.ts",
+          "hash": "17185120536343841362"
+        },
+        {
+          "file": "libs/authorization/src/lib/interfaces/token.interface.ts",
+          "hash": "7861999948660337455"
+        },
+        {
+          "file": "libs/authorization/src/lib/services/authorization/authorization.service.spec.ts",
+          "hash": "15778096227043129829",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "libs/authorization/src/lib/services/authorization/authorization.service.ts",
+          "hash": "10115030257134232093",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/authorization/src/lib/transloco-loader.ts",
+          "hash": "13306500847188453154"
+        },
+        {
+          "file": "libs/authorization/src/lib/types/step.type.ts",
+          "hash": "5957767078021765428"
+        },
+        {
+          "file": "libs/authorization/src/lib/validators/phone.validator.ts",
+          "hash": "1407050542036266262",
+          "deps": [
+            "npm:@angular/forms",
+            "npm:libphonenumber-js"
+          ]
+        },
+        {
+          "file": "libs/authorization/src/test-setup.ts",
+          "hash": "5941187639701901183",
+          "deps": [
+            "npm:jest-preset-angular"
+          ]
+        },
+        {
+          "file": "libs/authorization/tsconfig.json",
+          "hash": "3802533846372820254"
+        },
+        {
+          "file": "libs/authorization/tsconfig.lib.json",
+          "hash": "15304444604046903881"
+        },
+        {
+          "file": "libs/authorization/tsconfig.spec.json",
+          "hash": "1930986853382524452"
+        }
+      ],
+      "shared": [
+        {
+          "file": "libs/shared/.eslintrc.json",
+          "hash": "13009607952643197126"
+        },
+        {
+          "file": "libs/shared/jest.config.ts",
+          "hash": "17547117337892119332"
+        },
+        {
+          "file": "libs/shared/project.json",
+          "hash": "14119349826123242634"
+        },
+        {
+          "file": "libs/shared/src/index.ts",
+          "hash": "5181498931840782219"
+        },
+        {
+          "file": "libs/shared/src/lib/errors/request.error.ts",
+          "hash": "15399838428992007004"
+        },
+        {
+          "file": "libs/shared/src/lib/interceptors/error-handler/error-handler.interceptor.ts",
+          "hash": "11866418806933029745",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@jsverse/transloco",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/shared/src/test-setup.ts",
+          "hash": "5941187639701901183",
+          "deps": [
+            "npm:jest-preset-angular"
+          ]
+        },
+        {
+          "file": "libs/shared/tsconfig.json",
+          "hash": "12908962215562692354"
+        },
+        {
+          "file": "libs/shared/tsconfig.lib.json",
+          "hash": "15304444604046903881"
+        },
+        {
+          "file": "libs/shared/tsconfig.spec.json",
+          "hash": "1930986853382524452"
+        }
+      ],
+      "social": [
+        {
+          "file": ".eslintignore",
+          "hash": "1379295614985623949"
+        },
+        {
+          "file": ".eslintrc.base.json",
+          "hash": "13090476195880195702"
+        },
+        {
+          "file": ".eslintrc.json",
+          "hash": "2190836347756927633"
+        },
+        {
+          "file": ".gitignore",
+          "hash": "2216899859288660"
+        },
+        {
+          "file": ".gitlab-ci.yml",
+          "hash": "12060767809474857913"
+        },
+        {
+          "file": ".prettierignore",
+          "hash": "12269743867629339573"
+        },
+        {
+          "file": ".prettierrc",
+          "hash": "8431775552699109197"
+        },
+        {
+          "file": ".stylelintrc.json",
+          "hash": "9637199857919951162"
+        },
+        {
+          "file": ".vscode/extensions.json",
+          "hash": "4934098906304722861"
+        },
+        {
+          "file": "README.md",
+          "hash": "8353944256447748906"
+        },
+        {
+          "file": "jest.config.app.ts",
+          "hash": "3410251335450372708"
+        },
+        {
+          "file": "jest.config.ts",
+          "hash": "2107579025702973610",
+          "deps": [
+            "npm:@nx/jest"
+          ]
+        },
+        {
+          "file": "jest.preset.js",
+          "hash": "7473220183190921152",
+          "deps": [
+            "npm:@nx/jest"
+          ]
+        },
+        {
+          "file": "nx.json",
+          "hash": "13207355278474152837"
+        },
+        {
+          "file": "package-lock.json",
+          "hash": "6609967375661190693"
+        },
+        {
+          "file": "package.json",
+          "hash": "10632145054140609490",
+          "deps": [
+            "npm:@angular-devkit/build-angular",
+            "npm:@angular-devkit/core",
+            "npm:@angular-devkit/schematics",
+            "npm:@angular-eslint/eslint-plugin",
+            "npm:@angular-eslint/eslint-plugin-template",
+            "npm:@angular-eslint/template-parser",
+            "npm:@angular/cli",
+            "npm:@angular/compiler-cli",
+            "npm:@angular/language-service",
+            "npm:@nx/eslint",
+            "npm:@nx/eslint-plugin",
+            "npm:@nx/jest",
+            "npm:@nx/js",
+            "npm:@nx/workspace",
+            "npm:@schematics/angular",
+            "npm:@sentry/webpack-plugin",
+            "npm:@swc-node/register",
+            "npm:@swc/core",
+            "npm:@swc/helpers",
+            "npm:@types/jest",
+            "npm:@types/node",
+            "npm:@typescript-eslint/eslint-plugin",
+            "npm:@typescript-eslint/parser",
+            "npm:@typescript-eslint/utils",
+            "npm:eslint",
+            "npm:eslint-config-prettier",
+            "npm:jest",
+            "npm:jest-environment-jsdom",
+            "npm:jest-preset-angular",
+            "npm:nx",
+            "npm:prettier",
+            "npm:stylelint",
+            "npm:stylelint-config-standard",
+            "npm:ts-jest",
+            "npm:ts-node",
+            "npm:typescript",
+            "npm:@angular/animations",
+            "npm:@angular/common",
+            "npm:@angular/compiler",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/platform-browser",
+            "npm:@angular/platform-browser-dynamic",
+            "npm:@angular/router",
+            "npm:@jsverse/transloco",
+            "npm:@nx/angular",
+            "npm:@sentry/angular",
+            "npm:@taiga-ui/cdk",
+            "npm:@taiga-ui/core",
+            "npm:@taiga-ui/event-plugins",
+            "npm:@taiga-ui/icons",
+            "npm:@taiga-ui/kit",
+            "npm:@taiga-ui/layout",
+            "npm:rxjs",
+            "npm:tslib",
+            "npm:zone.js"
+          ]
+        },
+        {
+          "file": "project.json",
+          "hash": "9010518404302928562"
+        },
+        {
+          "file": "public/assets/i18n/en.json",
+          "hash": "9347308362056051031"
+        },
+        {
+          "file": "public/assets/i18n/ru.json",
+          "hash": "3174640846559224493"
+        },
+        {
+          "file": "public/favicon.ico",
+          "hash": "9303420814833116677"
+        },
+        {
+          "file": "src/app/app.component.html",
+          "hash": "13593903490960320838"
+        },
+        {
+          "file": "src/app/app.component.ts",
+          "hash": "12449729374049466249",
+          "deps": [
+            "npm:@taiga-ui/core",
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/app.config.ts",
+          "hash": "551370344229926515",
+          "deps": [
+            "npm:@taiga-ui/event-plugins",
+            "npm:@angular/platform-browser",
+            "npm:@angular/router",
+            "npm:@angular/common",
+            "npm:@jsverse/transloco",
+            "npm:@sentry/angular",
+            "shared",
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/app.routes.ts",
+          "hash": "7626307162591079681",
+          "deps": [
+            "npm:@angular/router",
+            [
+              "messenger",
+              "dynamic"
+            ],
+            [
+              "authorization",
+              "dynamic"
+            ]
+          ]
+        },
+        {
+          "file": "src/app/transloco-loader.service.ts",
+          "hash": "10257538164731996874",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@jsverse/transloco",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "src/environments/environment.development.ts",
+          "hash": "308575697293560095"
+        },
+        {
+          "file": "src/environments/environment.ts",
+          "hash": "5621708251358165068"
+        },
+        {
+          "file": "src/environments/index.ts",
+          "hash": "17615494001918820747"
+        },
+        {
+          "file": "src/index.html",
+          "hash": "3912344932736329292"
+        },
+        {
+          "file": "src/main.ts",
+          "hash": "3457166156266901464",
+          "deps": [
+            "npm:@angular/platform-browser",
+            "npm:@sentry/angular"
+          ]
+        },
+        {
+          "file": "src/styles.less",
+          "hash": "16908447658248824703"
+        },
+        {
+          "file": "src/test-setup.ts",
+          "hash": "5941187639701901183",
+          "deps": [
+            "npm:jest-preset-angular"
+          ]
+        },
+        {
+          "file": "tsconfig.app.json",
+          "hash": "16864811146245124190"
+        },
+        {
+          "file": "tsconfig.base.json",
+          "hash": "7207367984850238590"
+        },
+        {
+          "file": "tsconfig.editor.json",
+          "hash": "17575078801745175164"
+        },
+        {
+          "file": "tsconfig.json",
+          "hash": "5564477411673823888"
+        },
+        {
+          "file": "tsconfig.spec.json",
+          "hash": "1293240435771606091"
+        },
+        {
+          "file": "webpack.config.js",
+          "hash": "18204399562365055762",
+          "deps": [
+            "npm:@sentry/webpack-plugin"
+          ]
+        }
+      ]
+    }
+  }
+}
