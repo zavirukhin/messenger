@@ -5,6 +5,7 @@ stages:
   - build
   - lint
   - test
+  - deploy
 
 install:
   stage: install
@@ -20,7 +21,7 @@ build:
     - npx nx build
   artifacts:
     paths:
-      - dist/
+      - dist/social
 
 lint:
   stage: lint
@@ -31,3 +32,14 @@ test:
   stage: test
   script:
     - npx nx run-many --all --target=test
+
+deploy:
+  stage: deploy
+  script:
+    - gem install bundler
+    - bundle install
+    - bundle exec jekyll build -d dist/social
+  artifacts:
+    paths:
+      - dist/social
+
