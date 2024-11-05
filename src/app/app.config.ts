@@ -13,6 +13,7 @@ import {
   isDevMode
 } from '@angular/core';
 import { appRoutes } from './app.routes';
+import { TranslocoHttpLoader } from './transloco-loader.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
