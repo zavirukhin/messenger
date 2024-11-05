@@ -1,21 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../../jwt/jwt-payload';
+import { InvalidTokenException } from '../../exception/invalid-token.exception';
 
 @Injectable()
 export class MyJwtService {
   constructor(private readonly jwtService: JwtService) {}
 
-  generateToken(userId: number): string {
-    return this.jwtService.sign({ id: userId });
+  async generateToken(userId: number): Promise<string> {
+    return await this.jwtService.sign({ id: userId });
   }
 
-  verifyToken(token: string): JwtPayload {
-    return this.jwtService.verify(token);
+  async verifyToken(token: string): Promise<JwtPayload> {
+    return await this.jwtService.verify(token);
   }
 
-  refreshToken(oldToken: string): string {
-    const payload = this.verifyToken(oldToken);
-    return this.generateToken(payload.sub);
+  async refreshToken(oldToken: string): Promise<{ token: string }> {
+    try {
+      const payload = await this.verifyToken(oldToken);
+      return { token: await this.generateToken(payload.id) };
+    } catch {
+      throw new InvalidTokenException();
+    }
   }
 }
