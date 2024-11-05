@@ -4,16 +4,22 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "./src",
-  "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:application",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/angular:webpack-browser",
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
+        "customWebpackConfig": {
+          "path": "./webpack.config.js"
+        },
         "outputPath": "dist/social",
         "index": "./src/index.html",
-        "browser": "./src/main.ts",
-        "polyfills": ["zone.js"],
+        "main": "./src/main.ts",
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "tsconfig.app.json",
         "inlineStyleLanguage": "less",
         "assets": [
@@ -32,7 +38,10 @@
           "node_modules/@taiga-ui/core/styles/taiga-ui-fonts.less",
           "./src/styles.less"
         ],
-        "scripts": []
+        "scripts": [],
+        "sourceMap": {
+          "scripts": true
+        }
       },
       "configurations": {
         "production": {
