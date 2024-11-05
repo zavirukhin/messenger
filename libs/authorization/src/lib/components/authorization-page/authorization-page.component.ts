@@ -6,8 +6,7 @@ import { Step } from '../../types/step.type';
 import { ModalTelephoneNumberComponent } from '../modal-telephone-number/modal-telephone-number.component';
 import { ModalVerifyComponent } from '../modal-verify/modal-verify.component';
 import { PhoneVerify } from '../../interfaces/phone.interface';
-
-type Step = 'phone' | 'verify' | 'create';
+import { ModalCreateComponent } from '../modal-create/modal-create.component';
 
 @Component({
   selector: 'lib-authorization-page',
@@ -15,12 +14,9 @@ type Step = 'phone' | 'verify' | 'create';
   imports: [
     CommonModule,
     TuiCardLarge,
-<<<<<<< HEAD
     ModalTelephoneNumberComponent,
-    ModalVerifyComponent
-=======
-    ModalTelephoneNumberComponent
->>>>>>> 9e43f79 (feat(authorization): done auth page)
+    ModalVerifyComponent,
+    ModalCreateComponent
   ],
   templateUrl: './authorization-page.component.html',
   styleUrl: './authorization-page.component.less',
