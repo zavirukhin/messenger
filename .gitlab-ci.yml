@@ -19,29 +19,35 @@ build:
   stage: build
   script:
     - npx nx build
-    - mv dist/social/* public
   artifacts:
     paths:
-      - public
+      - dist/social/
+      - Gemfile
 
 lint:
   stage: lint
   script:
-    - npx nx run-many --all --target=lint
+    - npx nx run-many -t lint
 
 test:
   stage: test
   script:
-    - npx nx run-many --all --target=test
+    - npx nx run-many -t test
 
-deploy:
+pages:
   stage: deploy
   image: 'ruby:3.2'
+  variables:
+    GIT_STRATEGY: none
   script:
+    - mkdir public
+    - cp -r dist/social/* public
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
+    - cp -r dist/social/* public
+  only:
+    - main
   artifacts:
     paths:
       - public
-
