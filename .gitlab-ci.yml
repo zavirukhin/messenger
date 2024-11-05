@@ -42,10 +42,6 @@ pages:
   script:
     - mkdir public
     - cp -r dist/social/* public
-    - gem install bundler
-    - bundle install
-    - bundle exec jekyll build -d public
-    - cp -r dist/social/* public
   only:
     - main
   artifacts:
