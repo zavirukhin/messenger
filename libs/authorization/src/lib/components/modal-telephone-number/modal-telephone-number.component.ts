@@ -1,15 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TuiCountryIsoCode } from '@taiga-ui/i18n';
-<<<<<<< HEAD
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { catchError, defer, of } from 'rxjs';
-=======
-import { provideTranslocoScope, TranslocoDirective } from '@jsverse/transloco';
-import { PlatformService, Screen } from '@social/shared';
-import { loader } from '../../transloco-loader';
-
->>>>>>> 4f67347 (feat: transloco and translation for en and ru lang)
 import {
   ChangeDetectionStrategy,
   Component,
