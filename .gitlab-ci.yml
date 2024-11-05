@@ -36,7 +36,6 @@ test:
 
 pages:
   stage: deploy
-  image: 'ruby:3.2'
   variables:
     GIT_STRATEGY: none
   script:
