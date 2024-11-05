@@ -1,9 +1,19 @@
 import { NG_EVENT_PLUGINS } from '@taiga-ui/event-plugins';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, Router } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideTransloco } from '@jsverse/transloco';
 import * as Sentry from '@sentry/angular';
+import { errorHandlerInterceptor } from '@social/shared';
+import {
+  APP_INITIALIZER,
+  ApplicationConfig,
+  ErrorHandler,
+  provideZoneChangeDetection,
+  isDevMode
+} from '@angular/core';
 import { appRoutes } from './app.routes';
+import { TranslocoHttpLoader } from './transloco-loader.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,7 +23,7 @@ export const appConfig: ApplicationConfig = {
     NG_EVENT_PLUGINS,
     {
       provide: ErrorHandler,
-      useValue: Sentry.createErrorHandler(),
+      useValue: Sentry.createErrorHandler()
     },
     {
       provide: Sentry.TraceService,
@@ -25,6 +35,18 @@ export const appConfig: ApplicationConfig = {
       useFactory: () => () => {},
       deps: [Sentry.TraceService],
       multi: true
-    }
-  ],
+    },
+    provideHttpClient(
+      withInterceptors([errorHandlerInterceptor])
+    ),
+    provideTransloco({
+      config: { 
+        availableLangs: ['en', 'ru'],
+        defaultLang: 'en',
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode()
+      },
+      loader: TranslocoHttpLoader
+    })
+  ]
 };
