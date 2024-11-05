@@ -3,9 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entity/user.entity';
 import { MyJwtService } from '../../jwt/service/jwt.service';
-import { UserNotFoundException } from '../exception/user-not-found.exception';
-import { UserAlreadyExistsException } from '../exception/user-already-exists.exception';
-import { InvalidTokenException } from '../exception/invalid-token.exception';
+import { UserNotFoundException } from '../../exception/user-not-found.exception';
+import { UserAlreadyExistsException } from '../../exception/user-already-exists.exception';
 import { CodeService } from './code.service';
 
 @Injectable()
@@ -23,12 +22,9 @@ export class AuthService {
 
   async validateCode(phone: string, code: string) {
     await this.codeService.validateCode(phone, code, false);
-    const user = await this.userRepository.findOne({ where: { phone } });
-    if (!user) {
-      throw new UserNotFoundException();
-    }
+    const user = await this.findUserByPhone(phone);
     this.codeService.deleteCode(phone);
-    return { token: this.jwtService.generateToken(user.id) };
+    return { token: await this.jwtService.generateToken(user.id) };
   }
 
   async create(
@@ -39,35 +35,38 @@ export class AuthService {
   ): Promise<{ token: string }> {
     await this.codeService.validateCode(phone, code, false);
 
-    const existingUser = await this.userRepository.findOne({
-      where: { phone },
-    });
-    if (existingUser) {
+    if (await this.userExists(phone)) {
       throw new UserAlreadyExistsException();
     }
     this.codeService.deleteCode(phone);
 
-    const newUser = await this.userRepository.save({
+    const newUser = await this.createUser(phone, first_name, last_name);
+    const token = await this.jwtService.generateToken(newUser.id);
+    return { token };
+  }
+
+  private async findUserByPhone(phone: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { phone } });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    return user;
+  }
+
+  private async userExists(phone: string): Promise<boolean> {
+    return (await this.userRepository.count({ where: { phone } })) > 0;
+  }
+
+  private async createUser(
+    phone: string,
+    first_name: string,
+    last_name: string,
+  ): Promise<User> {
+    return this.userRepository.save({
       phone,
       first_name,
       last_name,
       last_activity: new Date(),
     });
-
-    const token = this.jwtService.generateToken(newUser.id);
-    return { token };
-  }
-
-  async validateUserById(userId: number): Promise<User | null> {
-    return this.userRepository.findOne({ where: { id: userId } });
-  }
-
-  async refreshToken(oldToken: string) {
-    try {
-      const newToken = this.jwtService.refreshToken(oldToken);
-      return { token: newToken };
-    } catch {
-      throw new InvalidTokenException();
-    }
   }
 }

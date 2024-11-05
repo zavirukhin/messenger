@@ -1,22 +1,18 @@
-import {
-  Controller,
-  Post,
-  Body,
-  UseGuards,
-  Get,
-  Request,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, HttpStatus } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { SendCodeDto } from '../dto/send-code.dto';
 import { ValidateCodeDto } from '../dto/validate-code.dto';
-import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../jwt/guard/jwt-auth.guard';
-import { ErrorCode } from '../error-codes';
-import { User } from '../../entity/user.entity';
+import { ErrorCode } from '../../error-codes';
 import { CreateUserDto } from '../dto/create-user.fto';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
-import { MyJwtService } from '../../jwt/service/jwt.service';
+import { MyJwtService } from 'src/jwt/service/jwt.service';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -27,6 +23,7 @@ export class AuthController {
   ) {}
 
   @Post('send-code')
+  @ApiOperation({ summary: 'Отправить смс на номер телефона' })
   @ApiResponse({
     status: 201,
     description: 'Код успешно отправлен',
@@ -67,6 +64,7 @@ export class AuthController {
   }
 
   @Post('validate-code')
+  @ApiOperation({ summary: 'Авторизация по смс коду отправленного на телефон' })
   @ApiResponse({
     status: 201,
     description: 'Пользователь успешно авторизован, возвращает токен',
@@ -118,7 +116,7 @@ export class AuthController {
         statusCode: HttpStatus.NOT_FOUND,
       },
     },
-    description: 'Пользователь не зарегистрирован',
+    description: 'Пользователь не найден',
   })
   async validateCode(
     @Body() validateCodeDto: ValidateCodeDto,
@@ -130,6 +128,7 @@ export class AuthController {
   }
 
   @Post('create-user')
+  @ApiOperation({ summary: 'Регистрация по смс коду отправленного на телефон' })
   @ApiResponse({
     status: 201,
     description: 'Пользователь успешно зарегистрирован, возвращает токен',
@@ -194,9 +193,10 @@ export class AuthController {
     );
   }
 
+  @Post('refresh-token')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Post('refresh-token')
+  @ApiOperation({ summary: 'Обновление токена авторизованного пользователя' })
   @ApiResponse({
     status: 201,
     description: 'Токен успешно обновлен',
@@ -232,31 +232,6 @@ export class AuthController {
   async refreshToken(
     @Body() refreshTokenDto: RefreshTokenDto,
   ): Promise<{ token: string }> {
-    return this.authService.refreshToken(refreshTokenDto.oldToken);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  @ApiBearerAuth()
-  @ApiResponse({
-    status: 200,
-    description: 'Профиль пользователя',
-    schema: {
-      example: {
-        id: 1,
-        phone: '+1234567890',
-        first_name: 'Иван',
-        last_name: 'Иванов',
-        last_activity: '2024-01-01T12:00:00.000Z',
-        avatar: 'data:image/png;base64,...',
-        custom_name: 'Кастомное имя',
-        created_at: '2024-01-01T12:00:00.000Z',
-        updated_at: '2024-01-01T12:00:00.000Z',
-      },
-    },
-  })
-  @ApiResponse({ status: 401, description: 'Не авторизован' })
-  async getProfile(@Request() req): Promise<User> {
-    return req.user;
+    return await this.jwtService.refreshToken(refreshTokenDto.oldToken);
   }
 }
