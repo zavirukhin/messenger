@@ -22,7 +22,6 @@ build:
   artifacts:
     paths:
       - dist/social/
-      - Gemfile
 
 lint:
   stage: lint
