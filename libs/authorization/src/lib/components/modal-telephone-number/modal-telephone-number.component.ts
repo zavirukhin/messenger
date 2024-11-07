@@ -14,8 +14,6 @@ import {
   TuiAlertService,
   TuiButton,
   TuiError,
-  TuiIcon,
-  TuiLoader,
   TuiTitle
 } from '@taiga-ui/core';
 import {
@@ -35,6 +33,7 @@ import { RequestError } from '@social/shared';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
 import { NextAttempt } from '../../interfaces/next-attempt.interface';
 import { PhoneVerify } from '../../interfaces/phone.interface';
+import { phoneNumberValidator } from '../../validators/phone.validator';
 
 @Component({
   selector: 'lib-modal-telephone-number',
@@ -47,10 +46,8 @@ import { PhoneVerify } from '../../interfaces/phone.interface';
     TuiHeader,
     TuiTitle,
     TuiButton,
-    TuiIcon,
     TuiError,
     TuiFieldErrorPipe,
-    TuiLoader,
     TuiSkeleton
   ],
   templateUrl: './modal-telephone-number.component.html',
@@ -66,7 +63,8 @@ import { PhoneVerify } from '../../interfaces/phone.interface';
       provide: TUI_VALIDATION_ERRORS,
       deps: [TranslocoService],
       useFactory: (translocoService: TranslocoService) => ({
-        required: translocoService.translate('required')
+        required: translocoService.translate('required'),
+        phoneNumber: translocoService.translate('phoneNumber')
       })
     }
   ]
@@ -82,7 +80,7 @@ export class ModalTelephoneNumberComponent {
   ];
 
   public readonly form = new FormGroup({
-    phone: new FormControl('', [Validators.required])
+    phone: new FormControl('', [Validators.required, phoneNumberValidator])
   });
 
   private readonly authorizationService = inject(AuthorizationService);

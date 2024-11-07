@@ -3,6 +3,7 @@
   "noInternetConnection": "No internet connection",
   "unknownError": "Unknown error",
   "required": "Field is required",
+  "phoneNumber": "Incorrect phone number",
   "CODE_COOLDOWN": "Please wait before requesting a new code",
   "USER_NOT_FOUND": "User not found",
   "CODE_EXPIRED": "Code expired",
