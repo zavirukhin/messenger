@@ -79,17 +79,6 @@ export class UserController {
     description: 'Пользователь с таким кастомным именем уже существует.',
   })
   @ApiResponse({
-    status: 500,
-    schema: {
-      example: {
-        message: 'Ошибка при обновлении данных пользователя.',
-        errorCode: ErrorCode.USER_UPDATE_ERROR,
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      },
-    },
-    description: 'Ошибка при обновлении данных пользователя.',
-  })
-  @ApiResponse({
     status: 200,
     description: 'Данные пользователя обновлены.',
   })
@@ -224,17 +213,6 @@ export class UserController {
       },
     },
     description: 'Пользователь не найден.',
-  })
-  @ApiResponse({
-    status: 500,
-    schema: {
-      example: {
-        message: 'Ошибка при удалении пользователя.',
-        errorCode: ErrorCode.USER_DELETE_ERROR,
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      },
-    },
-    description: 'Ошибка при удалении пользователя.',
   })
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   async delete(@Request() req) {

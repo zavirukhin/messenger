@@ -26,8 +26,12 @@ export class UpdateUserDto {
     required: false,
   })
   @IsOptional()
-  @IsString({ message: 'Пользовательское имя пользователя должно быть строкой' })
-  @Matches(/^[A-Za-z]+$/, { message: 'Пользовательское имя должно содержать только английские буквы' })
+  @IsString({
+    message: 'Пользовательское имя пользователя должно быть строкой',
+  })
+  @Matches(/^[A-Za-z]+$/, {
+    message: 'Пользовательское имя должно содержать только английские буквы',
+  })
   custom_name?: string;
 
   @ApiProperty({

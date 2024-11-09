@@ -5,9 +5,7 @@ import { User } from '../../entity/user.entity';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserNotFoundException } from '../../exception/user-not-found.exception';
 import { CustomNameAlreadyExistsException } from '../../exception/custom-name-already-exists.exception';
-import { UserUpdateException } from '../../exception/user-update.exception';
 import { NoChangesDetectedException } from '../../exception/no-changes-detection.exception';
-import { UserDeleteException } from '../../exception/user-delete.exception';
 
 @Injectable()
 export class UserService {
@@ -48,23 +46,15 @@ export class UserService {
     }
 
     Object.assign(user, updateUserDto);
-    const updateResult = await this.userRepository.update(userId, {
+    await this.userRepository.update(userId, {
       ...updateUserDto,
       last_activity: new Date(),
     });
-
-    if (updateResult.affected === 0) {
-      throw new UserUpdateException();
-    }
   }
 
   async deleteUser(userId: number) {
     const user = await this.findUserById(userId);
-    const deleteResult = await this.userRepository.delete(user);
-
-    if (deleteResult.affected === 0) {
-      throw new UserDeleteException();
-    }
+    await this.userRepository.delete(user);
   }
 
   async getProfileById(userId: number) {
