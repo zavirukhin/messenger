@@ -83,7 +83,7 @@ export class ModalCreateComponent {
         this.form.enable();
         this.authorizationService.saveToken(token.token);
         
-        this.router.navigate(['/messenger']);
+        this.router.navigate(['/']);
       });
     }
     else {

@@ -1,42 +1,81 @@
-<div class="settings-container">
-  <div class="user-info">
-    <tui-avatar size="xxl">TEST</tui-avatar>
-    <h1
-      class="username-container"
-      tuiTitle="m"
+<ng-container *transloco="let t;">
+  <div class="settings-container">
+    <div class="user-info">
+      <tui-avatar size="xxl">{{ getAvatarByName() }}</tui-avatar>
+      <h1
+        class="username-container"
+        tuiTitle="m"
+      >
+        {{ profile().last_name }} {{ profile().first_name }}
+        <div tuiSubtitle>{{ profile().custom_name }}</div>
+      </h1>
+    </div>
+    <form
+      (ngSubmit)="onSubmit()"
+      [formGroup]="form"
+      class="form-container"
     >
-      Last name + First name
-      <div tuiSubtitle>&#64; customUrl</div>
-    </h1>
+      <div class="input-container">
+        <div>
+          <tui-textfield tuiTextfieldSize="l">
+            <label tuiLabel>First name</label>
+            <input
+              formControlName="firstName"
+              maxLength="50"
+              tuiTextfield
+            />
+          </tui-textfield>
+          <tui-error
+            formControlName="firstName"
+            [error]="[] | tuiFieldError | async"
+          />
+        </div>
+        <div>
+          <tui-textfield tuiTextfieldSize="l">
+            <label tuiLabel>Last name</label>
+            <input
+              formControlName="lastName"
+              maxLength="50"
+              tuiTextfield
+            />
+          </tui-textfield>
+          <tui-error
+            formControlName="lastName"
+            [error]="[] | tuiFieldError | async"
+          />
+        </div>
+        <div>
+          <tui-textfield tuiTextfieldSize="l">
+            <label tuiLabel>Custom url</label>
+            <input
+              formControlName="customName"
+              maxLength="50"
+              tuiTextfield
+            />
+          </tui-textfield>
+          <tui-error
+            formControlName="customName"
+            [error]="[] | tuiFieldError | async"
+          />
+        </div>
+      </div>
+      <div class="button-container">
+        <button
+          size="m"
+          tuiButton
+          type="button"
+          (click)="logout()"
+        >
+          Logout
+        </button>
+        <button
+          size="m"
+          tuiButton
+          type="submit"
+        >
+          Change
+        </button>
+      </div>
+    </form>
   </div>
-  <form class="form-container">
-    <div class="input-container">
-      <tui-textfield tuiTextfieldSize="l">
-        <label tuiLabel>First name</label>
-        <input tuiTextfield />
-      </tui-textfield>
-      <tui-textfield tuiTextfieldSize="l">
-        <label tuiLabel>Last name</label>
-        <input tuiTextfield />
-      </tui-textfield>
-      <tui-textfield tuiTextfieldSize="l">
-        <label tuiLabel>Custom url</label>
-        <input tuiTextfield />
-      </tui-textfield>
-    </div>
-    <div class="button-container">
-      <button
-        size="m"
-        tuiButton
-      >
-        Change
-      </button>
-      <button
-        size="m"
-        tuiButton
-      >
-        Logout
-      </button>
-    </div>
-  </form>
-</div>
+</ng-container>

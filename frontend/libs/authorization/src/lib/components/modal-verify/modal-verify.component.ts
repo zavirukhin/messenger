@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TUI_VALIDATION_ERRORS, TuiFieldErrorPipe } from '@taiga-ui/kit';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import {
   ChangeDetectionStrategy,
@@ -29,7 +30,6 @@ import { AuthorizationService } from '../../services/authorization/authorization
 import { Token } from '../../interfaces/token.interface';
 import { PhoneVerify } from '../../interfaces/phone.interface';
 import { NextAttempt } from '../../interfaces/next-attempt.interface';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'lib-modal-verify',
@@ -127,7 +127,7 @@ export class ModalVerifyComponent implements OnInit {
           this.form.enable({ emitEvent: false });
           this.authorizationService.saveToken(token.token);
 
-          this.router.navigate(['/messenger']);
+          this.router.navigate(['/']);
         });
       }
     });
