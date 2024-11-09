@@ -1,0 +1,48 @@
+<ng-container *transloco="let t;">
+  <div class="modal-container">
+    <div tuiHeader>
+      <h1 tuiTitle>{{ t('authorization.createProfile') }}</h1>
+    </div>
+    <form
+      (ngSubmit)="onSubmit()"
+      [formGroup]="form"
+      class="form-container"
+    >
+      <div>
+        <tui-textfield>
+          <label tuiLabel>{{ t('authorization.lastName') }}</label>
+          <input
+            tuiTextfield
+            formControlName="lastName"
+            maxLength="50"
+          />
+        </tui-textfield>
+        <tui-error
+          formControlName="lastName"
+          [error]="[] | tuiFieldError | async"
+        />
+      </div>
+      <div>
+        <tui-textfield>
+          <label tuiLabel>{{ t('authorization.firstName') }}</label>
+          <input
+            tuiTextfield
+            formControlName="firstName"
+            maxLength="50"
+          />
+        </tui-textfield>
+        <tui-error
+          formControlName="firstName"
+          [error]="[] | tuiFieldError | async"
+        />
+      </div>
+      <button
+        tuiButton
+        type="submit"
+        [disabled]="form.disabled"
+      >
+        {{ t('authorization.create') }}
+      </button>
+    </form>
+  </div>
+</ng-container>
