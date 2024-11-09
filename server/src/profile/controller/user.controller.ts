@@ -8,6 +8,7 @@ import {
   Patch,
   HttpCode,
   Delete,
+  Param,
 } from '@nestjs/common';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import {
@@ -126,6 +127,82 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   async getProfile(@Request() req): Promise<User> {
     return req.user;
+  }
+
+  @Get('profile/:id([0-9]+)')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Получить информацию о пользователе по ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Профиль пользователя.',
+    schema: {
+      example: {
+        id: 1,
+        first_name: 'Иван',
+        last_name: 'Иванов',
+        last_activity: '2024-01-01T12:00:00.000Z',
+        avatar: 'data:image/png;base64,...',
+        custom_name: 'Кастомное имя',
+        created_at: '2024-01-01T12:00:00.000Z',
+        updated_at: '2024-01-01T12:00:00.000Z',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    schema: {
+      example: {
+        message: 'Пользователь не найден.',
+        errorCode: ErrorCode.USER_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      },
+    },
+    description: 'Пользователь не найден.',
+  })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  async getUserProfileById(@Param('id') userId: number) {
+    return this.userService.getProfileById(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile/:customName([A-Za-z]+)')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Получить информацию о пользователе по customName',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Профиль пользователя.',
+    schema: {
+      example: {
+        id: 1,
+        first_name: 'Иван',
+        last_name: 'Иванов',
+        last_activity: '2024-01-01T12:00:00.000Z',
+        avatar: 'data:image/png;base64,...',
+        custom_name: 'Кастомное имя',
+        created_at: '2024-01-01T12:00:00.000Z',
+        updated_at: '2024-01-01T12:00:00.000Z',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    schema: {
+      example: {
+        message: 'Пользователь не найден.',
+        errorCode: ErrorCode.USER_NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
+      },
+    },
+    description: 'Пользователь не найден',
+  })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  async getUserProfileByCustomName(@Param('customName') customName: string) {
+    return this.userService.getProfileByCustomName(customName);
   }
 
   @Delete('me')

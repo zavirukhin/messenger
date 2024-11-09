@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
@@ -8,7 +8,7 @@ export class UpdateUserDto {
     required: false,
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Имя пользователя должно быть строкой' })
   first_name?: string;
 
   @ApiProperty({
@@ -17,7 +17,7 @@ export class UpdateUserDto {
     required: false,
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Фамилия пользователя должна быть строкой' })
   last_name?: string;
 
   @ApiProperty({
@@ -26,7 +26,8 @@ export class UpdateUserDto {
     required: false,
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Пользовательское имя пользователя должно быть строкой' })
+  @Matches(/^[A-Za-z]+$/, { message: 'Пользовательское имя должно содержать только английские буквы' })
   custom_name?: string;
 
   @ApiProperty({
@@ -35,6 +36,6 @@ export class UpdateUserDto {
     required: false,
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Аватар пользователя должен быть строкой' })
   avatar_base64?: string;
 }
