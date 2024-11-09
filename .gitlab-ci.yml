@@ -5,11 +5,16 @@ frontend:
   stage: triggers
   trigger:
     include: frontend/.gitlab-ci.yml
+    strategy: depend
+  rules:
+    - changes:
+      - frontend/**/*
 
 server:
   stage: triggers
   trigger:
     include: server/.gitlab-ci.yml
+    strategy: depend
   rules:
     - changes:
-        - server/*
+      - server/**/*

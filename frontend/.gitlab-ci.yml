@@ -3,7 +3,8 @@ image: node:20-alpine
 .unpack-frontend:
   before_script:
     - rm -r server
-    - mv frontend/* .
+    - cp -a frontend/. .
+    - rm -r frontend
 
 stages:
   - install
@@ -16,7 +17,6 @@ install:
   stage: install
   extends: .unpack-frontend
   script:
-    - ls
     - npm ci
   artifacts:
     paths:
