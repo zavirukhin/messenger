@@ -4,7 +4,7 @@ import { ApplicationConfig, provideZoneChangeDetection, isDevMode } from '@angul
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideTransloco } from '@jsverse/transloco';
-import { errorHandlerInterceptor } from '@social/shared';
+import { authorizationHandlerInterceptor, errorHandlerInterceptor } from '@social/shared';
 import { appRoutes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader.service';
 

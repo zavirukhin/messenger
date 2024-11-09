@@ -91,8 +91,6 @@ export class ModalTelephoneNumberComponent {
 
   public readonly isLoading = signal(false);
 
-  public readonly isLoading = signal(false);
-
   public onSubmit(): void {
     if (this.form.valid) {
       this.isLoading.set(true);
