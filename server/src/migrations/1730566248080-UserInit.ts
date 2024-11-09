@@ -31,7 +31,6 @@ export class UserInit1730566248080 implements MigrationInterface {
           {
             name: 'last_activity',
             type: 'timestamp',
-            isNullable: true,
           },
           {
             name: 'avatar_base64',

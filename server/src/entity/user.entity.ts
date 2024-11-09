@@ -23,7 +23,7 @@ export class User {
   @Column({ type: 'varchar', length: 50 })
   last_name: string;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp' })
   last_activity: Date;
 
   @Column({ type: 'text', nullable: true })
