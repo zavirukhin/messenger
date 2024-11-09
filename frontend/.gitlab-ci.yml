@@ -2,7 +2,7 @@ image: node:20-alpine
 
 .unpack-frontend:
   before_script:
-    - rm -r server
+    - rm -r server || true
     - cp -a frontend/. .
     - rm -r frontend
 
