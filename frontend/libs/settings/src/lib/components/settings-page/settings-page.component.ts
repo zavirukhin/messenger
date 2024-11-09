@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TUI_VALIDATION_ERRORS, TuiAvatar, TuiFieldErrorPipe } from '@taiga-ui/kit';
+import { TUI_VALIDATION_ERRORS, TuiAvatar, TuiFieldErrorPipe, TuiSkeleton } from '@taiga-ui/kit';
 import { TuiButton, TuiError, TuiTextfield, TuiTitle } from '@taiga-ui/core';
 import { ProfileService, Profile } from '@social/messenger';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
@@ -19,6 +19,7 @@ import { Router } from '@angular/router';
     TuiTextfield,
     TuiButton,
     TuiError,
+    TuiSkeleton,
     TuiFieldErrorPipe
   ],
   templateUrl: './settings-page.component.html',
@@ -36,16 +37,13 @@ import { Router } from '@angular/router';
 })
 export class SettingsPageComponent {
   public profile = signal<Profile>({
-    id: 1,
-    phone: '123',
     first_name: 'First name',
     last_name: 'Last name',
-    avatar_base64: '',
-    custom_name: 'customUrl',
-    last_activity: new Date(),
-    created_at: new Date(),
-    updated_at: new Date()
+    custom_name: 'example',
+    avatar_base64: ''
   });
+
+  public isLoading = signal<boolean>(true);
 
   public readonly form = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
@@ -57,7 +55,11 @@ export class SettingsPageComponent {
 
   private readonly router = inject(Router);
 
+  private readonly translocoService = inject(TranslocoService);
+
   constructor() {
+    this.translocoService.events$.subscribe((e) => { console.log(e) });
+
     this.profileService.getProfile().subscribe(profile => {
       this.profile.set(profile);
 

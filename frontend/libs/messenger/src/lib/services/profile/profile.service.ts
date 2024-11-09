@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@env';
 import { Observable } from 'rxjs';
-import { Profile } from '../../interfaces/profile.interface';
-import { ProfileUpdate } from '../../types/profile-update.type';
+import { ProfileResponse } from '../../interfaces/profile-response.interface';
+import { Profile } from '../../types/profile-update.type';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +11,12 @@ import { ProfileUpdate } from '../../types/profile-update.type';
 export class ProfileService {
   private readonly http = inject(HttpClient);
 
-  getProfile(): Observable<Profile> {
-    return this.http.get<Profile>(environment.apiUrl + '/users/profile');
+  getProfile(): Observable<ProfileResponse> {
+    return this.http.get<ProfileResponse>(environment.apiUrl + '/users/profile');
   }
 
-  updateProfile(profile: ProfileUpdate): Observable<Profile> {
-    return this.http.patch<Profile>(environment.apiUrl + '/users/profile', profile);
+  updateProfile(profile: Partial<Profile>): Observable<void> {
+    return this.http.patch<void>(environment.apiUrl + '/users/profile', profile);
   }
 
   deleteToken(): void {

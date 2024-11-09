@@ -1,4 +1,4 @@
-export interface Profile {
+export interface ProfileResponse {
   id: number;
   phone: string;
   first_name: string;

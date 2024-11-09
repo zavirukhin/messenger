@@ -1,10 +1,16 @@
 <ng-container *transloco="let t;">
   <div class="settings-container">
     <div class="user-info">
-      <tui-avatar size="xxl">{{ getAvatarByName() }}</tui-avatar>
+      <tui-avatar
+        size="xxl"
+        [tuiSkeleton]="isLoading()"
+      >
+        {{ getAvatarByName() }}
+      </tui-avatar>
       <h1
         class="username-container"
         tuiTitle="m"
+        [tuiSkeleton]="isLoading()"
       >
         {{ profile().last_name }} {{ profile().first_name }}
         <div tuiSubtitle>{{ profile().custom_name }}</div>
@@ -17,7 +23,10 @@
     >
       <div class="input-container">
         <div>
-          <tui-textfield tuiTextfieldSize="l">
+          <tui-textfield
+            tuiTextfieldSize="l"
+            [tuiSkeleton]="isLoading()"
+          >
             <label tuiLabel>First name</label>
             <input
               formControlName="firstName"
@@ -31,7 +40,10 @@
           />
         </div>
         <div>
-          <tui-textfield tuiTextfieldSize="l">
+          <tui-textfield
+            tuiTextfieldSize="l"
+            [tuiSkeleton]="isLoading()"
+          >
             <label tuiLabel>Last name</label>
             <input
               formControlName="lastName"
@@ -45,7 +57,10 @@
           />
         </div>
         <div>
-          <tui-textfield tuiTextfieldSize="l">
+          <tui-textfield
+            tuiTextfieldSize="l"
+            [tuiSkeleton]="isLoading()"
+          >
             <label tuiLabel>Custom url</label>
             <input
               formControlName="customName"
@@ -64,6 +79,7 @@
           size="m"
           tuiButton
           type="button"
+          [tuiSkeleton]="isLoading()"
           (click)="logout()"
         >
           Logout
@@ -71,6 +87,7 @@
         <button
           size="m"
           tuiButton
+          [tuiSkeleton]="isLoading()"
           type="submit"
         >
           Change
