@@ -15,6 +15,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
+  ApiBody,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../jwt/guard/jwt-auth.guard';
 import { User } from '../../entity/user.entity';
@@ -41,7 +42,7 @@ export class UserController {
         statusCode: HttpStatus.NOT_FOUND,
       },
     },
-    description: 'Пользователь не найден',
+    description: 'Пользователь не найден.',
   })
   @ApiResponse({
     status: 400,
@@ -52,7 +53,7 @@ export class UserController {
         statusCode: HttpStatus.BAD_REQUEST,
       },
     },
-    description: 'Неверные входные данные',
+    description: 'Неверные входные данные.',
   })
   @ApiResponse({
     status: 304,
@@ -63,7 +64,7 @@ export class UserController {
         statusCode: HttpStatus.NOT_MODIFIED,
       },
     },
-    description: 'Нет изменений для обновления',
+    description: 'Нет изменений для обновления.',
   })
   @ApiResponse({
     status: 409,
@@ -80,18 +81,22 @@ export class UserController {
     status: 500,
     schema: {
       example: {
-        message: 'Ошибка при обновлении данных пользователя',
+        message: 'Ошибка при обновлении данных пользователя.',
         errorCode: ErrorCode.USER_UPDATE_ERROR,
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       },
     },
-    description: 'Ошибка при обновлении данных пользователя',
+    description: 'Ошибка при обновлении данных пользователя.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Данные пользователя обновлены',
+    description: 'Данные пользователя обновлены.',
   })
-  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  @ApiResponse({ status: 401, description: 'Не авторизован.' })
+  @ApiBody({
+    description: 'Данные для обновлении пользователя.',
+    type: UpdateUserDto,
+  })
   async updateUser(@Request() req, @Body() updateUserDto: UpdateUserDto) {
     return await this.userService.updateUser(req.user.id, updateUserDto);
   }
@@ -104,11 +109,10 @@ export class UserController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Профиль пользователя',
+    description: 'Профиль пользователя.',
     schema: {
       example: {
         id: 1,
-        phone: '+1234567890',
         first_name: 'Иван',
         last_name: 'Иванов',
         last_activity: '2024-01-01T12:00:00.000Z',
@@ -119,21 +123,8 @@ export class UserController {
       },
     },
   })
-  @ApiResponse({
-    status: 404,
-    schema: {
-      example: {
-        message: 'Пользователь не найден.',
-        errorCode: ErrorCode.USER_NOT_FOUND,
-        statusCode: HttpStatus.NOT_FOUND,
-      },
-    },
-    description: 'Пользователь не найден',
-  })
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   async getProfile(@Request() req): Promise<User> {
-    const userId = req.user.id;
-    await this.userService.updateLastActivityUser(userId);
     return req.user;
   }
 
@@ -144,7 +135,7 @@ export class UserController {
   @ApiOperation({ summary: 'Удаление текущего пользователя' })
   @ApiResponse({
     status: 204,
-    description: 'Пользователь успешно удален',
+    description: 'Пользователь успешно удален.',
   })
   @ApiResponse({
     status: 404,
@@ -155,18 +146,18 @@ export class UserController {
         statusCode: HttpStatus.NOT_FOUND,
       },
     },
-    description: 'Пользователь не найден',
+    description: 'Пользователь не найден.',
   })
   @ApiResponse({
     status: 500,
     schema: {
       example: {
-        message: 'Ошибка при удалении пользователя',
+        message: 'Ошибка при удалении пользователя.',
         errorCode: ErrorCode.USER_DELETE_ERROR,
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       },
     },
-    description: 'Ошибка при удалении пользователя',
+    description: 'Ошибка при удалении пользователя.',
   })
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   async delete(@Request() req) {
