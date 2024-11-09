@@ -24,10 +24,6 @@ export class AuthorizationService {
     localStorage.setItem('token', token);
   }
 
-  public getToken(): string {
-    return localStorage.getItem('token') ?? '';
-  }
-
   public createProfile(profile: CreateProfile): Observable<Token> {
     return this.http.post<Token>(environment.apiUrl + '/auth/create-user', profile);
   }

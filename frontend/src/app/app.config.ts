@@ -15,7 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
     NG_EVENT_PLUGINS,
     provideHttpClient(
-      withInterceptors([errorHandlerInterceptor])
+      withInterceptors([errorHandlerInterceptor, authorizationHandlerInterceptor])
     ),
     provideTransloco({
       config: { 
