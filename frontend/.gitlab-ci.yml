@@ -1,5 +1,10 @@
 image: node:20-alpine
 
+.unpack-frontend:
+  script:
+    - rm -r server
+    - mv frontend/* .
+
 stages:
   - install
   - build
@@ -9,6 +14,7 @@ stages:
 
 install:
   stage: install
+  extends: .unpack-frontend
   script:
     - npm ci
   artifacts:
@@ -17,6 +23,7 @@ install:
 
 build:
   stage: build
+  extends: .unpack-frontend
   script:
     - npx nx build
   artifacts:
@@ -25,11 +32,13 @@ build:
 
 lint:
   stage: lint
+  extends: .unpack-frontend
   script:
     - npx nx run-many -t lint
 
 test:
   stage: test
+  extends: .unpack-frontend
   script:
     - npx nx run-many -t test
 
@@ -39,9 +48,10 @@ pages:
     GIT_STRATEGY: none
   script:
     - mkdir public
-    - cp -r dist/social/* public
+    - mv dist/social/* public
   only:
     - main
+    - master
   artifacts:
     paths:
       - public
