@@ -130,7 +130,7 @@ export class BlockedUserController {
     await this.blockedUserService.unblockUser(blockedUserId, userId);
   }
 
-  @Get('blocked-users')
+  @Get('list')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить список заблокированных пользователей' })
