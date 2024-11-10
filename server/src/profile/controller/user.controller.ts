@@ -6,8 +6,6 @@ import {
   UseGuards,
   HttpStatus,
   Patch,
-  HttpCode,
-  Delete,
   Param,
 } from '@nestjs/common';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -200,31 +198,5 @@ export class UserController {
   ) {
     const userId = req.user.id;
     return this.userService.getProfileByCustomName(customName, userId);
-  }
-
-  @Delete('me')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Удаление текущего пользователя' })
-  @ApiResponse({
-    status: 204,
-    description: 'Пользователь успешно удален.',
-  })
-  @ApiResponse({
-    status: 404,
-    schema: {
-      example: {
-        message: 'Пользователь не найден.',
-        errorCode: ErrorCode.USER_NOT_FOUND,
-        statusCode: HttpStatus.NOT_FOUND,
-      },
-    },
-    description: 'Пользователь не найден.',
-  })
-  @ApiResponse({ status: 401, description: 'Не авторизован' })
-  async delete(@Request() req) {
-    const userId = req.user.id;
-    await this.userService.deleteUser(userId);
   }
 }
