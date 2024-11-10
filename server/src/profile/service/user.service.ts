@@ -55,11 +55,6 @@ export class UserService {
     });
   }
 
-  async deleteUser(userId: number) {
-    const user = await this.findUserById(userId);
-    await this.userRepository.delete(user.id);
-  }
-
   async getProfileById(requestingUserId: number, targetUserId: number) {
     const user = await this.userRepository.findOne({
       where: { id: requestingUserId },
