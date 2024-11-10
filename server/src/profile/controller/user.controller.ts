@@ -22,6 +22,7 @@ import { JwtAuthGuard } from '../../jwt/guard/jwt-auth.guard';
 import { User } from '../../entity/user.entity';
 import { UserService } from '../service/user.service';
 import { ErrorCode } from '../../error-codes';
+import { ApiMultipleResponse } from '../../swagger/decorator/api-multi-response.decorator';
 
 @ApiTags('users')
 @Controller('users')
@@ -56,28 +57,30 @@ export class UserController {
     },
     description: 'Неверные входные данные.',
   })
-  @ApiResponse({
-    status: 304,
-    schema: {
-      example: {
-        message: 'Нет изменений для обновления.',
-        errorCode: ErrorCode.NO_CHANGES_DETECTED,
-        statusCode: HttpStatus.NOT_MODIFIED,
+  @ApiMultipleResponse(
+    {
+      status: 409,
+      schema: {
+        example: {
+          message: 'Нет изменений для обновления.',
+          errorCode: ErrorCode.NO_CHANGES_DETECTED,
+          statusCode: HttpStatus.CONFLICT,
+        },
       },
+      description: 'Нет изменений для обновления.',
     },
-    description: 'Нет изменений для обновления.',
-  })
-  @ApiResponse({
-    status: 409,
-    schema: {
-      example: {
-        message: 'Пользователь с таким кастомным именем уже существует.',
-        errorCode: ErrorCode.CUSTOM_NAME_ALREADY_EXISTS,
-        statusCode: HttpStatus.CONFLICT,
+    {
+      status: 409,
+      schema: {
+        example: {
+          message: 'Пользователь с таким кастомным именем уже существует.',
+          errorCode: ErrorCode.CUSTOM_NAME_ALREADY_EXISTS,
+          statusCode: HttpStatus.CONFLICT,
+        },
       },
+      description: 'Пользователь с таким кастомным именем уже существует.',
     },
-    description: 'Пользователь с таким кастомным именем уже существует.',
-  })
+  )
   @ApiResponse({
     status: 200,
     description: 'Данные пользователя обновлены.',

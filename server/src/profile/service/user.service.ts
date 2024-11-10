@@ -35,20 +35,24 @@ export class UserService {
   }
 
   async updateUser(userId: number, updateUserDto: UpdateUserDto) {
-    const user = await this.findUserById(userId);
-
-    if (JSON.stringify(updateUserDto) === JSON.stringify(user)) {
+    if (Object.keys(updateUserDto).length === 0) {
       throw new NoChangesDetectedException();
     }
 
+    const user = await this.findUserById(userId);
+    const hasChanges = Object.keys(updateUserDto).some(
+      (key) => updateUserDto[key] !== user[key],
+    );
+
+    if (!hasChanges) {
+      throw new NoChangesDetectedException();
+    }
     if (
       updateUserDto.custom_name &&
       (await this.customNameExists(updateUserDto.custom_name))
     ) {
       throw new CustomNameAlreadyExistsException();
     }
-
-    Object.assign(user, updateUserDto);
     await this.userRepository.update(userId, {
       ...updateUserDto,
       last_activity: new Date(),
