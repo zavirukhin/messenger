@@ -21,7 +21,7 @@ import {
 import { JwtAuthGuard } from '../../jwt/guard/jwt-auth.guard';
 import { User } from '../../entity/user.entity';
 import { UserService } from '../service/user.service';
-import { ErrorCode } from 'src/error-codes';
+import { ErrorCode } from '../../error-codes';
 
 @ApiTags('users')
 @Controller('users')
@@ -152,8 +152,12 @@ export class UserController {
     description: 'Пользователь не найден.',
   })
   @ApiResponse({ status: 401, description: 'Не авторизован' })
-  async getUserProfileById(@Param('id') userId: number) {
-    return this.userService.getProfileById(userId);
+  async getUserProfileById(
+    @Request() req,
+    @Param('id') requestedUserId: number,
+  ) {
+    const userId = req.user.id;
+    return this.userService.getProfileById(requestedUserId, userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -190,8 +194,12 @@ export class UserController {
     description: 'Пользователь не найден',
   })
   @ApiResponse({ status: 401, description: 'Не авторизован' })
-  async getUserProfileByCustomName(@Param('customName') customName: string) {
-    return this.userService.getProfileByCustomName(customName);
+  async getUserProfileByCustomName(
+    @Request() req,
+    @Param('customName') customName: string,
+  ) {
+    const userId = req.user.id;
+    return this.userService.getProfileByCustomName(customName, userId);
   }
 
   @Delete('me')

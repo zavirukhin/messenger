@@ -6,12 +6,15 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserNotFoundException } from '../../exception/user-not-found.exception';
 import { CustomNameAlreadyExistsException } from '../../exception/custom-name-already-exists.exception';
 import { NoChangesDetectedException } from '../../exception/no-changes-detection.exception';
+import { BlockedUser } from '../../entity/blocked-user.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(BlockedUser)
+    private readonly blockedUserRepository: Repository<BlockedUser>,
   ) {}
 
   private async findUserById(userId: number): Promise<User> {
@@ -54,12 +57,12 @@ export class UserService {
 
   async deleteUser(userId: number) {
     const user = await this.findUserById(userId);
-    await this.userRepository.delete(user);
+    await this.userRepository.delete(user.id);
   }
 
-  async getProfileById(userId: number) {
+  async getProfileById(requestingUserId: number, targetUserId: number) {
     const user = await this.userRepository.findOne({
-      where: { id: userId },
+      where: { id: requestingUserId },
       select: {
         id: true,
         first_name: true,
@@ -75,11 +78,15 @@ export class UserService {
     if (!user) {
       throw new UserNotFoundException();
     }
+    const isBlockedByUser = await this.isUserBlockedBy(
+      targetUserId,
+      requestingUserId,
+    );
 
-    return user;
+    return { ...user, isBlockedByUser };
   }
 
-  async getProfileByCustomName(customName: string) {
+  async getProfileByCustomName(customName: string, targetUserId: number) {
     if (!customName) {
       throw new UserNotFoundException();
     }
@@ -94,14 +101,27 @@ export class UserService {
         custom_name: true,
         created_at: true,
         updated_at: true,
-        phone: false,
       },
     });
 
     if (!user) {
       throw new UserNotFoundException();
     }
+    const isBlockedByUser = await this.isUserBlockedBy(targetUserId, user.id);
 
-    return user;
+    return { ...user, isBlockedByUser };
+  }
+
+  private async isUserBlockedBy(
+    blockedUser: number,
+    blockedByUser: number,
+  ): Promise<boolean> {
+    const isBlocked = await this.blockedUserRepository.findOne({
+      where: {
+        blockedUser: { id: blockedUser },
+        blockedByUser: { id: blockedByUser },
+      },
+    });
+    return !!isBlocked;
   }
 }
