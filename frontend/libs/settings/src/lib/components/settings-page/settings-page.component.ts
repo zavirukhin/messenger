@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ProfileService, Profile } from '@social/messenger';
 import { Router } from '@angular/router';
-import { combineLatest, take } from 'rxjs';
+import { catchError, combineLatest, of, take } from 'rxjs';
 import {
   ChangeDetectionStrategy, 
   Component,
@@ -26,12 +26,14 @@ import {
   TuiSkeleton
 } from '@taiga-ui/kit';
 import {
+  TuiAlertService,
   TuiButton,
   TuiError,
+  TuiFallbackSrcPipe,
   TuiTextfield,
   TuiTitle
 } from '@taiga-ui/core';
-import { langReady } from '@social/shared';
+import { langReady, RequestError } from '@social/shared';
 import { loader } from '../../transloco-loader';
 
 @Component({
@@ -47,7 +49,8 @@ import { loader } from '../../transloco-loader';
     TuiButton,
     TuiError,
     TuiSkeleton,
-    TuiFieldErrorPipe
+    TuiFieldErrorPipe,
+    TuiFallbackSrcPipe
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.less',
@@ -74,56 +77,121 @@ export class SettingsPageComponent {
     avatar_base64: ''
   });
 
-  public isLoading = signal<boolean>(true);
-
   public readonly form = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
     lastName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
-    customName: new FormControl('', [Validators.maxLength(50)])
+    customName: new FormControl('', [Validators.maxLength(50)]),
+    avatar_base64: new FormControl('')
   });
+
+  public isLoading = signal<boolean>(true);
 
   private readonly profileService = inject(ProfileService);
 
   private readonly router = inject(Router);
 
+  private readonly alerts = inject(TuiAlertService);
+
+  private readonly translocoService = inject(TranslocoService);
+
   constructor() {
-    combineLatest(
-      [this.profileService.getProfile(), langReady('settings')]
+    combineLatest([
+      this.profileService.getProfile(), 
+      langReady('settings')
+    ])
+    .pipe(
+      take(1),
+      catchError((error: RequestError) => {
+        this.alerts.open(error.message, {
+          label: this.translocoService.translate('error'),
+          appearance: 'error'
+        })
+        .subscribe();
+
+        return of();
+      })
     )
-    .pipe(take(1))
     .subscribe(([profile]) => {
       this.profile.set(profile);
 
       this.form.setValue({
         firstName: profile.first_name,
         lastName: profile.last_name,
-        customName: profile.custom_name
+        customName: profile.custom_name,
+        avatar_base64: profile.avatar_base64
       });
       this.isLoading.set(false);
     });
   }
 
-  public getAvatarByName() {
-    return this.profile().first_name[0] + this.profile().last_name[0];
-  }
-
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.form.valid) {
-      const profile = {
-        last_name: this.form.controls.lastName.value ?? '',
-        first_name: this.form.controls.firstName.value ?? '',
-        custom_name: this.form.controls.customName.value ?? ''
+      const profile: Partial<Profile> = {};
+
+      if (this.form.value.firstName !== this.profile().first_name) {
+        profile.first_name = this.form.value.firstName ?? '';
+      }
+      if (this.form.value.lastName !== this.profile().last_name) {
+        profile.last_name = this.form.value.lastName ?? '';
+      }
+      if (this.form.value.customName !== this.profile().custom_name) {
+        profile.custom_name = this.form.value.customName ?? '';
+      }
+      if (this.form.value.avatar_base64 !== this.profile().avatar_base64) {
+        profile.avatar_base64 = this.form.value.avatar_base64 ?? '';
       }
 
-      this.profileService.updateProfile(profile).subscribe();
+      if (Object.keys(profile).length) {
+        this.form.disable();
+        this.profileService.updateProfile(profile)
+        .pipe(
+          catchError((error: RequestError) => {
+            this.form.enable();
+
+            this.alerts.open(error.message, {
+              label: this.translocoService.translate('error'),
+              appearance: 'error'
+            })
+            .subscribe();
+
+            return of();
+          })
+        )
+        .subscribe(() => {
+          this.profile.update(v => ({ ...v, ...profile }));
+          this.form.enable();
+        });
+      }
     }
     else {
       this.form.markAllAsTouched();
     }
   }
 
-  public logout() {
+  public updateAvatar(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/png, image/jpeg';
+    input.onchange = this.onFileChange.bind(this);
+    input.click();
+  }
+
+  public logout(): void {
     this.profileService.deleteToken();
     this.router.navigate(['auth']);
+  }
+
+  private onFileChange(event: Event): void {
+    if (event.target instanceof HTMLInputElement && event.target.files?.length) {
+      const reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0])
+      reader.onload = this.onFileLoad.bind(this);
+    }
+  }
+
+  private onFileLoad(event: ProgressEvent<FileReader>): void {
+    if (typeof event.target?.result === 'string') {
+      this.form.get('avatar_base64')?.setValue(event.target.result);
+    }
   }
 }

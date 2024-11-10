@@ -1,19 +1,31 @@
 <ng-container *transloco="let t;">
   <div class="settings-container">
     <div class="user-info">
-      <tui-avatar
-        size="xxl"
-        [tuiSkeleton]="isLoading()"
-      >
-        {{ getAvatarByName() }}
-      </tui-avatar>
+      @if (profile().avatar_base64) {
+        <tui-avatar
+          size="xxl"
+          [tuiSkeleton]="isLoading()"
+          [src]="profile().avatar_base64 | tuiFallbackSrc: '@tui.user' | async"
+          (click)="updateAvatar()"
+        />
+      }
+      @else {
+        <tui-avatar
+          size="xxl"
+          [tuiSkeleton]="isLoading()"
+          src="@tui.user"
+          (click)="updateAvatar()"
+        />
+      }
       <h1
         class="username-container"
         tuiTitle="m"
         [tuiSkeleton]="isLoading()"
       >
         {{ profile().last_name }} {{ profile().first_name }}
-        <div tuiSubtitle>&#64;{{ profile().custom_name }}</div>
+        @if (profile().custom_name) {
+          <div tuiSubtitle>&#64;{{ profile().custom_name }}</div>
+        }
       </h1>
     </div>
     <form
@@ -88,6 +100,7 @@
           size="m"
           tuiButton
           [tuiSkeleton]="isLoading()"
+          [disabled]="form.disabled"
           type="submit"
         >
           {{ t('settings.change') }}
