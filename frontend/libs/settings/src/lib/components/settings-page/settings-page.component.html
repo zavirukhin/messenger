@@ -1,0 +1,98 @@
+<ng-container *transloco="let t;">
+  <div class="settings-container">
+    <div class="user-info">
+      <tui-avatar
+        size="xxl"
+        [tuiSkeleton]="isLoading()"
+      >
+        {{ getAvatarByName() }}
+      </tui-avatar>
+      <h1
+        class="username-container"
+        tuiTitle="m"
+        [tuiSkeleton]="isLoading()"
+      >
+        {{ profile().last_name }} {{ profile().first_name }}
+        <div tuiSubtitle>{{ profile().custom_name }}</div>
+      </h1>
+    </div>
+    <form
+      (ngSubmit)="onSubmit()"
+      [formGroup]="form"
+      class="form-container"
+    >
+      <div class="input-container">
+        <div>
+          <tui-textfield
+            tuiTextfieldSize="l"
+            [tuiSkeleton]="isLoading()"
+          >
+            <label tuiLabel>{{ t('settings.lastName') }}</label>
+            <input
+              formControlName="lastName"
+              maxLength="50"
+              tuiTextfield
+            />
+          </tui-textfield>
+          <tui-error
+            formControlName="lastName"
+            [error]="[] | tuiFieldError | async"
+          />
+        </div>
+        <div>
+          <tui-textfield
+            tuiTextfieldSize="l"
+            [tuiSkeleton]="isLoading()"
+          >
+            <label tuiLabel>{{ t('settings.firstName') }}</label>
+            <input
+              formControlName="firstName"
+              maxLength="50"
+              tuiTextfield
+            />
+          </tui-textfield>
+          <tui-error
+            formControlName="firstName"
+            [error]="[] | tuiFieldError | async"
+          />
+        </div>
+        <div>
+          <tui-textfield
+            tuiTextfieldSize="l"
+            [tuiSkeleton]="isLoading()"
+          >
+            <label tuiLabel>{{ t('settings.customName') }}</label>
+            <input
+              formControlName="customName"
+              maxLength="50"
+              tuiTextfield
+            />
+          </tui-textfield>
+          <tui-error
+            formControlName="customName"
+            [error]="[] | tuiFieldError | async"
+          />
+        </div>
+      </div>
+      <div class="button-container">
+        <button
+          size="m"
+          tuiButton
+          type="button"
+          [tuiSkeleton]="isLoading()"
+          (click)="logout()"
+        >
+          {{ t('settings.logout') }}
+        </button>
+        <button
+          size="m"
+          tuiButton
+          [tuiSkeleton]="isLoading()"
+          type="submit"
+        >
+          {{ t('settings.change') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-container>
