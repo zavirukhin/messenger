@@ -1,12 +1,37 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TUI_VALIDATION_ERRORS, TuiAvatar, TuiFieldErrorPipe, TuiSkeleton } from '@taiga-ui/kit';
-import { TuiButton, TuiError, TuiTextfield, TuiTitle } from '@taiga-ui/core';
 import { ProfileService, Profile } from '@social/messenger';
-import { provideTranslocoScope, TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { combineLatest, filter } from 'rxjs';
+import { combineLatest, take } from 'rxjs';
+import {
+  ChangeDetectionStrategy, 
+  Component,
+  inject,
+  signal
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+import {
+  provideTranslocoScope,
+  TranslocoDirective,
+  TranslocoService
+} from '@jsverse/transloco';
+import {
+  TUI_VALIDATION_ERRORS,
+  TuiAvatar,
+  TuiFieldErrorPipe,
+  TuiSkeleton
+} from '@taiga-ui/kit';
+import {
+  TuiButton,
+  TuiError,
+  TuiTextfield,
+  TuiTitle
+} from '@taiga-ui/core';
+import { langReady } from '@social/shared';
 import { loader } from '../../transloco-loader';
 
 @Component({
@@ -61,15 +86,11 @@ export class SettingsPageComponent {
 
   private readonly router = inject(Router);
 
-  private readonly translocoService = inject(TranslocoService);
-
   constructor() {
-    combineLatest([
-      this.profileService.getProfile(),
-      this.translocoService.events$.pipe(
-        filter(e => e.type === 'translationLoadSuccess')
-      )
-    ])
+    combineLatest(
+      [this.profileService.getProfile(), langReady('settings')]
+    )
+    .pipe(take(1))
     .subscribe(([profile]) => {
       this.profile.set(profile);
 
