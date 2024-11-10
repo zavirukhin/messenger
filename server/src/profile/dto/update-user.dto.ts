@@ -1,4 +1,10 @@
-import { IsOptional, IsString, Matches } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
@@ -9,6 +15,8 @@ export class UpdateUserDto {
   })
   @IsOptional()
   @IsString({ message: 'Имя пользователя должно быть строкой' })
+  @IsNotEmpty({ message: 'Имя пользователя не должно быть пустой строкой' })
+  @Length(1, 50, { message: 'Имя должно быть длиной от 1 до 50 символов' })
   first_name?: string;
 
   @ApiProperty({
@@ -18,6 +26,8 @@ export class UpdateUserDto {
   })
   @IsOptional()
   @IsString({ message: 'Фамилия пользователя должна быть строкой' })
+  @IsNotEmpty({ message: 'Фамилия пользователя не должна быть пустой строкой' })
+  @Length(1, 50, { message: 'Фамилия должна быть длиной от 1 до 50 символов' })
   last_name?: string;
 
   @ApiProperty({
@@ -32,6 +42,10 @@ export class UpdateUserDto {
   @Matches(/^[A-Za-z]+$/, {
     message: 'Пользовательское имя должно содержать только английские буквы',
   })
+  @IsNotEmpty({ message: 'Пользовательское имя не должно быть пустой строкой' })
+  @Length(1, 50, {
+    message: 'Пользовательское имя должно быть длиной от 1 до 50 символов',
+  })
   custom_name?: string;
 
   @ApiProperty({
@@ -41,5 +55,6 @@ export class UpdateUserDto {
   })
   @IsOptional()
   @IsString({ message: 'Аватар пользователя должен быть строкой' })
+  @IsNotEmpty({ message: 'Аватар пользователя не должно быть пустой строкой' })
   avatar_base64?: string;
 }
