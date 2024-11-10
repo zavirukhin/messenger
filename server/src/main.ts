@@ -2,11 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable global validation pipes
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -14,7 +14,8 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
   app.enableCors();
 
   const config = new DocumentBuilder()
