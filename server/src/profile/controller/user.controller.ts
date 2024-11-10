@@ -6,8 +6,6 @@ import {
   UseGuards,
   HttpStatus,
   Patch,
-  HttpCode,
-  Delete,
   Param,
 } from '@nestjs/common';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -201,5 +199,4 @@ export class UserController {
     const userId = req.user.id;
     return this.userService.getProfileByCustomName(customName, userId);
   }
-
 }
