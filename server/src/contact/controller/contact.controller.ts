@@ -6,9 +6,11 @@ import {
   UseGuards,
   Request,
   HttpStatus,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { ContactService } from '../service/contact.service';
-import { AddRemoveContactDto } from '../dto/add-remove-contact.dto';
+import { AddContactDto } from '../dto/add-contact.dto';
 import {
   ApiTags,
   ApiOperation,
@@ -72,35 +74,24 @@ export class ContactController {
   })
   @ApiBody({
     description: 'Данные для добавления контакта',
-    type: AddRemoveContactDto,
+    type: AddContactDto,
   })
   async addContact(
     @Request() req,
-    @Body() addRemoveContactDto: AddRemoveContactDto,
+    @Body() addRemoveContactDto: AddContactDto,
   ): Promise<void> {
     const userId = req.user.id;
     const contactId = addRemoveContactDto.contactId;
     await this.contactService.addContact(contactId, userId);
   }
 
-  @Post('remove')
+  @Delete('remove/:contactId')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Удаление контакта' })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'Контакт удалён.',
-  })
-  @ApiResponse({
-    status: 400,
-    schema: {
-      example: {
-        message: ['Message'],
-        error: 'Bad Request',
-        statusCode: HttpStatus.BAD_REQUEST,
-      },
-    },
-    description: 'Неверные входные данные.',
   })
   @ApiResponse({
     status: 404,
@@ -117,16 +108,11 @@ export class ContactController {
     status: 401,
     description: 'Не авторизован.',
   })
-  @ApiBody({
-    description: 'Данные для удаления контакта',
-    type: AddRemoveContactDto,
-  })
   async removeContact(
     @Request() req,
-    @Body() addRemoveContactDto: AddRemoveContactDto,
+    @Param('contactId') contactId: number,
   ): Promise<void> {
     const userId = req.user.id;
-    const contactId = addRemoveContactDto.contactId;
     await this.contactService.removeContact(contactId, userId);
   }
 
