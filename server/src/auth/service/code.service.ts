@@ -3,6 +3,7 @@ import { CodeCooldownException } from '../../exception/code-cooldown.exception';
 import { CodeExpiredException } from '../../exception/code-expired.exception';
 import { InvalidCodeException } from '../../exception/invalid-code.exception';
 import { generateCode } from '../utils/utils';
+import { TwilioAdapter } from '../adapter/twilio.adapter';
 
 @Injectable()
 export class CodeService {
@@ -12,12 +13,21 @@ export class CodeService {
   >();
   private readonly cooldownPeriod = 60 * 1000; // 60 секунд для повторной отправки
   private readonly codeExpiry = 5 * 60 * 1000; // 5 минут для истечения кода
+  private twilioAdapter: TwilioAdapter;
 
-  sendCode(phone: string): {
+  constructor() {
+    this.twilioAdapter = new TwilioAdapter(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN,
+      process.env.TWILIO_MESSAGING_SERVICE_ID,
+    );
+  }
+
+  async sendCode(phone: string): Promise<{
     nextAttempt: number;
     message: string;
     statusCode: HttpStatus;
-  } {
+  }> {
     const now = Date.now();
     const storedData = this.codes.get(phone);
 
@@ -29,7 +39,11 @@ export class CodeService {
     const expiresAt = now + this.codeExpiry;
     this.codes.set(phone, { code, expiresAt, lastSentAt: now });
 
-    console.log(`Отправлен код ${code} для телефона ${phone}`);
+    if (process.env.TWILIO_IS_ACTIVE === 'true') {
+      await this.twilioAdapter.sendSMS(phone, code);
+    } else {
+      console.log(`Отправлен код ${code} для телефона ${phone}`);
+    }
     return {
       nextAttempt: this.cooldownPeriod,
       message: 'Код успешно отправлен',
