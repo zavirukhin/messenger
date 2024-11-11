@@ -6,7 +6,7 @@ stages:
 
 # Общие настройки для всех job'ов
 default:
-  image: node:20
+  image: node:20-alpine
   cache:
     key:
       files:
@@ -30,9 +30,6 @@ lint:
     - npm run lint
   dependencies:
     - install
-  only:
-    - merge_requests
-    - master
 
 # Форматирование кода с Prettier
 format:
@@ -41,9 +38,6 @@ format:
     - npm run format -- --check
   dependencies:
     - install
-  only:
-    - merge_requests
-    - master
 
 # Запуск тестов
 test:
@@ -51,10 +45,7 @@ test:
   script:
     - npm run test
   dependencies:
-    - install 
-  only:
-    - merge_requests
-    - master
+    - install
     
 # Покрытие тестами
 coverage:
@@ -63,6 +54,3 @@ coverage:
     - npm run test:cov
   dependencies:
     - install
-  only:
-    - merge_requests
-    - master
