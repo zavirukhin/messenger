@@ -1,0 +1,68 @@
+stages:
+  - install
+  - lint
+  - format
+  - test
+
+# Общие настройки для всех job'ов
+default:
+  image: node:20
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+
+install:
+  stage: install
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 24 hour
+
+# Линтинг кода
+lint:
+  stage: lint
+  script:
+    - npm run lint
+  dependencies:
+    - install
+  only:
+    - merge_requests
+    - master
+
+# Форматирование кода с Prettier
+format:
+  stage: format
+  script:
+    - npm run format -- --check
+  dependencies:
+    - install
+  only:
+    - merge_requests
+    - master
+
+# Запуск тестов
+test:
+  stage: test
+  script:
+    - npm run test
+  dependencies:
+    - install 
+  only:
+    - merge_requests
+    - master
+    
+# Покрытие тестами
+coverage:
+  stage: test
+  script:
+    - npm run test:cov
+  dependencies:
+    - install
+  only:
+    - merge_requests
+    - master
