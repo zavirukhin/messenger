@@ -11,6 +11,7 @@
 
 - `JWT_EXPIRATION`: Длительность жизни JWT токена.
   - **Пример**: `5m`
+
 ## Настройки базы данных
 
 ### PostgreSQL
@@ -44,11 +45,25 @@
 - `DB_MIGRATIONS_RUN`: Если установлено в `true`, миграции будут автоматически выполняться при запуске приложения.
   - **Пример**: `false`
 
+## Настройки Twilio
+
+- `TWILIO_ACCOUNT_SID`: Уникальный идентификатор аккаунта Twilio.
+  - **Пример**: `AC81219e******`
+  
+- `TWILIO_AUTH_TOKEN`: Токен авторизации для API Twilio.
+  - **Пример**: `84bc721b74362********`
+  
+- `TWILIO_MESSAGING_SERVICE_ID`: Уникальный идентификатор сервиса для отправки сообщений Twilio.
+  - **Пример**: `VA9b8958********`
+  
+- `TWILIO_IS_ACTIVE`: Флаг для активации или деактивации использования Twilio в приложении.
+  - **Пример**: `true` (установите `false`, чтобы отключить Twilio ("Режим для разработки"))
+
 ## Пример файла `.env`
 
 ```plaintext
 JWT_SECRET='MYSECRET'
-JWT_EXPIRATION = '5m'
+JWT_EXPIRATION='5m'
 
 DB_TYPE=postgres
 DB_HOST=localhost
@@ -59,6 +74,11 @@ DB_DATABASE=postgres
 DB_LOGGING=true
 DB_SYNCHRONIZE=false
 DB_MIGRATIONS_RUN=true
+
+TWILIO_ACCOUNT_SID=AC81219ede1**********************
+TWILIO_AUTH_TOKEN=84bc721b***********
+TWILIO_PHONE_NUMBER=+79270**
+TWILIO_IS_ACTIVE=true
 ```
 
 ## Установка зависимостей
