@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { ProfileService, Profile } from '@social/messenger';
 import { Router } from '@angular/router';
 import { catchError, combineLatest, of, take } from 'rxjs';
 import {
@@ -35,6 +34,8 @@ import {
 } from '@taiga-ui/core';
 import { langReady, RequestError } from '@social/shared';
 import { loader } from '../../transloco-loader';
+import { ProfileService } from '../../services/profile/profile.service';
+import { Profile } from '../../types/profile-update.type';
 
 @Component({
   selector: 'lib-settings-page',
