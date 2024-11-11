@@ -57,10 +57,21 @@ export class AuthController {
     },
     description: 'Код уже был отправлен',
   })
+  @ApiResponse({
+    status: 503,
+    schema: {
+      example: {
+        message: 'Ошибка Twilio.',
+        errorCode: ErrorCode.TWILIO_ERROR,
+        statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+      },
+    },
+    description: 'Ошибка Twilio.',
+  })
   async sendCode(
     @Body() sendCodeDto: SendCodeDto,
   ): Promise<{ nextAttempt: number; message: string; statusCode: HttpStatus }> {
-    return this.authService.sendCode(sendCodeDto.phone);
+    return await this.authService.sendCode(sendCodeDto.phone);
   }
 
   @Post('validate-code')
@@ -117,6 +128,17 @@ export class AuthController {
       },
     },
     description: 'Пользователь не найден',
+  })
+  @ApiResponse({
+    status: 503,
+    schema: {
+      example: {
+        message: 'Ошибка Twilio.',
+        errorCode: ErrorCode.TWILIO_ERROR,
+        statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+      },
+    },
+    description: 'Ошибка Twilio.',
   })
   async validateCode(
     @Body() validateCodeDto: ValidateCodeDto,
