@@ -65,13 +65,14 @@ import { Profile } from '../../types/profile-update.type';
       })
     },
     provideTranslocoScope({
-      scope: 'settings',
+      scope: 'messenger',
       loader
     })
   ]
 })
 export class SettingsPageComponent {
   public profile = signal<Profile>({
+    id: 0,
     first_name: 'First name',
     last_name: 'Last name',
     custom_name: 'example',
@@ -98,7 +99,7 @@ export class SettingsPageComponent {
   constructor() {
     combineLatest([
       this.profileService.getProfile(), 
-      langReady('settings')
+      langReady('messenger')
     ])
     .pipe(
       take(1),
@@ -136,7 +137,9 @@ export class SettingsPageComponent {
         profile.last_name = this.form.value.lastName ?? '';
       }
       if (this.form.value.customName !== this.profile().custom_name) {
-        profile.custom_name = this.form.value.customName ?? '';
+        profile.custom_name = this.form.value.customName !== '' 
+          ? this.form.value.customName 
+          : null;
       }
       if (this.form.value.avatar_base64 !== this.profile().avatar_base64) {
         profile.avatar_base64 = this.form.value.avatar_base64 ?? '';

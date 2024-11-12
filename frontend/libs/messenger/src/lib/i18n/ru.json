@@ -1,7 +1,7 @@
 {
   "lastName": "Фамилия",
   "firstName": "Имя",
-  "url": "Ссылка",
+  "customName": "Ссылка",
   "logout": "Выйти",
-  "save": "Сохранить"
+  "change": "Сохранить"
 }

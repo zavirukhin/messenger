@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { isEmpty, TranslocoService } from '@jsverse/transloco';
-import { filter, map, Observable, of, take } from 'rxjs';
+import { filter, map, Observable, of } from 'rxjs';
 
 export function langReady(scope: string): Observable<'loaded'> {
   const translocoService = inject(TranslocoService);
@@ -11,7 +11,6 @@ export function langReady(scope: string): Observable<'loaded'> {
   }
 
   return translocoService.events$.pipe(
-    take(1),
     filter(event => event.type === 'translationLoadSuccess' && event.payload.scope === scope),
     map(() => 'loaded')
   );

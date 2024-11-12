@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TuiIcon } from '@taiga-ui/core';
 import { Tab } from '../../types/tab.type';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'lib-navigation-bar',

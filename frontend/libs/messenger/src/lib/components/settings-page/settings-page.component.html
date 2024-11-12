@@ -1,22 +1,12 @@
 <ng-container *transloco="let t;">
   <div class="settings-container">
     <div class="user-info">
-      @if (profile().avatar_base64) {
-        <tui-avatar
-          size="xxl"
-          [tuiSkeleton]="isLoading()"
-          [src]="profile().avatar_base64 | tuiFallbackSrc: '@tui.user' | async"
-          (click)="updateAvatar()"
-        />
-      }
-      @else {
-        <tui-avatar
-          size="xxl"
-          [tuiSkeleton]="isLoading()"
-          src="@tui.user"
-          (click)="updateAvatar()"
-        />
-      }
+      <tui-avatar
+        size="xxl"
+        [tuiSkeleton]="isLoading()"
+        [src]="(profile().avatar_base64 ?? '@tui.user') | tuiFallbackSrc: '@tui.user' | async"
+        (click)="updateAvatar()"
+      />
       <h1
         class="username-container"
         tuiTitle="m"
@@ -25,6 +15,9 @@
         {{ profile().last_name }} {{ profile().first_name }}
         @if (profile().custom_name) {
           <div tuiSubtitle>&#64;{{ profile().custom_name }}</div>
+        }
+        @else {
+          <div tuiSubtitle>&#64;id{{ profile().id }}</div>
         }
       </h1>
     </div>
@@ -39,7 +32,7 @@
             tuiTextfieldSize="l"
             [tuiSkeleton]="isLoading()"
           >
-            <label tuiLabel>{{ t('settings.lastName') }}</label>
+            <label tuiLabel>{{ t('messenger.lastName') }}</label>
             <input
               formControlName="lastName"
               maxLength="50"
@@ -56,7 +49,7 @@
             tuiTextfieldSize="l"
             [tuiSkeleton]="isLoading()"
           >
-            <label tuiLabel>{{ t('settings.firstName') }}</label>
+            <label tuiLabel>{{ t('messenger.firstName') }}</label>
             <input
               formControlName="firstName"
               maxLength="50"
@@ -73,7 +66,7 @@
             tuiTextfieldSize="l"
             [tuiSkeleton]="isLoading()"
           >
-            <label tuiLabel>{{ t('settings.customName') }}</label>
+            <label tuiLabel>{{ t('messenger.customName') }}</label>
             <input
               formControlName="customName"
               maxLength="50"
@@ -94,7 +87,7 @@
           [tuiSkeleton]="isLoading()"
           (click)="logout()"
         >
-          {{ t('settings.logout') }}
+          {{ t('messenger.logout') }}
         </button>
         <button
           size="m"
@@ -103,7 +96,7 @@
           [disabled]="form.disabled"
           type="submit"
         >
-          {{ t('settings.change') }}
+          {{ t('messenger.change') }}
         </button>
       </div>
     </form>
