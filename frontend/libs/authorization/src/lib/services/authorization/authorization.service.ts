@@ -2,7 +2,7 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { DISABLE_ALERT } from '@social/shared';
 import { environment } from '@env';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { NextAttempt } from '../../interfaces/next-attempt.interface';
 import { Token } from '../../interfaces/token.interface';
 import { CreateProfile } from '../../interfaces/create-profile.interface';
@@ -27,6 +27,10 @@ export class AuthorizationService {
           code
         }
       }
+    ).pipe(
+      tap((token: Token) => {
+        this.saveToken(token.token);
+      })
     );
   }
 
@@ -35,6 +39,10 @@ export class AuthorizationService {
   }
 
   public createProfile(profile: CreateProfile): Observable<Token> {
-    return this.http.post<Token>(environment.apiUrl + '/auth/create-user', profile);
+    return this.http.post<Token>(environment.apiUrl + '/auth/create-user', profile).pipe(
+      tap((token: Token) => {
+        this.saveToken(token.token);
+      })
+    );
   }
 }

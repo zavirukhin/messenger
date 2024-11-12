@@ -26,7 +26,6 @@ import {
 } from '@angular/forms';
 import { RequestError } from '@social/shared';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
-import { Token } from '../../interfaces/token.interface';
 import { PhoneVerify } from '../../interfaces/phone.interface';
 import { NextAttempt } from '../../interfaces/next-attempt.interface';
 
@@ -67,8 +66,7 @@ export class ModalVerifyComponent implements OnInit {
 
   public sendCode() {
     this.form.disable({ emitEvent: false });
-    this.authorizationService.sendCode(this.phone())
-    .pipe(
+    this.authorizationService.sendCode(this.phone()).pipe(
       finalize(() => {
         this.form.reset();
         this.form.enable({ emitEvent: false });
@@ -83,8 +81,7 @@ export class ModalVerifyComponent implements OnInit {
       if (code?.length === 6) {
         this.form.disable({ emitEvent: false });
 
-        this.authorizationService.verifyPhone(this.phone(), code)
-        .pipe(
+        this.authorizationService.verifyPhone(this.phone(), code).pipe(
           catchError((error: RequestError) => {
             if (error.errorCode === 'USER_NOT_FOUND') {
               this.codeChanged.emit(code);
@@ -95,9 +92,7 @@ export class ModalVerifyComponent implements OnInit {
           finalize(() => {
             this.form.enable({ emitEvent: false });
           })
-        )
-        .subscribe((token: Token) => {
-          this.authorizationService.saveToken(token.token);
+        ).subscribe(() => {
           this.router.navigate(['/']);
         });
       }

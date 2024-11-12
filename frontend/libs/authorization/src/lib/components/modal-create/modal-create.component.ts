@@ -1,14 +1,28 @@
 import { Router } from '@angular/router';
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TuiHeader } from '@taiga-ui/layout';
-import { TuiButton, TuiError, TuiTextfield, TuiTitle } from '@taiga-ui/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TuiFieldErrorPipe } from '@taiga-ui/kit';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { finalize } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input
+} from '@angular/core';
+import {
+  TuiButton,
+  TuiError,
+  TuiTextfield,
+  TuiTitle 
+} from '@taiga-ui/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import { AuthorizationService } from '../../services/authorization/authorization.service';
-import { Token } from '../../interfaces/token.interface';
 
 @Component({
   selector: 'lib-modal-create',
@@ -51,14 +65,11 @@ export class ModalCreateComponent {
         first_name: this.form.value.lastName ?? '',
         phone: this.phone(),
         code: this.code()
-      })
-      .pipe(
+      }).pipe(
         finalize(() => {
           this.form.enable();
         })
-      )
-      .subscribe((token: Token) => {
-        this.authorizationService.saveToken(token.token);
+      ).subscribe(() => {
         this.router.navigate(['/']);
       });
     }
