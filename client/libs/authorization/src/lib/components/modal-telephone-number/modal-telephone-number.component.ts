@@ -1,23 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TuiCountryIsoCode } from '@taiga-ui/i18n';
-import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { catchError, defer, of } from 'rxjs';
-import { RequestError} from '@social/shared';
-import { AuthorizationService } from '../../services/authorization/authorization.service';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { defer, finalize } from 'rxjs';
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  output,
-  signal
+  output
 } from '@angular/core';
 import {
-  TuiAlertService,
   TuiButton,
   TuiError,
-  TuiIcon,
-  TuiLoader,
   TuiTitle
 } from '@taiga-ui/core';
 import {
@@ -27,12 +21,15 @@ import {
   Validators
 } from '@angular/forms';
 import { 
-  TUI_VALIDATION_ERRORS,
   TuiFieldErrorPipe,
   TuiInputPhoneInternational,
   tuiInputPhoneInternationalOptionsProvider,
   TuiSkeleton
 } from '@taiga-ui/kit';
+import { AuthorizationService } from '../../services/authorization/authorization.service';
+import { NextAttempt } from '../../interfaces/next-attempt.interface';
+import { PhoneVerify } from '../../interfaces/phone.interface';
+import { phoneNumberValidator } from '../../validators/phone.validator';
 
 @Component({
   selector: 'lib-modal-telephone-number',
@@ -45,11 +42,9 @@ import {
     TuiHeader,
     TuiTitle,
     TuiButton,
-    TuiIcon,
     TuiError,
-    TuiFieldErrorPipe,
-    TuiLoader,
-    TuiSkeleton
+    TuiSkeleton,
+    TuiFieldErrorPipe
   ],
   templateUrl: './modal-telephone-number.component.html',
   styleUrl: './modal-telephone-number.component.less',
@@ -59,20 +54,11 @@ import {
       metadata: defer(async () => 
         import('libphonenumber-js/min/metadata').then((m) => m.default)
       )
-    }),
-    {
-      provide: TUI_VALIDATION_ERRORS,
-      deps: [TranslocoService],
-      useFactory: (translocoService: TranslocoService) => {
-        return {
-          required: translocoService.translate('authorization.required')
-        }
-      }
-    }
+    })
   ]
 })
 export class ModalTelephoneNumberComponent {
-  phoneChanged = output<string>();
+  public phoneChanged = output<PhoneVerify>();
 
   public readonly countries: ReadonlyArray<TuiCountryIsoCode> = [
     'RU',
@@ -81,48 +67,27 @@ export class ModalTelephoneNumberComponent {
     'BY'
   ];
 
-  public readonly phoneForm = new FormGroup({
-    phone: new FormControl('', [Validators.required]) // Нужен ли валидатор ?
+  public readonly form = new FormGroup({
+    phone: new FormControl('', [Validators.required, phoneNumberValidator])
   });
 
   private readonly authorizationService = inject(AuthorizationService);
 
-  private readonly alerts = inject(TuiAlertService);
-
-  private readonly translocoService = inject(TranslocoService);
-
-  public readonly isLoading = signal(false);
-
   public onSubmit(): void {
-    if (this.phoneForm.valid) {
-      this.isLoading.set(true);
-      this.phoneForm.disable();
+    if (this.form.valid) {
+      this.form.disable();
 
-      const phone = this.phoneForm.get('phone')?.value ?? '';
-      this.authorizationService.sendSms(phone)
-        .pipe(
-          catchError((error: RequestError) => {
-            this.isLoading.set(false);
-            this.phoneForm.enable();
-
-            this.alerts
-              .open(error.message, { 
-                label: this.translocoService.translate('error') 
-              })
-              .subscribe();
-
-            return of();
-          })
-        )
-        .subscribe(() => {
-          this.isLoading.set(false);
-          this.phoneForm.enable();
-
-          this.phoneChanged.emit(phone);
-        });
+      const phone = this.form.get('phone')?.value ?? '';
+      this.authorizationService.sendCode(phone).pipe(
+        finalize(() => {
+          this.form.enable();
+        })
+      ).subscribe((nextAttempt: NextAttempt) => {
+        this.phoneChanged.emit({...nextAttempt, phone});
+      });
     }
     else {
-      this.phoneForm.markAllAsTouched();
+      this.form.markAllAsTouched();
     }
   }
 }
