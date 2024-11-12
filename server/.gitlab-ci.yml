@@ -4,6 +4,10 @@ stages:
   - format
   - test
 
+workflow: 
+  rules: 
+    - when: always
+    
 .unpack-server:
   before_script:
     - rm -r frontend || true
