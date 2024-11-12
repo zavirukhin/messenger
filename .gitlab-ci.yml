@@ -1,20 +1,53 @@
+image: node:20-alpine
+
 stages:
-  - triggers
+  - install
+  - build
+  - lint
+  - test
+  - deploy
 
-frontend:
-  stage: triggers
-  trigger:
-    include: frontend/.gitlab-ci.yml
-    strategy: depend
-  rules:
-    - changes:
-      - frontend/**/*
+install:
+  stage: install
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
 
-server:
-  stage: triggers
-  trigger:
-    include: server/.gitlab-ci.yml
-    strategy: depend
-  rules:
-    - changes:
-      - server/**/*
+build:
+  stage: build
+  script:
+    - npx nx build
+  artifacts:
+    paths:
+      - dist/social/
+      - Gemfile
+
+lint:
+  stage: lint
+  script:
+    - npx nx run-many -t lint
+
+test:
+  stage: test
+  script:
+    - npx nx run-many -t test
+
+pages:
+  stage: deploy
+  image: 'ruby:3.2'
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - mkdir public
+    - cp -r dist/social/* public
+    - gem install bundler
+    - bundle install
+    - bundle exec jekyll build -d public
+    - cp -r dist/social/* public
+  only:
+    - main
+  artifacts:
+    paths:
+      - public
