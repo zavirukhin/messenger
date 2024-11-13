@@ -35,7 +35,7 @@ import {
 import { langReady, RequestError } from '@social/shared';
 import { loader } from '../../transloco-loader';
 import { ProfileService } from '../../services/profile/profile.service';
-import { Profile } from '../../types/profile-update.type';
+import { Profile } from '../../types/profile.type';
 
 @Component({
   selector: 'lib-settings-page',
@@ -71,19 +71,11 @@ import { Profile } from '../../types/profile-update.type';
   ]
 })
 export class SettingsPageComponent {
-  public profile = signal<Profile>({
-    id: 0,
-    first_name: 'First name',
-    last_name: 'Last name',
-    custom_name: 'example',
-    avatar_base64: ''
-  });
-
   public readonly form = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
     lastName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
     customName: new FormControl('', [Validators.maxLength(50)]),
-    avatar_base64: new FormControl('')
+    avatarBase64: new FormControl('')
   });
 
   public isLoading = signal<boolean>(true);
@@ -128,44 +120,13 @@ export class SettingsPageComponent {
 
   public onSubmit(): void {
     if (this.form.valid) {
-      const profile: Partial<Profile> = {};
-
-      if (this.form.value.firstName !== this.profile().first_name) {
-        profile.first_name = this.form.value.firstName ?? '';
-      }
-      if (this.form.value.lastName !== this.profile().last_name) {
-        profile.last_name = this.form.value.lastName ?? '';
-      }
-      if (this.form.value.customName !== this.profile().custom_name) {
-        profile.custom_name = this.form.value.customName !== '' 
-          ? this.form.value.customName 
-          : null;
-      }
-      if (this.form.value.avatar_base64 !== this.profile().avatar_base64) {
-        profile.avatar_base64 = this.form.value.avatar_base64 ?? '';
-      }
-
-      if (Object.keys(profile).length) {
-        this.form.disable();
-        this.profileService.updateProfile(profile)
-        .pipe(
-          catchError((error: RequestError) => {
-            this.form.enable();
-
-            this.alerts.open(error.message, {
-              label: this.translocoService.translate('error'),
-              appearance: 'error'
-            })
-            .subscribe();
-
-            return of();
-          })
-        )
-        .subscribe(() => {
-          this.profile.update(v => ({ ...v, ...profile }));
-          this.form.enable();
-        });
-      }
+      this.form.disable();
+      this.profileService.updateProfile({
+        first_name: this.form.controls.firstName.value ?? '',
+        last_name: this.form.controls.lastName.value ?? '',
+        custom_name: this.form.controls.customName.value,
+        avatar_base64: this.form.controls.customName.value
+      })
     }
     else {
       this.form.markAllAsTouched();
