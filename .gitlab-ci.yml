@@ -1,0 +1,20 @@
+stages:
+  - triggers
+
+client:
+  stage: triggers
+  trigger:
+    include: client/.gitlab-ci.yml
+    strategy: depend
+  rules:
+    - changes:
+      - client/**/*
+
+server:
+  stage: triggers
+  trigger:
+    include: server/.gitlab-ci.yml
+    strategy: depend
+  rules:
+    - changes:
+      - server/**/*
