@@ -46,7 +46,7 @@ import { ModalCreateComponent } from '../modal-create/modal-create.component';
   ]
 })
 export class AuthorizationPageComponent implements OnDestroy {
-  public phoneVerify = signal<PhoneVerify>({phone: '', nextAttempt: 0});
+  public phoneVerify = signal<PhoneVerify>({ phone: '', nextAttempt: 0 });
 
   public code = signal<string>('');
 

@@ -21,9 +21,7 @@ export class AuthorizationService {
     return this.http.post<Token>(
       environment.apiUrl + '/auth/validate-code',
       { phone, code },
-      {
-        context: new HttpContext().set(DISABLE_ALERT, ['USER_NOT_FOUND'])
-      }
+      { context: new HttpContext().set(DISABLE_ALERT, ['USER_NOT_FOUND']) }
     ).pipe(
       tap((token: Token) => {
         this.saveToken(token.token);

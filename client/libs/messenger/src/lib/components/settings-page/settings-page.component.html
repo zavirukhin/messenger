@@ -4,20 +4,19 @@
       <tui-avatar
         size="xxl"
         [tuiSkeleton]="isLoading()"
-        [src]="(form.value.avatarBase64 ?? '') | tuiFallbackSrc: '@tui.user' | async"
-        (click)="updateAvatar()"
+        [src]="(profile()?.avatar_base64 ?? '') | tuiFallbackSrc: '@tui.user' | async"
       />
       <h1
         class="username-container"
         tuiTitle="m"
         [tuiSkeleton]="isLoading()"
       >
-        {{ form.value.lastName }} {{ form.value.firstName }}
-        @if (form.value.customName) {
-          <div tuiSubtitle>&#64;{{ form.value.customName }}</div>
+        {{ profile()?.last_name }} {{ profile()?.first_name }}
+        @if (profile()?.custom_name) {
+          <div tuiSubtitle>&#64;{{ profile()?.custom_name }}</div>
         }
         @else {
-          <div tuiSubtitle>Username</div>
+          <div tuiSubtitle>&#64;id{{ profile()?.id }}</div>
         }
       </h1>
     </div>
