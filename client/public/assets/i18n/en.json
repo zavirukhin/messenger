@@ -13,5 +13,8 @@
   "multilingual": {
     "en": "English",
     "ru": "Russian"
-  }
+  },
+  "messenger": "Messenger",
+  "startChatting": "Start Chatting",
+  "description": "Join millions of users who choose our messenger for communication! Enjoy instant messaging, group chats and privacy protection."
 }
