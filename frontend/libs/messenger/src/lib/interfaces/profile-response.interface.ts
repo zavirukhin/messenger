@@ -1,11 +1,11 @@
 export interface ProfileResponse {
   id: number;
   phone: string;
-  first_name: string;
-  last_name: string;
-  last_activity: Date;
-  avatar_base64: string | null;
-  custom_name: string | null;
-  created_at: Date;
-  updated_at: Date;
+  firstName: string;
+  lastName: string;
+  lastActivity: Date;
+  avatarBase64: string | null;
+  customName: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }

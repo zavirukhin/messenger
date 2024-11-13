@@ -20,12 +20,9 @@ export class AuthorizationService {
   public verifyPhone(phone: string, code: string): Observable<Token> {
     return this.http.post<Token>(
       environment.apiUrl + '/auth/validate-code',
+      { phone, code },
       {
-        context: new HttpContext().set(DISABLE_ALERT, ['USER_NOT_FOUND']),
-        params: {
-          phone,
-          code
-        }
+        context: new HttpContext().set(DISABLE_ALERT, ['USER_NOT_FOUND'])
       }
     ).pipe(
       tap((token: Token) => {

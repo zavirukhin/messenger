@@ -35,7 +35,6 @@ import {
 import { langReady, RequestError } from '@social/shared';
 import { loader } from '../../transloco-loader';
 import { ProfileService } from '../../services/profile/profile.service';
-import { Profile } from '../../types/profile.type';
 
 @Component({
   selector: 'lib-settings-page',
@@ -106,13 +105,11 @@ export class SettingsPageComponent {
       })
     )
     .subscribe(([profile]) => {
-      this.profile.set(profile);
-
       this.form.setValue({
-        firstName: profile.first_name,
-        lastName: profile.last_name,
-        customName: profile.custom_name,
-        avatar_base64: profile.avatar_base64
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        customName: profile.customName,
+        avatarBase64: profile.avatarBase64
       });
       this.isLoading.set(false);
     });
@@ -122,11 +119,11 @@ export class SettingsPageComponent {
     if (this.form.valid) {
       this.form.disable();
       this.profileService.updateProfile({
-        first_name: this.form.controls.firstName.value ?? '',
-        last_name: this.form.controls.lastName.value ?? '',
-        custom_name: this.form.controls.customName.value,
-        avatar_base64: this.form.controls.customName.value
-      })
+        firstName: this.form.controls.firstName.value ?? '',
+        lastName: this.form.controls.lastName.value ?? '',
+        customName: this.form.controls.customName.value,
+        avatarBase64: this.form.controls.avatarBase64.value
+      }).subscribe();
     }
     else {
       this.form.markAllAsTouched();
@@ -156,7 +153,7 @@ export class SettingsPageComponent {
 
   private onFileLoad(event: ProgressEvent<FileReader>): void {
     if (typeof event.target?.result === 'string') {
-      this.form.get('avatar_base64')?.setValue(event.target.result);
+      //this.form.get('avatar_base64')?.setValue(event.target.result);
     }
   }
 }
