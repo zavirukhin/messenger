@@ -10,10 +10,6 @@ workflow:
   rules:
     - when: always
 
-workflow:
-  rules:
-    - when: always
-
 stages:
   - install
   - build
