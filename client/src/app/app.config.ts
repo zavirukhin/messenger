@@ -18,6 +18,7 @@ import { firstValueFrom } from 'rxjs';
 import { appRoutes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader.service';
 import { registerLocaleData } from '@angular/common';
+import { MultilingualService } from './services/multilingual.service';
 
 registerLocaleData(localeRu, 'ru-RU', localeRuExtra);
 
@@ -38,11 +39,18 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: (
-        translocoService: TranslocoService
+        translocoService: TranslocoService, multilingualService: MultilingualService
       ) => (() => {
+        const language = multilingualService.getLanguageFromLocalStorage() || 'en';
+        
+        if (language === 'en'){
+          multilingualService.saveLanguageToLocalStorage('en');
+        }
+        translocoService.setActiveLang(language);
+        
         return firstValueFrom(translocoService.load('en'));
       }),
-      deps: [TranslocoService, Sentry.TraceService],
+      deps: [TranslocoService, MultilingualService, Sentry.TraceService],
       multi: true
     },
     provideHttpClient(
