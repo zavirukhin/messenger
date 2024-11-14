@@ -1,25 +1,22 @@
 <div class="navigation-bar">
   <span
     class="button-container"
-    [style.color]="activeTab === 'contacts' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
+    [style.color]="activeTab() === 'contacts' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
     [routerLink]="['/contacts']"
-    (click)="changeTab('contacts')"
   >
     <tui-icon icon="@tui.circle-user" />
   </span>
   <span
     class="button-container"
-    [style.color]="activeTab === 'messenger' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
+    [style.color]="activeTab() === 'messenger' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
     [routerLink]="['/']"
-    (click)="changeTab('messenger')"
   >
     <tui-icon icon="@tui.mail" />
   </span>
   <span
     class="button-container"
-    [style.color]="activeTab === 'settings' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
+    [style.color]="activeTab() === 'settings' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
     [routerLink]="['/settings']"
-    (click)="changeTab('settings')"
   >
     <tui-icon icon="@tui.settings" />
   </span>
