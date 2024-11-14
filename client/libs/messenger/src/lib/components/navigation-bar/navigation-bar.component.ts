@@ -19,7 +19,7 @@ import { Tab } from '../../types/tab.type';
 export class NavigationBarComponent {
   public activeTab: Tab = 'settings';
 
-  changeTab(tab: Tab) {
+  public changeTab(tab: Tab) {
     this.activeTab = tab;
   }
 }
