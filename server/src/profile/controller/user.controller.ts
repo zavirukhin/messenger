@@ -138,6 +138,8 @@ export class UserController {
         custom_name: 'Кастомное имя',
         created_at: '2024-01-01T12:00:00.000Z',
         updated_at: '2024-01-01T12:00:00.000Z',
+        isBlockedByUser: 'true если вы заблокированы найденным пользователем',
+        isBlockedByMe: 'true если вы заблокировали найденного пользователя',
       },
     },
   })
@@ -180,6 +182,8 @@ export class UserController {
         customName: 'Кастомное имя',
         createdAt: '2024-01-01T12:00:00.000Z',
         updatedAt: '2024-01-01T12:00:00.000Z',
+        isBlockedByUser: 'true если вы заблокированы найденным пользователем',
+        isBlockedByMe: 'true если вы заблокировали найденного пользователя',
       },
     },
   })

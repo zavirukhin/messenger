@@ -32,7 +32,7 @@ export class UpdateUserDto {
 
   @ApiProperty({
     description: 'Пользовательское имя (необязательно)',
-    example: 'Ваня',
+    example: 'MyBestNick',
     required: false,
   })
   @IsOptional()

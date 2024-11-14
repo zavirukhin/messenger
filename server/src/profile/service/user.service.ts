@@ -14,7 +14,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(BlockedUser)
     private readonly blockedUserRepository: Repository<BlockedUser>,
-  ) { }
+  ) {}
 
   private async findUserById(userId: number): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -24,7 +24,10 @@ export class UserService {
     return user;
   }
 
-  private async customNameExceptUserExists(userId: number, customName: string): Promise<boolean> {
+  private async customNameExceptUserExists(
+    userId: number,
+    customName: string,
+  ): Promise<boolean> {
     if (!customName) return false;
     return (
       (await this.userRepository.count({
@@ -46,7 +49,7 @@ export class UserService {
     });
   }
 
-  async getProfileById(requestingUserId: number, targetUserId: number) {
+  async getProfileById(requestingUserId: number, userId: number) {
     const user = await this.userRepository.findOne({
       where: { id: requestingUserId },
       select: {
@@ -65,14 +68,16 @@ export class UserService {
       throw new UserNotFoundException();
     }
     const isBlockedByUser = await this.isUserBlockedBy(
-      targetUserId,
+      userId,
       requestingUserId,
     );
 
-    return { ...user, isBlockedByUser };
+    const isBlockedByMe = await this.isUserBlockedBy(requestingUserId, userId);
+
+    return { ...user, isBlockedByUser, isBlockedByMe };
   }
 
-  async getProfileByCustomName(customName: string, targetUserId: number) {
+  async getProfileByCustomName(customName: string, userId: number) {
     if (!customName) {
       throw new UserNotFoundException();
     }
@@ -93,9 +98,10 @@ export class UserService {
     if (!user) {
       throw new UserNotFoundException();
     }
-    const isBlockedByUser = await this.isUserBlockedBy(targetUserId, user.id);
+    const isBlockedByUser = await this.isUserBlockedBy(userId, user.id);
+    const isBlockedByMe = await this.isUserBlockedBy(user.id, userId);
 
-    return { ...user, isBlockedByUser };
+    return { ...user, isBlockedByUser, isBlockedByMe };
   }
 
   private async isUserBlockedBy(
