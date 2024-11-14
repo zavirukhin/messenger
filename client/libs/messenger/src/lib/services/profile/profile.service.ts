@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '@env';
 import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
 import { ProfileResponse } from '../../interfaces/profile-response.interface';
-import { UpdateProfile } from '../../types/update-profile.type';
+import { Profile } from '../../types/profile.type';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class ProfileService {
     );
   }
 
-  public updateProfile(profile: UpdateProfile): Observable<void> {
+  public updateProfile(profile: Omit<Profile, 'id'>): Observable<void> {
     return this.http.patch<void>(environment.apiUrl + '/users/update', profile).pipe(
       tap(() => {
         this.profile?.next({

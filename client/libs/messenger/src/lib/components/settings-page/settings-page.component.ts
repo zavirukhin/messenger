@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { combineLatest, finalize, take } from 'rxjs';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { combineLatest, filter, finalize, take } from 'rxjs';
 import {
   ChangeDetectionStrategy, 
   Component,
@@ -92,19 +92,19 @@ export class SettingsPageComponent {
   public readonly file$ = this.form.controls.avatar.valueChanges;
 
   constructor() {
-    const profile$ = this.profileService.getProfile();
     this.profile = toSignal(this.profileService.getProfile());
 
     combineLatest([
-      profile$,
+      toObservable(this.profile),
       langReady('messenger')
     ]).pipe(
+      filter(([profile]) => !!profile),
       take(1)
     ).subscribe(([profile]) => {
       this.form.setValue({
-        firstName: profile.first_name,
-        lastName: profile.last_name,
-        customName: profile.custom_name,
+        firstName: profile?.first_name ?? '',
+        lastName: profile?.last_name ?? '',
+        customName: profile?.custom_name ?? '',
         avatar: null
       });
       this.isLoading.set(false);
@@ -115,11 +115,13 @@ export class SettingsPageComponent {
     if (this.form.valid) {
       this.form.disable();
 
+      const custom_name = this.form.controls.customName.value;
+
       this.profileService.updateProfile({
         first_name: this.form.controls.firstName.value ?? '',
         last_name: this.form.controls.lastName.value ?? '',
-        custom_name: this.form.controls.customName.value,
-        avatar: this.form.controls.avatar.value
+        custom_name: custom_name ? custom_name : null,
+        avatar_base64: null
       }).pipe(
         finalize(() => this.form.enable())
       ).subscribe();
