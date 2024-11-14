@@ -104,13 +104,13 @@ export class UserController {
     schema: {
       example: {
         id: 1,
-        first_name: 'Иван',
-        last_name: 'Иванов',
-        last_activity: '2024-01-01T12:00:00.000Z',
-        avatar: 'data:image/png;base64,...',
-        custom_name: 'Кастомное имя',
-        created_at: '2024-01-01T12:00:00.000Z',
-        updated_at: '2024-01-01T12:00:00.000Z',
+        firstName: 'Иван',
+        lastName: 'Иванов',
+        lastActivity: '2024-01-01T12:00:00.000Z',
+        avatarBase64: 'data:image/png;base64,...',
+        customName: 'Кастомное имя',
+        createdAt: '2024-01-01T12:00:00.000Z',
+        updatedAt: '2024-01-01T12:00:00.000Z',
       },
     },
   })
@@ -173,13 +173,13 @@ export class UserController {
     schema: {
       example: {
         id: 1,
-        first_name: 'Иван',
-        last_name: 'Иванов',
-        last_activity: '2024-01-01T12:00:00.000Z',
-        avatar: 'data:image/png;base64,...',
-        custom_name: 'Кастомное имя',
-        created_at: '2024-01-01T12:00:00.000Z',
-        updated_at: '2024-01-01T12:00:00.000Z',
+        firstName: 'Иван',
+        lastName: 'Иванов',
+        lastActivity: '2024-01-01T12:00:00.000Z',
+        avatarBase64: 'data:image/png;base64,...',
+        customName: 'Кастомное имя',
+        createdAt: '2024-01-01T12:00:00.000Z',
+        updatedAt: '2024-01-01T12:00:00.000Z',
       },
     },
   })

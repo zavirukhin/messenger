@@ -9,7 +9,7 @@ import {
 
 @Entity('users')
 @Unique(['phone'])
-@Unique(['custom_name'])
+@Unique(['customName'])
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -18,23 +18,23 @@ export class User {
   phone: string;
 
   @Column({ type: 'varchar', length: 50 })
-  first_name: string;
+  firstName: string;
 
   @Column({ type: 'varchar', length: 50 })
-  last_name: string;
+  lastName: string;
 
   @Column({ type: 'timestamp' })
-  last_activity: Date;
+  lastActivity: Date;
 
   @Column({ type: 'text', nullable: true })
-  avatar_base64: string;
+  avatarBase64: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  custom_name: string;
+  customName: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 }

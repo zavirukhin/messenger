@@ -30,8 +30,8 @@ export class AuthService {
   async create(
     phone: string,
     code: string,
-    first_name: string,
-    last_name: string,
+    firstName: string,
+    lastName: string,
   ): Promise<{ token: string }> {
     await this.codeService.validateCode(phone, code, false);
 
@@ -40,7 +40,7 @@ export class AuthService {
     }
     this.codeService.deleteCode(phone);
 
-    const newUser = await this.createUser(phone, first_name, last_name);
+    const newUser = await this.createUser(phone, firstName, lastName);
     const token = await this.jwtService.generateToken(newUser.id);
     return { token };
   }
@@ -59,14 +59,14 @@ export class AuthService {
 
   private async createUser(
     phone: string,
-    first_name: string,
-    last_name: string,
+    firstName: string,
+    lastName: string,
   ): Promise<User> {
     return this.userRepository.save({
       phone,
-      first_name,
-      last_name,
-      last_activity: new Date(),
+      firstName,
+      lastName,
+      lastActivity: new Date(),
     });
   }
 }
