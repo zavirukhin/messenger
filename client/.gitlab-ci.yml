@@ -17,6 +17,14 @@ stages:
   - test
   - deploy
 
+default:
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+
 install:
   stage: install
   extends: .unpack-client
