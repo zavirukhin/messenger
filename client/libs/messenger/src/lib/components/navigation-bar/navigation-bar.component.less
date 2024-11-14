@@ -1,0 +1,26 @@
+.navigation-bar {
+  height: 100vh;
+  width: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--tui-background-base);
+  border-right: 1px solid var(--tui-border-normal);
+}
+
+.button-container {
+  padding: 12px;
+  cursor: pointer;
+  transition: color .3s ease-in-out;
+}
+
+@media screen and (max-width: 768px) {
+  .navigation-bar {
+    height: 48px;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    border-top: 1px solid var(--tui-border-normal);
+    border-right: unset;
+  }
+}
