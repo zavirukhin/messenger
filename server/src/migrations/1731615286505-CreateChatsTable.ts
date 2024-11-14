@@ -56,12 +56,20 @@ export class CreateChatsTable1731615286505 implements MigrationInterface {
           },
           {
             name: 'name',
-            type: 'enum',
-            enum: ['admin', 'owner', 'user'],
+            type: 'varchar',
+            length: '50',
           },
         ],
       }),
     );
+
+    await queryRunner.query(`
+      INSERT INTO "chat-roles" ("name") 
+      VALUES 
+        ('admin'), 
+        ('owner'), 
+        ('user');
+    `);
 
     await queryRunner.createTable(
       new Table({

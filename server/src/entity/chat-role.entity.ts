@@ -11,6 +11,11 @@ export class ChatRole {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'enum', enum: UserRole })
+  @Column({
+    type: 'varchar',
+    length: 25,
+    enum: UserRole,
+    enumName: 'user_role_enum',
+  })
   name: UserRole;
 }
