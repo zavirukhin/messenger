@@ -1,0 +1,71 @@
+stages:
+  - install
+  - lint
+  - format
+  - test
+
+workflow: 
+  rules: 
+    - when: always
+    
+.unpack-server:
+  before_script:
+    - rm -r frontend || true
+    - cp -a server/. .
+    - rm -r server
+
+
+default:
+  image: node:20-alpine
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+
+install:
+  stage: install
+  extends: .unpack-server
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 24 hour
+
+# Линтинг кода
+lint:
+  stage: lint
+  extends: .unpack-server
+  script:
+    - npm run lint
+  dependencies:
+    - install
+
+# Форматирование кода с Prettier
+format:
+  stage: format
+  extends: .unpack-server
+  script:
+    - npm run format -- --check
+  dependencies:
+    - install
+
+# Запуск тестов
+test:
+  stage: test
+  extends: .unpack-server
+  script:
+    - npm run test
+  dependencies:
+    - install
+    
+# Покрытие тестами
+coverage:
+  stage: test
+  extends: .unpack-server
+  script:
+    - npm run test:cov
+  dependencies:
+    - install
