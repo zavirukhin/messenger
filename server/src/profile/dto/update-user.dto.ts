@@ -17,7 +17,7 @@ export class UpdateUserDto {
   @IsString({ message: 'Имя пользователя должно быть строкой' })
   @IsNotEmpty({ message: 'Имя пользователя не должно быть пустой строкой' })
   @Length(1, 50, { message: 'Имя должно быть длиной от 1 до 50 символов' })
-  first_name?: string;
+  firstName?: string;
 
   @ApiProperty({
     description: 'Фамилия пользователя (необязательно)',
@@ -28,7 +28,7 @@ export class UpdateUserDto {
   @IsString({ message: 'Фамилия пользователя должна быть строкой' })
   @IsNotEmpty({ message: 'Фамилия пользователя не должна быть пустой строкой' })
   @Length(1, 50, { message: 'Фамилия должна быть длиной от 1 до 50 символов' })
-  last_name?: string;
+  lastName?: string;
 
   @ApiProperty({
     description: 'Пользовательское имя (необязательно)',
@@ -46,7 +46,7 @@ export class UpdateUserDto {
   @Length(1, 50, {
     message: 'Пользовательское имя должно быть длиной от 1 до 50 символов',
   })
-  custom_name?: string;
+  customName?: string;
 
   @ApiProperty({
     description: 'Аватар пользователя в формате base64 (необязательно)',
@@ -56,5 +56,5 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString({ message: 'Аватар пользователя должен быть строкой' })
   @IsNotEmpty({ message: 'Аватар пользователя не должно быть пустой строкой' })
-  avatar_base64?: string;
+  avatarBase64?: string;
 }

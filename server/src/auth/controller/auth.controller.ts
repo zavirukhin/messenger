@@ -10,7 +10,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../jwt/guard/jwt-auth.guard';
 import { ErrorCode } from '../../error-codes';
-import { CreateUserDto } from '../dto/create-user.fto';
+import { CreateUserDto } from '../dto/create-user.dto';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { MyJwtService } from 'src/jwt/service/jwt.service';
 
@@ -210,8 +210,8 @@ export class AuthController {
     return await this.authService.create(
       createUserDto.phone,
       createUserDto.code,
-      createUserDto.first_name,
-      createUserDto.last_name,
+      createUserDto.firstName,
+      createUserDto.lastName,
     );
   }
 

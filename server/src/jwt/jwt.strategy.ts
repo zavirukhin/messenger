@@ -28,13 +28,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       where: { id: payload.id },
       select: {
         id: true,
-        first_name: true,
-        last_name: true,
-        last_activity: true,
-        avatar_base64: true,
-        custom_name: true,
-        created_at: true,
-        updated_at: true,
+        firstName: true,
+        lastName: true,
+        lastActivity: true,
+        avatarBase64: true,
+        customName: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
   }

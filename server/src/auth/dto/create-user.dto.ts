@@ -24,7 +24,7 @@ export class CreateUserDto {
   })
   @IsString({ message: 'Имя должно быть строкой' })
   @Length(1, 50, { message: 'Имя должно быть длиной от 1 до 50 символов' })
-  first_name: string;
+  firstName: string;
 
   @ApiProperty({
     example: 'Иванов',
@@ -32,5 +32,5 @@ export class CreateUserDto {
   })
   @IsString({ message: 'Фамилия должна быть строкой' })
   @Length(1, 50, { message: 'Фамилия должна быть длиной от 1 до 50 символов' })
-  last_name: string;
+  lastName: string;
 }

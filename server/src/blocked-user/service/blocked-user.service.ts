@@ -98,11 +98,10 @@ export class BlockedUserService {
       select: {
         blockedUser: {
           id: true,
-          first_name: true,
-          last_name: true,
-          avatar_base64: true,
-          custom_name: true,
-          phone: false,
+          firstName: true,
+          lastName: true,
+          avatarBase64: true,
+          customName: true,
         },
       },
     });

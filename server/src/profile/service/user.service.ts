@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { User } from '../../entity/user.entity';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserNotFoundException } from '../../exception/user-not-found.exception';
 import { CustomNameAlreadyExistsException } from '../../exception/custom-name-already-exists.exception';
-import { NoChangesDetectedException } from '../../exception/no-changes-detection.exception';
 import { BlockedUser } from '../../entity/blocked-user.entity';
 
 @Injectable()
@@ -15,7 +14,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(BlockedUser)
     private readonly blockedUserRepository: Repository<BlockedUser>,
-  ) {}
+  ) { }
 
   private async findUserById(userId: number): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -25,37 +24,25 @@ export class UserService {
     return user;
   }
 
-  private async customNameExists(customName: string): Promise<boolean> {
+  private async customNameExceptUserExists(userId: number, customName: string): Promise<boolean> {
     if (!customName) return false;
     return (
       (await this.userRepository.count({
-        where: { custom_name: customName },
+        where: { customName: customName, id: Not(userId) },
       })) > 0
     );
   }
 
   async updateUser(userId: number, updateUserDto: UpdateUserDto) {
-    if (Object.keys(updateUserDto).length === 0) {
-      throw new NoChangesDetectedException();
-    }
-
-    const user = await this.findUserById(userId);
-    const hasChanges = Object.keys(updateUserDto).some(
-      (key) => updateUserDto[key] !== user[key],
-    );
-
-    if (!hasChanges) {
-      throw new NoChangesDetectedException();
-    }
     if (
-      updateUserDto.custom_name &&
-      (await this.customNameExists(updateUserDto.custom_name))
+      updateUserDto.customName &&
+      (await this.customNameExceptUserExists(userId, updateUserDto.customName))
     ) {
       throw new CustomNameAlreadyExistsException();
     }
     await this.userRepository.update(userId, {
       ...updateUserDto,
-      last_activity: new Date(),
+      lastActivity: new Date(),
     });
   }
 
@@ -64,13 +51,13 @@ export class UserService {
       where: { id: requestingUserId },
       select: {
         id: true,
-        first_name: true,
-        last_name: true,
-        last_activity: true,
-        avatar_base64: true,
-        custom_name: true,
-        created_at: true,
-        updated_at: true,
+        firstName: true,
+        lastName: true,
+        lastActivity: true,
+        avatarBase64: true,
+        customName: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -91,15 +78,15 @@ export class UserService {
     }
 
     const user = await this.userRepository.findOne({
-      where: { custom_name: customName },
+      where: { customName: customName },
       select: {
         id: true,
-        first_name: true,
-        last_name: true,
-        avatar_base64: true,
-        custom_name: true,
-        created_at: true,
-        updated_at: true,
+        firstName: true,
+        lastName: true,
+        avatarBase64: true,
+        customName: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
