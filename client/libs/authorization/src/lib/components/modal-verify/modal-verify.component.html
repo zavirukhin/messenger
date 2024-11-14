@@ -1,0 +1,41 @@
+<ng-container *transloco="let t">
+  <div class="modal-container">
+    <div
+      class="header-container"
+      tuiHeader
+    >
+      <h1 tuiTitle>{{ t('authorization.signIn') }}</h1>
+      @if (nextAttempt() > 0) {
+        <span tuiSubtitle>{{ t('authorization.codeSubtitle', { nextAttempt: nextAttempt() }) }}</span>
+      }
+      @else {
+        <button
+          tuiLink
+          type="button"
+          [pseudo]="true"
+          [disabled]="form.disabled"
+          (click)="sendCode()"
+        >
+          {{ t('authorization.resendCode') }}
+        </button>
+      }
+    </div>
+
+    <form [formGroup]="form">
+      <div class="code-input">
+        <tui-textfield>
+          <label tuiLabel>{{ t('authorization.code') }}</label>
+          <input
+            tuiTextfield
+            formControlName="code"
+            maxLength="6"
+          />
+        </tui-textfield>
+      </div>
+      <tui-error
+        formControlName="code"
+        [error]="[] | tuiFieldError | async"
+      />
+    </form>
+  </div>
+</ng-container>
