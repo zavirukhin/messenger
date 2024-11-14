@@ -27,6 +27,28 @@
     >
       <div class="input-container">
         <div>
+          @if (!form.controls.avatar.value) {
+            <label
+              tuiInputFiles
+              [tuiSkeleton]="isLoading()"
+            >
+              <input
+                tuiInputFiles
+                accept="image/*"
+                formControlName="avatar"
+              />
+            </label>
+          }
+          @if (file$ | async; as file) {
+            <tui-files class="tui-space_top-1">
+              <tui-file
+                [file]="file"
+                (remove)="removeFile()"
+              />
+            </tui-files>
+          }
+        </div>
+        <div>
           <tui-textfield
             tuiTextfieldSize="l"
             [tuiSkeleton]="isLoading()"

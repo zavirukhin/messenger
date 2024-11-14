@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@env';
-import { BehaviorSubject, finalize, map, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
 import { ProfileResponse } from '../../interfaces/profile-response.interface';
-import { Profile } from '../../types/profile.type';
+import { UpdateProfile } from '../../types/update-profile.type';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +11,9 @@ import { Profile } from '../../types/profile.type';
 export class ProfileService {
   private readonly http = inject(HttpClient);
 
-  public profile: BehaviorSubject<ProfileResponse> | null = null;
+  private profile: BehaviorSubject<ProfileResponse> | null = null;
 
-  getProfile(): Observable<ProfileResponse> {
+  public getProfile(): Observable<ProfileResponse> {
     if (this.profile) {
       return this.profile;
     }
@@ -26,9 +26,9 @@ export class ProfileService {
     );
   }
 
-  updateProfile(profile: Omit<Profile, 'id'>): Observable<void> {
+  public updateProfile(profile: UpdateProfile): Observable<void> {
     return this.http.patch<void>(environment.apiUrl + '/users/update', profile).pipe(
-      finalize(() => {
+      tap(() => {
         this.profile?.next({
           ...this.profile?.value,
           ...profile
@@ -37,7 +37,7 @@ export class ProfileService {
     );
   }
 
-  deleteToken(): void {
+  public deleteToken(): void {
     localStorage.removeItem('token');
   }
 }
