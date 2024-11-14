@@ -102,9 +102,9 @@ export class SettingsPageComponent {
       take(1)
     ).subscribe(([profile]) => {
       this.form.setValue({
-        firstName: profile?.first_name ?? '',
-        lastName: profile?.last_name ?? '',
-        customName: profile?.custom_name ?? '',
+        firstName: profile?.firstName ?? '',
+        lastName: profile?.lastName ?? '',
+        customName: profile?.customName ?? '',
         avatar: null
       });
       this.isLoading.set(false);
@@ -118,10 +118,10 @@ export class SettingsPageComponent {
       const custom_name = this.form.controls.customName.value;
 
       this.profileService.updateProfile({
-        first_name: this.form.controls.firstName.value ?? '',
-        last_name: this.form.controls.lastName.value ?? '',
-        custom_name: custom_name ? custom_name : null,
-        avatar_base64: null
+        firstName: this.form.controls.firstName.value ?? '',
+        lastName: this.form.controls.lastName.value ?? '',
+        customName: custom_name ? custom_name : null,
+        avatarBase64: null
       }).pipe(
         finalize(() => this.form.enable())
       ).subscribe();

@@ -4,16 +4,16 @@
       <tui-avatar
         size="xxl"
         [tuiSkeleton]="isLoading()"
-        [src]="(profile()?.avatar_base64 ?? '') | tuiFallbackSrc: '@tui.user' | async"
+        [src]="(profile()?.avatarBase64 ?? '') | tuiFallbackSrc: '@tui.user' | async"
       />
       <h1
         class="username-container"
         tuiTitle="m"
         [tuiSkeleton]="isLoading()"
       >
-        {{ profile()?.last_name }} {{ profile()?.first_name }}
-        @if (profile()?.custom_name) {
-          <div tuiSubtitle>&#64;{{ profile()?.custom_name }}</div>
+        {{ profile()?.lastName }} {{ profile()?.firstName }}
+        @if (profile()?.customName) {
+          <div tuiSubtitle>&#64;{{ profile()?.customName }}</div>
         }
         @else {
           <div tuiSubtitle>&#64;id{{ profile()?.id }}</div>

@@ -1,6 +1,6 @@
 export interface CreateProfile {
-  last_name: string;
-  first_name: string;
+  lastName: string;
+  firstName: string;
   phone: string;
   code: string;
 }
