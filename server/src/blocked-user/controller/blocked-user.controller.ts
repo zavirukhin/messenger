@@ -6,9 +6,11 @@ import {
   UseGuards,
   Request,
   HttpStatus,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { BlockedUserService } from '../service/blocked-user.service';
-import { BlockUnblockUserDto } from '../dto/block-unblock-user.dto';
+import { BlockUserDto } from '../dto/block-user.dto';
 import {
   ApiTags,
   ApiOperation,
@@ -72,23 +74,23 @@ export class BlockedUserController {
   })
   @ApiBody({
     description: 'Данные для блокировки пользователя',
-    type: BlockUnblockUserDto,
+    type: BlockUserDto,
   })
   async blockUser(
     @Request() req,
-    @Body() blockUnblockUserDto: BlockUnblockUserDto,
+    @Body() blockUnblockUserDto: BlockUserDto,
   ): Promise<void> {
     const userId = req.user.id;
     const blockedUserId = blockUnblockUserDto.userId;
     await this.blockedUserService.blockUser(blockedUserId, userId);
   }
 
-  @Post('unblock')
+  @Delete('unblock/:bannedId')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Разблокировка пользователя' })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'Пользователь разблокирован.',
   })
   @ApiResponse({
@@ -117,17 +119,12 @@ export class BlockedUserController {
     status: 401,
     description: 'Не авторизован.',
   })
-  @ApiBody({
-    description: 'Данные для разблокировки пользователя',
-    type: BlockUnblockUserDto,
-  })
   async unblockUser(
     @Request() req,
-    @Body() blockUnblockUserDto: BlockUnblockUserDto,
+    @Param('bannedId') blockedId: number,
   ): Promise<void> {
     const userId = req.user.id;
-    const blockedUserId = blockUnblockUserDto.userId;
-    await this.blockedUserService.unblockUser(blockedUserId, userId);
+    await this.blockedUserService.unblockUser(blockedId, userId);
   }
 
   @Get('list')
