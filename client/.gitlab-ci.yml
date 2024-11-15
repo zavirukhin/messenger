@@ -17,15 +17,15 @@ stages:
   - test
   - deploy
 
+default:
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules
+
 install:
   stage: install
   extends: .unpack-client
-  cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules
   script:
     - npm ci --no-audit --no-fund --prefer-offline
 
