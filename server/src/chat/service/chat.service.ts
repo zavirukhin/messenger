@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import { Chat } from '../../entity/chat.entity';
 import { ChatMember } from '../../entity/chat-member.entity';
@@ -10,7 +6,10 @@ import { ChatRole, UserRole } from '../../entity/chat-role.entity';
 import { User } from '../../entity/user.entity';
 import { BlockedUser } from '../../entity/blocked-user.entity';
 import { UserNotFoundException } from '../../exception/user-not-found.exception';
-import { CannotAddSelfAsMemberChatException } from 'src/exception/cannot-add-self-as-member-chat.exception';
+import { CannotAddSelfAsMemberChatException } from '../../exception/cannot-add-self-as-member-chat.exception';
+import { UsersNotFoundException } from '../../exception/users-not-found.exception';
+import { CannotCreateChatWithBlockedUsers } from '../../exception/cannot-create-chat-with-blocked-users.exception';
+import { CannotCreateChatByBlockedUsers } from '../../exception/cannot-create-chat-by-blocked-users.exception';
 
 @Injectable()
 export class ChatService {
@@ -39,7 +38,7 @@ export class ChatService {
       });
       await manager.save(creatorMember);
 
-      return savedChat;
+      return { ...savedChat, memberIds: [creatorId] };
     });
   }
 
@@ -71,9 +70,7 @@ export class ChatService {
       );
 
       if (missingMemberIds.length > 0) {
-        throw new NotFoundException(
-          `Members with IDs ${missingMemberIds.join(', ')} not found`,
-        );
+        throw new UsersNotFoundException(missingMemberIds);
       }
 
       // Проверка, заблокировал ли текущий пользователь других участников
@@ -89,9 +86,7 @@ export class ChatService {
         const blockingMemberIds = blockingMembers.map(
           (blockStatus) => blockStatus.blockedUser.id,
         );
-        throw new ConflictException(
-          `You have blocked members with IDs: ${blockingMemberIds.join(', ')}`,
-        );
+        throw new CannotCreateChatWithBlockedUsers(blockingMemberIds);
       }
 
       // Проверка, заблокирован ли текущий пользователь другими участниками
@@ -107,9 +102,7 @@ export class ChatService {
         const blockedMemberIds = blockedByMembers.map(
           (blockStatus) => blockStatus.blockedByUser.id,
         );
-        throw new ConflictException(
-          `You are blocked by members with IDs: ${blockedMemberIds.join(', ')}`,
-        );
+        throw new CannotCreateChatByBlockedUsers(blockedMemberIds);
       }
 
       const chat = await manager.create(Chat, { name: chatName });
@@ -139,7 +132,10 @@ export class ChatService {
 
       await manager.save(memberEntities);
 
-      return savedChat;
+      return {
+        ...savedChat,
+        memberIds: [creatorId, foundMemberIds],
+      };
     });
   }
 }

@@ -40,8 +40,18 @@ export class ChatController {
     description: 'Неверные входные данные.',
   })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Чат с пользователями создан.',
+    schema: {
+      example: {
+        id: 1,
+        name: 'Мой чат',
+        avatar: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...',
+        createdAt: '2024-01-01T12:00:00.000Z',
+        updatedAt: '2024-01-01T12:00:00.000Z',
+        memberIds: [1, 2, 3],
+      },
+    },
   })
   @ApiResponse({ status: 401, description: 'Не авторизован.' })
   @ApiBody({
