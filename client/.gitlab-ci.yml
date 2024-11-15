@@ -27,7 +27,7 @@ install:
     paths:
       - node_modules
   before_script:
-    cp ${SENTRY_ENV} .env.sentry-build-plugin
+    - cp ${SENTRY_ENV} .env.sentry-build-plugin
   script:
     - npm ci --no-audit --no-fund --prefer-offline
 
