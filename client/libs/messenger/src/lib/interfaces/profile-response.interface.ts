@@ -1,6 +1,5 @@
 export interface ProfileResponse {
   id: number;
-  phone: string;
   firstName: string;
   lastName: string;
   lastActivity: Date;

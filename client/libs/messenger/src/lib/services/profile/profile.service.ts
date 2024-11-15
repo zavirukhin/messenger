@@ -4,6 +4,7 @@ import { environment } from '@env';
 import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
 import { ProfileResponse } from '../../interfaces/profile-response.interface';
 import { Profile } from '../../types/profile.type';
+import { User } from '../../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,22 @@ export class ProfileService {
         });
       })
     );
+  }
+
+  public getProfileById(id: string): Observable<User> {
+    return this.http.get<User>(environment.apiUrl + `/users/profile/${id}`);
+  }
+
+  public blockUserById(id: number): Observable<void> {
+    return this.http.post<void>(environment.apiUrl + '/blocked-users/block', {
+      userId: id
+    });
+  }
+
+  public addToContact(id: number): Observable<void> {
+    return this.http.post<void>(environment.apiUrl + '/contacts/add', {
+      contactId: id
+    });
   }
 
   public deleteToken(): void {

@@ -3,5 +3,10 @@
   "firstName": "Имя",
   "customName": "Ссылка",
   "logout": "Выйти",
-  "change": "Сохранить"
+  "change": "Сохранить",
+  "blocked": "Заблокирован",
+  "lastSeen": "Был в сети",
+  "addContact": "Добавить в контакты",
+  "addToChat": "Добавить в чат",
+  "blockUser": "Заблокировать"
 }

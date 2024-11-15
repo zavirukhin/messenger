@@ -16,7 +16,6 @@ import {
   Validators
 } from '@angular/forms';
 import {
-  provideTranslocoScope,
   TranslocoDirective,
   TranslocoService
 } from '@jsverse/transloco';
@@ -35,7 +34,6 @@ import {
   TuiTitle
 } from '@taiga-ui/core';
 import { langReady } from '@social/shared';
-import { loader } from '../../transloco-loader';
 import { ProfileService } from '../../services/profile/profile.service';
 import { Profile } from '../../types/profile.type';
 
@@ -66,11 +64,7 @@ import { Profile } from '../../types/profile.type';
       useFactory: (transloco: TranslocoService) => ({
         required: transloco.translate('required')
       })
-    },
-    provideTranslocoScope({
-      scope: 'messenger',
-      loader
-    })
+    }
   ]
 })
 export class SettingsPageComponent {
