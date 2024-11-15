@@ -11,11 +11,13 @@ import { UsersNotFoundException } from '../../exception/users-not-found.exceptio
 import { CannotCreateChatWithBlockedUsers } from '../../exception/cannot-create-chat-with-blocked-users.exception';
 import { CannotCreateChatByBlockedUsers } from '../../exception/cannot-create-chat-by-blocked-users.exception';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ChatNotFoundException } from 'src/exception/chat-not-found.exception';
-import { UserNotAMemberChatException } from 'src/exception/user-not-a-member-chat.exception';
-import { CannotChangeSelfChatMemberRoleException } from 'src/exception/cannot-change-self-chat-member-role.exception';
-import { InsufficientPermissionsChangeChatMemberRoleException } from 'src/exception/insufficient-permissions-change-chat-member-role.exception';
-import { MemberRoleNotFoundException } from 'src/exception/member-role-not-found.exception';
+import { ChatNotFoundException } from '../../exception/chat-not-found.exception';
+import { UserNotAMemberChatException } from '../../exception/user-not-a-member-chat.exception';
+import { CannotChangeSelfChatMemberRoleException } from '../../exception/cannot-change-self-chat-member-role.exception';
+import { InsufficientPermissionsChangeChatMemberRoleException } from '../../exception/insufficient-permissions-change-chat-member-role.exception';
+import { MemberRoleNotFoundException } from '../../exception/member-role-not-found.exception';
+import { UpdateChatDto } from '../dto/update-chat.dto';
+import { InsufficientPermissionsUpdateChatException } from '../../exception/insufficient-permissions-update-chat.exception';
 
 @Injectable()
 export class ChatService {
@@ -200,5 +202,34 @@ export class ChatService {
 
     targetUser.chatRole = newRole;
     await this.chatMemberRepository.save(targetUser);
+  }
+
+  async updateChat(userId: number, updateChatDto: UpdateChatDto) {
+    const chat = await this.chatRepository.findOne({
+      where: { id: updateChatDto.chatId },
+    });
+
+    if (!chat) {
+      throw new ChatNotFoundException();
+    }
+
+    const userInChat = await this.chatMemberRepository.findOne({
+      where: { user: { id: userId }, chat: { id: updateChatDto.chatId } },
+      relations: ['chatRole'],
+    });
+
+    if (!userInChat) {
+      throw new UserNotAMemberChatException();
+    }
+
+    const userRole = userInChat.chatRole.name;
+    if (![UserRole.ADMIN, UserRole.OWNER].includes(userRole)) {
+      throw new InsufficientPermissionsUpdateChatException();
+    }
+
+    await this.chatRepository.update(updateChatDto.chatId, {
+      name: updateChatDto.name,
+      avatar: updateChatDto.avatar,
+    });
   }
 }

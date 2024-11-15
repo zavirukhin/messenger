@@ -5,6 +5,7 @@ import {
   UseGuards,
   HttpStatus,
   Post,
+  Patch,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,6 +20,7 @@ import { ChatService } from '../service/chat.service';
 import { ErrorCode } from '../../error-codes';
 import { ApiMultipleResponse } from '../../swagger/decorator/api-multi-response.decorator';
 import { ChangeUserRoleDto } from '../dto/change-user-role.dto';
+import { UpdateChatDto } from '../dto/update-chat.dto';
 
 @ApiTags('chats')
 @Controller('chats')
@@ -206,5 +208,71 @@ export class ChatController {
       changeUserRoleDto.chatId,
       changeUserRoleDto.newRoleId,
     );
+  }
+
+  @Patch('update')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Обновить информацию о чате',
+  })
+  @ApiMultipleResponse(
+    {
+      status: 404,
+      schema: {
+        example: {
+          message: 'Чат не найден.',
+          errorCode: ErrorCode.CHAT_NOT_FOUND,
+          statusCode: HttpStatus.NOT_FOUND,
+        },
+      },
+      description: 'Чат не найден.',
+    },
+    {
+      status: 404,
+      schema: {
+        example: {
+          message: 'Пользователь не является членом чата.',
+          errorCode: ErrorCode.USER_NOT_A_MEMBER_CHAT,
+          statusCode: HttpStatus.FORBIDDEN,
+        },
+      },
+      description: 'Пользователь не является членом чата.',
+    },
+  )
+  @ApiResponse({
+    status: 400,
+    schema: {
+      example: {
+        message: ['Message'],
+        error: 'Bad Request',
+        statusCode: HttpStatus.BAD_REQUEST,
+      },
+    },
+    description: 'Неверные входные данные.',
+  })
+  @ApiResponse({
+    status: 403,
+    schema: {
+      example: {
+        message: 'Недостаточно прав для обновления чата.',
+        errorCode: ErrorCode.INSUFFICIENT_PERMISSIONS_UPDATE_CHAT,
+        statusCode: HttpStatus.FORBIDDEN,
+      },
+    },
+    description: 'Недостаточно прав для обновления чата.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Данные чата обновлены.',
+  })
+  @ApiResponse({ status: 401, description: 'Не авторизован.' })
+  @ApiBody({
+    description: 'Данные для обновлении чата.',
+    type: UpdateChatDto,
+  })
+  async updateUser(@Request() req, @Body() updateUserDto: UpdateChatDto) {
+    const userId = req.user.id;
+    return await this.chatService.updateChat(userId, updateUserDto);
   }
 }
