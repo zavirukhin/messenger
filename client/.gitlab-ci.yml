@@ -1,3 +1,5 @@
+image: node:20-alpine
+
 .unpack-client:
   before_script:
     - rm -r server || true
