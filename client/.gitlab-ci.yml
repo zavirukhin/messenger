@@ -26,8 +26,6 @@ install:
         - package-lock.json
     paths:
       - node_modules
-  before_script:
-    - cp ${SENTRY_ENV} .env.sentry-build-plugin
   script:
     - npm ci --no-audit --no-fund --prefer-offline
 
@@ -36,6 +34,8 @@ build:
   extends: .unpack-client
   script:
     - npx nx build
+  before_script:
+    - cp ${SENTRY_ENV} .env.sentry-build-plugin
   artifacts:
     paths:
       - dist/social/
