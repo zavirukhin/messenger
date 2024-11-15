@@ -23,9 +23,10 @@ export class CreateChatWithMembersDto {
   @ApiProperty({
     description: 'Список ID пользователей, которых нужно добавить в чат',
     example: [2, 3, 4],
+    required: false,
   })
-  @IsArray({ message: 'Список ID пользователей должен быть массивом' })
   @IsOptional()
+  @IsArray({ message: 'Список ID пользователей должен быть массивом' })
   @ArrayNotEmpty({ message: 'Список ID пользователей не может быть пустым' })
   memberIds: number[];
 }

@@ -9,6 +9,8 @@ import { ChatMember } from '../../entity/chat-member.entity';
 import { ChatRole, UserRole } from '../../entity/chat-role.entity';
 import { User } from '../../entity/user.entity';
 import { BlockedUser } from '../../entity/blocked-user.entity';
+import { UserNotFoundException } from '../../exception/user-not-found.exception';
+import { CannotAddSelfAsMemberChatException } from 'src/exception/cannot-add-self-as-member-chat.exception';
 
 @Injectable()
 export class ChatService {
@@ -21,7 +23,7 @@ export class ChatService {
     return this.dataSource.transaction(async (manager) => {
       const creator = await manager.findOne(User, { where: { id: creatorId } });
       if (!creator) {
-        throw new NotFoundException(`Creator with ID ${creatorId} not found`);
+        throw new UserNotFoundException();
       }
 
       const chat = await manager.create(Chat, { name: chatName });
@@ -51,12 +53,12 @@ export class ChatService {
     return this.dataSource.transaction(async (manager) => {
       const creator = await manager.findOne(User, { where: { id: creatorId } });
       if (!creator) {
-        throw new NotFoundException(`Creator with ID ${creatorId} not found`);
+        throw new UserNotFoundException();
       }
       memberIds = [...new Set(memberIds)];
 
       if (memberIds.includes(creatorId)) {
-        throw new ConflictException('Cannot add self two times');
+        throw new CannotAddSelfAsMemberChatException();
       }
 
       const members = await manager.find(User, {
