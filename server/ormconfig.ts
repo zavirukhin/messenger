@@ -6,6 +6,10 @@ import { BlockedUser } from './src/entity/blocked-user.entity';
 import { CreateBlockedUsersTable1731174734262 } from './src/migrations/1731174734262-CreateBlockedUsersTable';
 import { Contact } from './src/entity/contact.entity';
 import { CreateContactsTable1731195410302 } from './src/migrations/1731195410302-CreateContactsTable';
+import { Chat } from './src/entity/chat.entity';
+import { ChatRole } from './src/entity/chat-role.entity';
+import { ChatMember } from './src/entity/chat-member.entity';
+import { CreateChatsTable1731615286505 } from './src/migrations/1731615286505-CreateChatsTable';
 
 dotenv.config();
 
@@ -19,7 +23,7 @@ export const dataSourceOptions: DataSourceOptions = {
   logging: process.env.DB_LOGGING === 'true',
   synchronize: process.env.DB_SYNCHRONIZE === 'true',
   migrationsRun: process.env.DB_MIGRATIONS_RUN === 'true',
-  entities: [User, BlockedUser, Contact],
-  migrations: [UserInit1730566248080, CreateBlockedUsersTable1731174734262, CreateContactsTable1731195410302],
+  entities: [User, BlockedUser, Contact, Chat, ChatRole, ChatMember],
+  migrations: [UserInit1730566248080, CreateBlockedUsersTable1731174734262, CreateContactsTable1731195410302, CreateChatsTable1731615286505],
 };
 export const AppDataSource = new DataSource(dataSourceOptions);
