@@ -27,7 +27,7 @@ install:
     paths:
       - node_modules
   script:
-    - npm ci --cache .npm --prefer-offline
+    - npm ci --no-audit --no-fund --prefer-offline
 
 build:
   stage: build
