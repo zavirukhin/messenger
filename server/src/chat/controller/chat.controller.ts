@@ -193,7 +193,7 @@ export class ChatController {
   )
   @ApiResponse({ status: 401, description: 'Не авторизован.' })
   @ApiBody({
-    description: 'Данные для создания чата с пользователями.',
+    description: 'Данные для изменения роли пользователя в чате.',
     type: ChangeUserRoleDto,
   })
   async changeUserRole(
