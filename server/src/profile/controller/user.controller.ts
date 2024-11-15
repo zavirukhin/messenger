@@ -140,6 +140,7 @@ export class UserController {
         updated_at: '2024-01-01T12:00:00.000Z',
         isBlockedByUser: 'true если вы заблокированы найденным пользователем',
         isBlockedByMe: 'true если вы заблокировали найденного пользователя',
+        isContactedByMe: 'true если вы добавили пользователя в контакты',
       },
     },
   })
@@ -184,6 +185,7 @@ export class UserController {
         updatedAt: '2024-01-01T12:00:00.000Z',
         isBlockedByUser: 'true если вы заблокированы найденным пользователем',
         isBlockedByMe: 'true если вы заблокировали найденного пользователя',
+        isContactedByMe: 'true если вы добавили пользователя в контакты',
       },
     },
   })

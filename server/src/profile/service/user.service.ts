@@ -6,6 +6,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserNotFoundException } from '../../exception/user-not-found.exception';
 import { CustomNameAlreadyExistsException } from '../../exception/custom-name-already-exists.exception';
 import { BlockedUser } from '../../entity/blocked-user.entity';
+import { Contact } from '../../entity/contact.entity';
 
 @Injectable()
 export class UserService {
@@ -14,6 +15,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(BlockedUser)
     private readonly blockedUserRepository: Repository<BlockedUser>,
+    @InjectRepository(Contact)
+    private readonly contactedUserRepository: Repository<Contact>,
   ) {}
 
   private async findUserById(userId: number): Promise<User> {
@@ -73,8 +76,8 @@ export class UserService {
     );
 
     const isBlockedByMe = await this.isUserBlockedBy(requestingUserId, userId);
-
-    return { ...user, isBlockedByUser, isBlockedByMe };
+    const isContactedByMe = await this.isUserContactedBy(user.id, userId);
+    return { ...user, isBlockedByUser, isBlockedByMe, isContactedByMe };
   }
 
   async getProfileByCustomName(customName: string, userId: number) {
@@ -100,8 +103,8 @@ export class UserService {
     }
     const isBlockedByUser = await this.isUserBlockedBy(userId, user.id);
     const isBlockedByMe = await this.isUserBlockedBy(user.id, userId);
-
-    return { ...user, isBlockedByUser, isBlockedByMe };
+    const isContactedByMe = await this.isUserContactedBy(user.id, userId);
+    return { ...user, isBlockedByUser, isBlockedByMe, isContactedByMe };
   }
 
   private async isUserBlockedBy(
@@ -115,5 +118,17 @@ export class UserService {
       },
     });
     return !!isBlocked;
+  }
+  private async isUserContactedBy(
+    contactedUser: number,
+    contactedByUser: number,
+  ): Promise<boolean> {
+    const isContacted = await this.contactedUserRepository.findOne({
+      where: {
+        contactedUser: { id: contactedUser },
+        contactedByUser: { id: contactedByUser },
+      },
+    });
+    return !!isContacted;
   }
 }

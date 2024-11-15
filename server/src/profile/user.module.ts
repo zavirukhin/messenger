@@ -8,11 +8,12 @@ import { AuthModule } from '../auth/auth.module';
 import { UserService } from './service/user.service';
 import { MyJwtService } from '../jwt/service/jwt.service';
 import { BlockedUser } from '../entity/blocked-user.entity';
+import { Contact } from '../entity/contact.entity';
 
 dotenv.config();
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, BlockedUser]),
+    TypeOrmModule.forFeature([User, BlockedUser, Contact]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: process.env.JWT_EXPIRATION },
