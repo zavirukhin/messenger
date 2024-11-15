@@ -165,7 +165,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('profile/:customName([A-Za-z]+)')
+  @Get('profile/:customName')
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Получить информацию о пользователе по customName',
