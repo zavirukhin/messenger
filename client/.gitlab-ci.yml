@@ -1,15 +1,3 @@
-image: node:20-alpine
-
-.unpack-client:
-  before_script:
-    - rm -r server || true
-    - cp -a client/. .
-    - rm -r client
-
-workflow:
-  rules:
-    - when: always
-
 stages:
   - install
   - build
@@ -19,52 +7,54 @@ stages:
 
 default:
   cache:
-    key:
-      files:
-        - package-lock.json
+    key: ${CI_COMMIT_REF_SLUG}
     paths:
       - node_modules/
 
 install:
   stage: install
-  extends: .unpack-client
   script:
     - npm ci
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
   artifacts:
     paths:
       - node_modules/
 
 build:
   stage: build
-  extends: .unpack-client
   script:
-    - npx nx build
-  artifacts:
+    - npm run build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - dist/social/
+      - node_modules/
 
 lint:
   stage: lint
-  extends: .unpack-client
   script:
-    - npx nx run-many -t lint
+    - npm run lint
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
 
 test:
   stage: test
-  extends: .unpack-client
   script:
-    - npx nx run-many -t test
-
-pages:
-  stage: deploy
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - mkdir public
-    - mv dist/social/* public
-  only:
-    - main
-    - master
-  artifacts:
+    - npm test
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - public
+      - node_modules/
+
+deploy:
+  stage: deploy
+  script:
+    - npm run deploy
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
