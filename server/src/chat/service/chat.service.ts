@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, In } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { Chat } from '../../entity/chat.entity';
 import { ChatMember } from '../../entity/chat-member.entity';
 import { ChatRole, UserRole } from '../../entity/chat-role.entity';
@@ -10,10 +10,24 @@ import { CannotAddSelfAsMemberChatException } from '../../exception/cannot-add-s
 import { UsersNotFoundException } from '../../exception/users-not-found.exception';
 import { CannotCreateChatWithBlockedUsers } from '../../exception/cannot-create-chat-with-blocked-users.exception';
 import { CannotCreateChatByBlockedUsers } from '../../exception/cannot-create-chat-by-blocked-users.exception';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ChatNotFoundException } from 'src/exception/chat-not-found.exception';
+import { UserNotAMemberChatException } from 'src/exception/user-not-a-member-chat.exception';
+import { CannotChangeSelfChatMemberRoleException } from 'src/exception/cannot-change-self-chat-member-role.exception';
+import { InsufficientPermissionsChangeChatMemberRoleException } from 'src/exception/insufficient-permissions-change-chat-member-role.exception';
+import { MemberRoleNotFoundException } from 'src/exception/member-role-not-found.exception';
 
 @Injectable()
 export class ChatService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    @InjectRepository(ChatMember)
+    private readonly chatMemberRepository: Repository<ChatMember>,
+    @InjectRepository(ChatRole)
+    private readonly chatRoleRepository: Repository<ChatRole>,
+    @InjectRepository(Chat)
+    private readonly chatRepository: Repository<Chat>,
+    private readonly dataSource: DataSource,
+  ) {}
 
   private async createChatWithCreator(
     chatName: string,
@@ -73,11 +87,10 @@ export class ChatService {
         throw new UsersNotFoundException(missingMemberIds);
       }
 
-      // Проверка, заблокировал ли текущий пользователь других участников
       const blockingMembers = await await manager.find(BlockedUser, {
         where: {
-          blockedByUser: { id: creatorId }, // Текущий пользователь заблокировал кого-то
-          blockedUser: { id: In(foundMemberIds) }, // Кто-то из участников чата
+          blockedByUser: { id: creatorId },
+          blockedUser: { id: In(foundMemberIds) },
         },
         relations: ['blockedUser'],
       });
@@ -89,11 +102,10 @@ export class ChatService {
         throw new CannotCreateChatWithBlockedUsers(blockingMemberIds);
       }
 
-      // Проверка, заблокирован ли текущий пользователь другими участниками
       const blockedByMembers = await await manager.find(BlockedUser, {
         where: {
-          blockedByUser: { id: In(foundMemberIds) }, // Кто-то из участников чата заблокировал текущего пользователя
-          blockedUser: { id: creatorId }, // Текущий пользователь заблокирован
+          blockedByUser: { id: In(foundMemberIds) },
+          blockedUser: { id: creatorId },
         },
         relations: ['blockedByUser'],
       });
@@ -134,8 +146,59 @@ export class ChatService {
 
       return {
         ...savedChat,
-        memberIds: [creatorId, foundMemberIds],
+        memberIds: [creatorId, foundMemberIds].flat(2),
       };
     });
+  }
+
+  async changeUserRole(
+    userId: number,
+    changeRoleUserId: number,
+    chatId: number,
+    newRoleId: number,
+  ) {
+    const chat = await this.chatRepository.findOne({ where: { id: chatId } });
+    if (!chat) {
+      throw new ChatNotFoundException();
+    }
+
+    const requestingUser = await this.chatMemberRepository.findOne({
+      where: { user: { id: userId }, chat: { id: chatId } },
+      relations: ['chatRole'],
+    });
+
+    if (!requestingUser) {
+      throw new UserNotAMemberChatException();
+    }
+
+    if (userId === changeRoleUserId) {
+      throw new CannotChangeSelfChatMemberRoleException();
+    }
+
+    const targetUser = await this.chatMemberRepository.findOne({
+      where: { user: { id: changeRoleUserId }, chat: { id: chatId } },
+      relations: ['chatRole'],
+    });
+
+    if (!targetUser) {
+      throw new UserNotAMemberChatException();
+    }
+
+    if (
+      requestingUser.chatRole.id >= targetUser.chatRole.id ||
+      requestingUser.chatRole.id === newRoleId
+    ) {
+      throw new InsufficientPermissionsChangeChatMemberRoleException();
+    }
+
+    const newRole = await this.chatRoleRepository.findOne({
+      where: { id: newRoleId },
+    });
+    if (!newRole) {
+      throw new MemberRoleNotFoundException();
+    }
+
+    targetUser.chatRole = newRole;
+    await this.chatMemberRepository.save(targetUser);
   }
 }

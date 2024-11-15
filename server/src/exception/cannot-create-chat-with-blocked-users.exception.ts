@@ -9,7 +9,7 @@ export class CannotCreateChatWithBlockedUsers extends HttpException {
       {
         message,
         errorCode: ErrorCode.CANNOT_CREATE_CHAT_WITH_BLOCKED_USERS,
-        blockedUsers: userIds,
+        blockedUsers: userIds.flat(2),
         statusCode: status,
       },
       status,

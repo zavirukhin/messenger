@@ -9,7 +9,7 @@ export class UsersNotFoundException extends HttpException {
       {
         message,
         errorCode: ErrorCode.USERS_NOT_FOUND,
-        missingUsers: userIds,
+        missingUsers: userIds.flat(2),
         statusCode: status,
       },
       status,

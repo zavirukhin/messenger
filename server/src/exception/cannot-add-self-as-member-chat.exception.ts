@@ -8,7 +8,7 @@ export class CannotAddSelfAsMemberChatException extends HttpException {
     super(
       {
         message,
-        errorCode: ErrorCode.CANNOT_ADD_SELF_AS_MEMBER_CONTACT,
+        errorCode: ErrorCode.CANNOT_ADD_SELF_AS_MEMBER_CHAT,
         statusCode: status,
       },
       status,

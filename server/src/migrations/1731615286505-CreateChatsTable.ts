@@ -66,8 +66,8 @@ export class CreateChatsTable1731615286505 implements MigrationInterface {
     await queryRunner.query(`
       INSERT INTO "chat-roles" ("name") 
       VALUES 
-        ('admin'), 
         ('owner'), 
+        ('admin'), 
         ('user');
     `);
 

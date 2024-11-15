@@ -7,11 +7,13 @@ import { MyJwtService } from '../jwt/service/jwt.service';
 import { Chat } from '../entity/chat.entity';
 import { ChatService } from './service/chat.service';
 import { ChatController } from './controller/chat.controller';
+import { ChatMember } from '../entity/chat-member.entity';
+import { ChatRole } from '../entity/chat-role.entity';
 
 dotenv.config();
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Chat]),
+    TypeOrmModule.forFeature([Chat, ChatMember, ChatRole]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: process.env.JWT_EXPIRATION },
