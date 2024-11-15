@@ -22,8 +22,8 @@ install:
     key:
       files:
         - package-lock.json
-      paths:
-        - node_modules
+    paths:
+      - node_modules
   script:
     - npm ci --cache .npm --prefer-offline
 
