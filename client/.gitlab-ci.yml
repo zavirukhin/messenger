@@ -4,6 +4,10 @@
     - cp -a client/. .
     - rm -r client
 
+workflow:
+  rules:
+    - when: always
+
 stages:
   - install
   - build
@@ -13,9 +17,6 @@ stages:
 
 default:
   image: node:20-alpine
-  workflow:
-    rules:
-      - when: always
   cache:
     key:
       files:
