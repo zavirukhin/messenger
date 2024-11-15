@@ -26,15 +26,6 @@ default:
   before_script:
     - npm ci --cache .npm --prefer-offline
 
-install:
-  stage: install
-  extends: .unpack-client
-  script:
-    - npm ci
-  artifacts:
-    paths:
-      - node_modules/
-
 build:
   stage: build
   extends: .unpack-client
