@@ -17,17 +17,14 @@ stages:
   - test
   - deploy
 
-default:
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules
-
 install:
   stage: install
   extends: .unpack-client
   script:
     - npm ci --no-audit --no-fund --prefer-offline
+  artifacts:
+    paths:
+      - node_modules/
 
 build:
   stage: build
