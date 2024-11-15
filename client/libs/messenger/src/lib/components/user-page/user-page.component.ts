@@ -41,7 +41,6 @@ import { TranslocoDirective } from '@jsverse/transloco';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserPageComponent {
-
   public user = signal<User | null>(null);
 
   public isLoading = signal<boolean>(true);
@@ -92,25 +91,65 @@ export class UserPageComponent {
     return `${userTime.getDay()}:${userTime.getMonth()}:${userTime.getFullYear()}`;
   }
 
-  public blockUser(): void {
-    const userId = this.user()?.id;
+  public blockHandler(): void {
+    const user = this.user();
 
-    if (userId) {
+    if (!user) {
+      return;
+    }
+
+    if (user.isBlockedByMe) {
       this.awaitRequest.set(true);
-      this.profileService.blockUserById(userId).pipe(
+      this.profileService.unblockUserById(user.id).pipe(
         finalize(() => this.awaitRequest.set(false))
-      ).subscribe();
+      ).subscribe(() => {
+        this.user.set({
+          ...user,
+          isBlockedByMe: false
+        })
+      });
+    }
+    else {
+      this.awaitRequest.set(true);
+      this.profileService.blockUserById(user.id).pipe(
+        finalize(() => this.awaitRequest.set(false))
+      ).subscribe(() => {
+        this.user.set({
+          ...user,
+          isBlockedByMe: true
+        });
+      });
     }
   }
 
-  public addToContact(): void {
-    const userId = this.user()?.id;
+  public contactHandler(): void {
+    const user = this.user();
+
+    if (!user) {
+      return;
+    }
+
     this.awaitRequest.set(true);
 
-    if (userId) {
-      this.profileService.addToContact(userId).pipe(
+    if (user.isContactedByMe) {
+      this.profileService.removeToContact(user.id).pipe(
         finalize(() => this.awaitRequest.set(false))
-      ).subscribe();
+      ).subscribe(() => {
+        this.user.set({
+          ...user,
+          isContactedByMe: false
+        });
+      });
+    }
+    else {
+      this.profileService.addToContact(user.id).pipe(
+        finalize(() => this.awaitRequest.set(false))
+      ).subscribe(() => {
+        this.user.set({
+          ...user,
+          isContactedByMe: true
+        });
+      })
     }
   }
 }

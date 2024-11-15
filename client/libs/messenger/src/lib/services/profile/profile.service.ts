@@ -48,10 +48,18 @@ export class ProfileService {
     });
   }
 
+  public unblockUserById(id: number): Observable<void> {
+    return this.http.delete<void>(environment.apiUrl + `/blocked-users/unblock/${id}`);
+  }
+
   public addToContact(id: number): Observable<void> {
     return this.http.post<void>(environment.apiUrl + '/contacts/add', {
       contactId: id
     });
+  }
+
+  public removeToContact(id: number): Observable<void> {
+    return this.http.delete<void>(environment.apiUrl + `/contacts/remove/${id}`);
   }
 
   public deleteToken(): void {

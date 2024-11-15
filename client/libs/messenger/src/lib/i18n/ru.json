@@ -7,6 +7,8 @@
   "blocked": "Заблокирован",
   "lastSeen": "Был в сети",
   "addContact": "Добавить в контакты",
+  "removeContact": "Удалить из контактов",
   "addToChat": "Добавить в чат",
-  "blockUser": "Заблокировать"
+  "blockUser": "Заблокировать",
+  "unblockUser": "Разблокировать"
 }

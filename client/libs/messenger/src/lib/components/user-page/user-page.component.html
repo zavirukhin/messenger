@@ -41,9 +41,14 @@
         type="button"
         [disabled]="user()?.isBlockedByUser || awaitRequest()"
         [tuiSkeleton]="isLoading()"
-        (click)="addToContact()"
+        (click)="contactHandler()"
       >
-        {{ t('messenger.addContact') }}
+        @if (user()?.isContactedByMe) {
+          {{ t('messenger.removeContact') }}
+        }
+        @else {
+          {{ t('messenger.addContact') }}
+        }
       </button>
       <button
         class="action-button"
@@ -52,7 +57,7 @@
         tuiButton
         tuiButtonVertical
         type="button"
-        [disabled]="user()?.isBlockedByUser || awaitRequest()"
+        [disabled]="user()?.isBlockedByUser || user()?.isBlockedByMe || awaitRequest()"
         [tuiSkeleton]="isLoading()"
       >
         {{ t('messenger.addToChat') }}
@@ -66,9 +71,14 @@
         type="button"
         [disabled]="awaitRequest()"
         [tuiSkeleton]="isLoading()"
-        (click)="blockUser()"
+        (click)="blockHandler()"
       >
-        {{ t('messenger.blockUser') }}
+        @if (user()?.isBlockedByMe) {
+          {{ t('messenger.unblockUser') }}
+        }
+        @else {
+          {{ t('messenger.blockUser') }}
+        }
       </button>
     </div>
   </div>
