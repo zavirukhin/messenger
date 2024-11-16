@@ -100,7 +100,7 @@ export class BlockedUserService {
           id: true,
           firstName: true,
           lastName: true,
-          avatarBase64: true,
+          avatar: true,
           customName: true,
         },
       },

@@ -33,7 +33,7 @@ export class UserInit1730566248080 implements MigrationInterface {
             type: 'timestamp',
           },
           {
-            name: 'avatarBase64',
+            name: 'avatar',
             type: 'text',
             isNullable: true,
           },
