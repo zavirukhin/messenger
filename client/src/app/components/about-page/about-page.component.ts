@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { SwitchPanelComponent } from '../switch-panel/switch-panel.component';
+import { SwitchPanelComponent } from '@social/shared/SwitchPanelComponent';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TuiButton } from '@taiga-ui/core';
 

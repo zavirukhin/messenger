@@ -4,7 +4,7 @@ import { ThemeSwitchComponent } from '../theme-switch/theme-switch.component';
 import { MultilingualComponent } from '../multilingual/multilingual.component';
 
 @Component({
-  selector: 'app-switch-panel',
+  selector: 'lib-app-switch-panel',
   standalone: true,
   imports: [CommonModule, ThemeSwitchComponent, MultilingualComponent],
   templateUrl: './switch-panel.component.html',
