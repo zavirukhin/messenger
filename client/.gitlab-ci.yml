@@ -2,7 +2,6 @@ image: node:20-alpine
 
 .unpack-client:
   before_script:
-    - cp ${SENTRY_ENV} .env.sentry-build-plugin
     - rm -r server || true
     - cp -a client/. .
     - rm -r client
@@ -32,6 +31,7 @@ build:
   stage: build
   extends: .unpack-client
   script:
+    - cp ${SENTRY_ENV} .env.sentry-build-plugin
     - npx nx build
   artifacts:
     paths:
@@ -57,9 +57,6 @@ pages:
     - mkdir public
     - mv dist/social/* public
     - echo '/* /index.html 200' public/_redirects
-  only:
-    - main
-    - master
   artifacts:
     paths:
       - public
