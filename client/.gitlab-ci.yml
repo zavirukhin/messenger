@@ -57,6 +57,9 @@ pages:
     - mkdir public
     - mv dist/social/* public
     - echo '/* /index.html 200' > public/_redirects
+  only:
+    - main
+    - master
   artifacts:
     paths:
       - public
