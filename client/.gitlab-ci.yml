@@ -25,14 +25,13 @@ install:
   artifacts:
     paths:
       - node_modules/
+    expire_in: 1h
 
 build:
   stage: build
   extends: .unpack-client
   script:
     - npx nx build
-  before_script:
-    - cp ${SENTRY_ENV} .env.sentry-build-plugin
   artifacts:
     paths:
       - dist/social/
