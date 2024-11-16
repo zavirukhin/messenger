@@ -9,18 +9,36 @@ import { ChatService } from './service/chat.service';
 import { ChatController } from './controller/chat.controller';
 import { ChatMember } from '../entity/chat-member.entity';
 import { ChatRole } from '../entity/chat-role.entity';
+import { MessageController } from './controller/message.controller';
+import { MessageService } from './service/message.service';
+import { Message } from '../entity/message.entity';
+import { MessageStatus } from '../entity/message-status.entity';
+import { MessageGateway } from './gateway/message.gateway';
+import { MessageSocketService } from './service/message-socket.service';
 
 dotenv.config();
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Chat, ChatMember, ChatRole]),
+    TypeOrmModule.forFeature([
+      Chat,
+      ChatMember,
+      ChatRole,
+      Message,
+      MessageStatus,
+    ]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: process.env.JWT_EXPIRATION },
     }),
     forwardRef(() => AuthModule),
   ],
-  providers: [ChatService, MyJwtService],
-  controllers: [ChatController],
+  providers: [
+    ChatService,
+    MessageService,
+    MyJwtService,
+    MessageGateway,
+    MessageSocketService,
+  ],
+  controllers: [ChatController, MessageController],
 })
 export class ChatModule {}

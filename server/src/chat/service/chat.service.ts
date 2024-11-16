@@ -18,6 +18,8 @@ import { InsufficientPermissionsChangeChatMemberRoleException } from '../../exce
 import { MemberRoleNotFoundException } from '../../exception/member-role-not-found.exception';
 import { UpdateChatDto } from '../dto/update-chat.dto';
 import { InsufficientPermissionsUpdateChatException } from '../../exception/insufficient-permissions-update-chat.exception';
+import { Message } from '../../entity/message.entity';
+import { MessageStatuses } from '../../entity/message-status.entity';
 
 @Injectable()
 export class ChatService {
@@ -28,6 +30,8 @@ export class ChatService {
     private readonly chatRoleRepository: Repository<ChatRole>,
     @InjectRepository(Chat)
     private readonly chatRepository: Repository<Chat>,
+    @InjectRepository(Message)
+    private readonly messageRepository: Repository<Message>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -231,5 +235,42 @@ export class ChatService {
       name: updateChatDto.name,
       avatar: updateChatDto.avatar,
     });
+  }
+
+  async getUserChats(userId: number) {
+    const chatMembers = await this.chatMemberRepository.find({
+      where: { user: { id: userId } },
+      relations: ['chat'],
+    });
+
+    const chatDetails = await Promise.all(
+      chatMembers.map(async (member) => {
+        const chat = member.chat;
+
+        const latestMessage = await this.messageRepository.findOne({
+          where: { chat: { id: chat.id } },
+          order: { createdAt: 'DESC' },
+        });
+
+        const unreadCount = await this.messageRepository.count({
+          where: {
+            chat: { id: chat.id },
+            messageStatus: { name: MessageStatuses.SENT },
+            user: { id: userId },
+          },
+        });
+
+        return {
+          id: chat.id,
+          name: chat.name,
+          avatar: chat.avatar,
+          latestMessage: latestMessage?.content || null,
+          latestMessageDate: latestMessage?.createdAt || null,
+          unreadCount,
+        };
+      }),
+    );
+
+    return chatDetails;
   }
 }
