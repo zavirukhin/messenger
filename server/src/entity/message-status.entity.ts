@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum MessageStatuses {
-  SENT = 'send',
+  SEND = 'send',
   READ = 'read',
 }
 

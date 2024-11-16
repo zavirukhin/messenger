@@ -25,4 +25,16 @@ export class MessageSocketService {
       }
     });
   }
+
+  async notifyUsersAboutStatusChange(
+    updatedMessages,
+    chatMembers: ChatMember[],
+  ) {
+    chatMembers.forEach((member) => {
+      const socket = this.getClient(member.user.id.toString());
+      if (socket) {
+        socket.emit('statusChange', updatedMessages);
+      }
+    });
+  }
 }
