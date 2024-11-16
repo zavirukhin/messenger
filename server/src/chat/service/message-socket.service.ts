@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { ChatMember } from '../../entity/chat-member.entity';
-import { Message } from '../../entity/message.entity';
 @Injectable()
 export class MessageSocketService {
   private clients: Map<string, Socket> = new Map();
@@ -18,10 +17,7 @@ export class MessageSocketService {
     return this.clients.get(userId);
   }
 
-  async notifyUsersAboutNewMessage(
-    message,
-    chatMembers: ChatMember[],
-  ) {
+  async notifyUsersAboutNewMessage(message, chatMembers: ChatMember[]) {
     chatMembers.forEach((member) => {
       const socket = this.getClient(member.user.id.toString());
       if (socket) {

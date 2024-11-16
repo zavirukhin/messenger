@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Post,
   Patch,
+  Get,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -274,5 +275,39 @@ export class ChatController {
   async updateUser(@Request() req, @Body() updateUserDto: UpdateChatDto) {
     const userId = req.user.id;
     return await this.chatService.updateChat(userId, updateUserDto);
+  }
+
+  @Get('list')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Получить список чатов пользователя.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Получен список чатов пользователя.',
+    schema: {
+      example: [
+        {
+          id: 1,
+          name: 'Мой чат',
+          avatar: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...',
+          latestMessage: 'Последнее сообщение',
+          latestMessageDate: '2024-01-01T12:00:00.000Z',
+          unreadCount: 2,
+        },
+        {
+          id: 2,
+          name: 'Мой чат 2',
+          avatar: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...',
+          latestMessage: 'Последнее сообщение 3',
+          latestMessageDate: '2024-01-01T12:00:00.000Z',
+          unreadCount: 2,
+        },
+      ],
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Не авторизован.' })
+  async getUserChats(@Request() req) {
+    const userId = req.user.id;
+    return await this.chatService.getUserChats(userId);
   }
 }
