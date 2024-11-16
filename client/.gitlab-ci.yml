@@ -21,7 +21,7 @@ install:
   stage: install
   extends: .unpack-client
   script:
-    - npm ci --no-audit --no-fund --prefer-offline
+    - npm ci
   artifacts:
     paths:
       - node_modules/
