@@ -4,7 +4,7 @@
       <tui-avatar
         size="xxl"
         [tuiSkeleton]="isLoading()"
-        [src]="(profile()?.avatarBase64 ?? '') | tuiFallbackSrc: '@tui.user' | async"
+        [src]="(profile()?.avatar ?? '@tui.user') | tuiFallbackSrc: '@tui.user' | async"
       />
       <h1
         class="username-container"
@@ -106,6 +106,16 @@
           tuiButton
           type="button"
           [tuiSkeleton]="isLoading()"
+          [disabled]="form.disabled"
+          (click)="removeAvatar()"
+        >
+          {{ t('messenger.removeAvatar') }}
+        </button>
+        <button
+          size="m"
+          tuiButton
+          type="button"
+          [tuiSkeleton]="isLoading()"
           (click)="logout()"
         >
           {{ t('messenger.logout') }}
@@ -113,9 +123,9 @@
         <button
           size="m"
           tuiButton
+          type="submit"
           [tuiSkeleton]="isLoading()"
           [disabled]="form.disabled"
-          type="submit"
         >
           {{ t('messenger.change') }}
         </button>

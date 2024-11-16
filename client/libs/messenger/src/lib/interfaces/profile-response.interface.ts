@@ -3,7 +3,7 @@ export interface ProfileResponse {
   firstName: string;
   lastName: string;
   lastActivity: Date;
-  avatarBase64: string | null;
+  avatar: string | null;
   customName: string | null;
   createdAt: Date;
   updatedAt: Date;

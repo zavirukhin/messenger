@@ -4,7 +4,7 @@
       <tui-avatar
         size="xxl"
         [tuiSkeleton]="isLoading()"
-        [src]="(user()?.avatarBase64 ?? '') | tuiFallbackSrc: '@tui.user' | async"
+        [src]="(user()?.avatar ?? '@tui.user') | tuiFallbackSrc: '@tui.user' | async"
       />
       <h1
         class="username-container"
