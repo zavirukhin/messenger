@@ -27,7 +27,7 @@ export class User {
   lastActivity: Date;
 
   @Column({ type: 'text', nullable: true })
-  avatarBase64: string;
+  avatar: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
   customName: string;
