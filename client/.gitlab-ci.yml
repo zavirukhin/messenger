@@ -2,6 +2,7 @@ image: node:20-alpine
 
 .unpack-client:
   before_script:
+    - cp ${SENTRY_ENV} .env.sentry-build-plugin
     - rm -r server || true
     - cp -a client/. .
     - rm -r client
@@ -21,7 +22,7 @@ install:
   stage: install
   extends: .unpack-client
   script:
-    - npm ci
+    - npm ci --no-audit --no-fund --prefer-offline
   artifacts:
     paths:
       - node_modules/
