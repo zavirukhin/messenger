@@ -9,12 +9,13 @@ import {
   TuiTextfield
 } from '@taiga-ui/core';
 import { TUI_DOC_ICONS } from '@taiga-ui/addon-doc/tokens';
-import { MultilingualService } from '../../services/multilingual.service';
+import { MultilingualService } from '../services/multilingual.service';
 import type { TuiCountryIsoCode, TuiLanguageName } from '@taiga-ui/i18n/types';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { CountryCode, Language } from '../models/multilingual-type';
 
 @Component({
-  selector: 'app-multilingual',
+  selector: 'lib-app-multilingual',
   standalone: true,
   imports: [
     CommonModule,
@@ -38,29 +39,21 @@ export class MultilingualComponent {
 
   private readonly translocoService = inject(TranslocoService);
   protected readonly switcher = inject(MultilingualService);
-  protected readonly language = new FormControl(
-    capitalize(
+  protected readonly languageControl  = new FormControl(
       this.switcher.getLanguageFromLocalStorage() ||
         this.translocoService.getDefaultLang()
-    )
   );
 
-  protected open = false;
-
-  public readonly flags = new Map<TuiLanguageName, TuiCountryIsoCode>([
-    ['en', 'GB'],
-    ['ru', 'RU']
+  public readonly flagsMap = new Map<TuiLanguageName, TuiCountryIsoCode>([
+    [Language.English, CountryCode.GB],
+    [Language.Russian, CountryCode.RU]
   ]);
 
-  public readonly names: TuiLanguageName[] = Array.from(this.flags.keys());
+  public readonly names: TuiLanguageName[] = Array.from(this.flagsMap.keys());
 
   public setLang(lang: string): void {
-    this.language.setValue(lang);
+    this.languageControl .setValue(lang);
     this.switcher.saveLanguageToLocalStorage(lang);
-    this.open = false;
     this.translocoService.setActiveLang(lang);
   }
-}
-function capitalize(value: string): string {
-  return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
 }

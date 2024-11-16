@@ -5,3 +5,5 @@ export * from './lib/errors/request.error';
 export * from './lib/utils/langReady';
 export * from './lib/services/socket/socket.service';
 export * from './lib/services/cache/cache.service';
+export * from './lib/multilingual/multilingual-component/multilingual.component';
+export * from './lib/multilingual/services/multilingual.service';

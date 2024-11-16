@@ -15,7 +15,6 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": { 
-      "@components/*": ["src/app/components/*"],
       "@env": ["src/environments/index.ts"],
       "@social/authorization": ["libs/authorization/src/index.ts"],
       "@social/messenger": ["libs/messenger/src/index.ts"],

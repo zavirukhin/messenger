@@ -1,13 +1,13 @@
 <div class="toogle-language" *transloco="let t;">
     <tui-badged-content>
       <img
-        alt=""
+        alt="countri flag"
         size="s"
         tuiBadge
         tuiSlot="bottom"
         [src]="
-          flags.get(language.value ?? '') ||
-            flags.get(switcher.getLanguageFromLocalStorage()) | tuiFlag
+          flagsMap.get(languageControl.value ?? '') ||
+            flagsMap.get(switcher.getLanguageFromLocalStorage()) | tuiFlag
         "
       />
   
@@ -17,20 +17,21 @@
         tuiButtonSelect
         tuiIconButton
         type="button"
-        [formControl]="language"
+        [formControl]="languageControl"
         [iconStart]="icons.languages"
       >
         Language
         <tui-data-list *tuiTextfieldDropdown>
-          <tui-opt-group label="">
+          <tui-opt-group>
             <button
               *ngFor="let name of names"
               tuiOption
+              class="language-switch-button"
               type="button"
               [value]="name | titlecase"
               (click)="setLang(name)"
             >
-              <img alt="" class="t-flag" [src]="flags.get(name) | tuiFlag" />
+              <img alt="countri flag" class="t-flag language-switch-img" [src]="flagsMap.get(name) | tuiFlag" />
               {{ t('multilingual.'+name) | titlecase }}
             </button>
           </tui-opt-group>

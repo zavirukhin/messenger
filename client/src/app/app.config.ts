@@ -4,7 +4,7 @@ import { provideRouter, Router } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideTransloco, TranslocoService } from '@jsverse/transloco';
 import * as Sentry from '@sentry/angular';
-import { authorizationHandlerInterceptor, errorHandlerInterceptor } from '@social/shared';
+import { authorizationHandlerInterceptor, errorHandlerInterceptor, MultilingualService } from '@social/shared';
 import {
   APP_INITIALIZER,
   ApplicationConfig,
@@ -18,7 +18,6 @@ import { firstValueFrom } from 'rxjs';
 import { appRoutes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader.service';
 import { registerLocaleData } from '@angular/common';
-import { MultilingualService } from './services/multilingual.service';
 
 registerLocaleData(localeRu, 'ru-RU', localeRuExtra);
 
@@ -47,7 +46,7 @@ export const appConfig: ApplicationConfig = {
           multilingualService.saveLanguageToLocalStorage('en');
         }
         translocoService.setActiveLang(language);
-        
+
         return firstValueFrom(translocoService.load('en'));
       }),
       deps: [TranslocoService, MultilingualService, Sentry.TraceService],
