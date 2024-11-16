@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, In, Repository } from 'typeorm';
+import { DataSource, In, Not, Repository } from 'typeorm';
 import { Chat } from '../../entity/chat.entity';
 import { ChatMember } from '../../entity/chat-member.entity';
 import { ChatRole, UserRole } from '../../entity/chat-role.entity';
@@ -255,8 +255,8 @@ export class ChatService {
         const unreadCount = await this.messageRepository.count({
           where: {
             chat: { id: chat.id },
-            messageStatus: { name: MessageStatuses.SENT },
-            user: { id: userId },
+            messageStatus: { name: MessageStatuses.SEND },
+            user: { id: Not(userId) },
           },
         });
 
