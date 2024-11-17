@@ -31,26 +31,51 @@ export class MessageService {
     private readonly messageSocketService: MessageSocketService,
   ) {}
 
-  async createMessage(createMessageDto: CreateMessageDto, userId: number) {
-    const { chatId, content } = createMessageDto;
-
+  private async findChatById(chatId: number) {
     const chat = await this.chatRepository.findOne({ where: { id: chatId } });
     if (!chat) {
       throw new ChatNotFoundException();
     }
+    return chat;
+  }
 
+  private async findUserInChat(chatId: number, userId: number) {
     const userInChat = await this.chatMemberRepository.findOne({
       where: { user: { id: userId }, chat: { id: chatId } },
       relations: ['user'],
     });
-
     if (!userInChat) {
       throw new UserNotAMemberChatException();
     }
+    return userInChat;
+  }
 
-    const messageStatus = await this.messageStatusRepository.findOne({
-      where: { name: MessageStatuses.SEND },
+  private async findMessageStatusByName(statusName: MessageStatuses) {
+    return this.messageStatusRepository.findOne({
+      where: { name: statusName },
     });
+  }
+
+  private mapMessageToResponse(message: Message) {
+    return {
+      id: message.id,
+      chatId: message.chat.id,
+      userId: message.user.id,
+      messageStatus: message.messageStatus.name,
+      content: message.content,
+      createdAt: message.createdAt,
+      updatedAt: message.updatedAt,
+    };
+  }
+
+  async createMessage(createMessageDto: CreateMessageDto, userId: number) {
+    const { chatId, content } = createMessageDto;
+
+    const chat = await this.findChatById(chatId);
+    const userInChat = await this.findUserInChat(chatId, userId);
+    const messageStatus = await this.findMessageStatusByName(
+      MessageStatuses.SEND,
+    );
 
     const message = this.messageRepository.create({
       chat,
@@ -58,45 +83,29 @@ export class MessageService {
       messageStatus,
       content,
     });
-    const savedMessage = await this.messageRepository.save(message);
 
+    const savedMessage = await this.messageRepository.save(message);
     const chatMembers = await this.chatMemberRepository.find({
       where: { chat: { id: chatId } },
       relations: ['user'],
     });
 
-    const response = {
-      id: savedMessage.id,
-      chatId: savedMessage.chat.id,
-      userId: savedMessage.user.id,
-      messageStatus: savedMessage.messageStatus.name,
-      content: savedMessage.content,
-      createdAt: savedMessage.createdAt,
-      updatedAt: savedMessage.updatedAt,
-    };
-
+    const response = this.mapMessageToResponse(savedMessage);
     await this.messageSocketService.notifyUsersAboutNewMessage(
       response,
       chatMembers,
     );
+
     return response;
   }
 
   async markChatMessagesAsRead(chatId: number, userId: number): Promise<void> {
-    const chat = await this.chatRepository.findOne({ where: { id: chatId } });
-    if (!chat) {
-      throw new ChatNotFoundException();
-    }
+    const chat = await this.findChatById(chatId);
+    await this.findUserInChat(chat.id, userId);
 
-    const userInChat = await this.chatMemberRepository.findOne({
-      where: { user: { id: userId }, chat: { id: chatId } },
-      relations: ['user'],
-    });
-
-    if (!userInChat) {
-      throw new UserNotAMemberChatException();
-    }
-
+    const messageStatus = await this.findMessageStatusByName(
+      MessageStatuses.READ,
+    );
     const messages = await this.messageRepository.find({
       where: {
         chat: { id: chatId },
@@ -105,35 +114,23 @@ export class MessageService {
       },
       relations: ['messageStatus', 'chat', 'user'],
     });
-    if (messages.length === 0) {
-      return;
-    }
-    const messageStatus = await this.messageStatusRepository.findOne({
-      where: { name: MessageStatuses.READ },
+
+    if (messages.length === 0) return;
+
+    messages.forEach((message) => {
+      message.messageStatus = messageStatus;
     });
 
-    for (const message of messages) {
-      message.messageStatus = messageStatus;
-    }
-
     const updatedMessages = await this.messageRepository.save(messages);
-
     const chatMembers = await this.chatMemberRepository.find({
       where: { chat: { id: chatId } },
       relations: ['user'],
     });
 
-    const updatedMessagesResponse = updatedMessages.map((message) => ({
-      id: message.id,
-      chatId: message.chat.id,
-      userId: message.user.id,
-      messageStatus: message.messageStatus.name,
-      content: message.content,
-      createdAt: message.createdAt,
-      updatedAt: message.updatedAt,
-    }));
-
-    await this.messageSocketService.notifyUsersAboutStatusChange(
+    const updatedMessagesResponse = updatedMessages.map(
+      this.mapMessageToResponse,
+    );
+    await this.messageSocketService.notifyUsersAboutStatusMessagesChange(
       updatedMessagesResponse,
       chatMembers,
     );
@@ -145,19 +142,8 @@ export class MessageService {
     page: number = 1,
     limit: number = 20,
   ) {
-    const chat = await this.chatRepository.findOne({ where: { id: chatId } });
-    if (!chat) {
-      throw new ChatNotFoundException();
-    }
-
-    const userInChat = await this.chatMemberRepository.findOne({
-      where: { user: { id: userId }, chat: { id: chatId } },
-      relations: ['user'],
-    });
-
-    if (!userInChat) {
-      throw new UserNotAMemberChatException();
-    }
+    const chat = await this.findChatById(chatId);
+    await this.findUserInChat(chat.id, userId);
 
     const [messages, totalMessages] = await this.messageRepository.findAndCount(
       {
@@ -169,33 +155,24 @@ export class MessageService {
       },
     );
 
-    const messageStatus = await this.messageStatusRepository.findOne({
-      where: { name: MessageStatuses.SEND },
-    });
-
+    const messageStatus = await this.findMessageStatusByName(
+      MessageStatuses.SEND,
+    );
     const unreadMessagesForOthers = messages.filter(
       (message) =>
         message.user.id !== userId &&
         message.messageStatus.id === messageStatus.id,
     );
-    const allMessagesResponse = messages.map((message) => ({
-      id: message.id,
-      chatId: message.chat.id,
-      userId: message.user.id,
-      messageStatus: message.messageStatus.name,
-      content: message.content,
-      createdAt: message.createdAt,
-      updatedAt: message.updatedAt,
-    }));
+
+    const allMessagesResponse = messages.map(this.mapMessageToResponse);
 
     if (unreadMessagesForOthers.length > 0) {
-      const messageStatus = await this.messageStatusRepository.findOne({
-        where: { name: MessageStatuses.READ },
+      const readStatus = await this.findMessageStatusByName(
+        MessageStatuses.READ,
+      );
+      unreadMessagesForOthers.forEach((message) => {
+        message.messageStatus = readStatus;
       });
-
-      for (const message of unreadMessagesForOthers) {
-        message.messageStatus = messageStatus;
-      }
 
       await this.messageRepository.save(unreadMessagesForOthers);
 
@@ -205,17 +182,8 @@ export class MessageService {
       });
 
       const updatedMessagesResponse = unreadMessagesForOthers.map(
-        (message) => ({
-          id: message.id,
-          chatId: message.chat.id,
-          userId: message.user.id,
-          messageStatus: message.messageStatus.name,
-          content: message.content,
-          createdAt: message.createdAt,
-          updatedAt: message.updatedAt,
-        }),
+        this.mapMessageToResponse,
       );
-
       updatedMessagesResponse.forEach((updatedMessage) => {
         const messageToUpdate = allMessagesResponse.find(
           (message) => message.id === updatedMessage.id,
@@ -225,7 +193,7 @@ export class MessageService {
         }
       });
 
-      await this.messageSocketService.notifyUsersAboutStatusChange(
+      await this.messageSocketService.notifyUsersAboutStatusMessagesChange(
         updatedMessagesResponse,
         chatMembers,
       );

@@ -7,7 +7,7 @@ import { Socket, Server } from 'socket.io';
 import { MessageSocketService } from '../service/message-socket.service';
 import { MyJwtService } from '../../jwt/service/jwt.service';
 
-@WebSocketGateway()
+@WebSocketGateway({ cors: true })
 export class MessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
@@ -39,8 +39,8 @@ export class MessageGateway
       socket.disconnect();
     }
   }
+
   handleDisconnect(socket: Socket) {
-    console.log('Client disconnected');
     this.messageSocketService.removeClient(socket.id);
   }
 }

@@ -15,6 +15,7 @@ import { Message } from '../entity/message.entity';
 import { MessageStatus } from '../entity/message-status.entity';
 import { MessageGateway } from './gateway/message.gateway';
 import { MessageSocketService } from './service/message-socket.service';
+import { User } from '../entity/user.entity';
 
 dotenv.config();
 @Module({
@@ -25,6 +26,7 @@ dotenv.config();
       ChatRole,
       Message,
       MessageStatus,
+      User,
     ]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,

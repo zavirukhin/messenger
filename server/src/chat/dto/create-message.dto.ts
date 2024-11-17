@@ -7,6 +7,7 @@ export class CreateMessageDto {
     example: 2,
   })
   @IsInt()
+  @IsNotEmpty({ message: 'ID чата не должно быть пустой строкой' })
   chatId: number;
 
   @ApiProperty({
@@ -15,7 +16,7 @@ export class CreateMessageDto {
   })
   @IsString({ message: 'Сообщение должно быть строкой' })
   @IsNotEmpty({ message: 'Сообщение не должно быть пустой строкой' })
-  @Length(1, 50, {
+  @Length(1, 1024, {
     message: 'Сообщение должно быть длиной от 1 до 1024 символов',
   })
   content: string;
