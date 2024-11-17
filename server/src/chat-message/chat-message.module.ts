@@ -43,4 +43,4 @@ dotenv.config();
   ],
   controllers: [ChatController, MessageController],
 })
-export class ChatModule {}
+export class ChatMessageModule {}
