@@ -8,6 +8,7 @@ import {
   Patch,
   Get,
   Delete,
+  Param,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -308,10 +309,68 @@ export class ChatController {
       ],
     },
   })
+  @ApiMultipleResponse(
+    {
+      status: 404,
+      schema: {
+        example: {
+          message: 'Чат не найден.',
+          errorCode: ErrorCode.CHAT_NOT_FOUND,
+          statusCode: HttpStatus.NOT_FOUND,
+        },
+      },
+      description: 'Чат не найден.',
+    },
+    {
+      status: 404,
+      schema: {
+        example: {
+          message: 'Пользователь не является членом чата.',
+          errorCode: ErrorCode.USER_NOT_A_MEMBER_CHAT,
+          statusCode: HttpStatus.FORBIDDEN,
+        },
+      },
+      description: 'Пользователь не является членом чата.',
+    },
+  )
   @ApiResponse({ status: 401, description: 'Не авторизован.' })
   async getUserChats(@Request() req) {
     const userId = req.user.id;
     return await this.chatService.getUserChats(userId);
+  }
+
+  @Get(':chatId/listMembers')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Получить список участников чата.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Получен список участников чата.',
+    schema: {
+      example: [
+        {
+          id: 1,
+          name: 'Мой чат',
+          avatar: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...',
+          latestMessage: 'Последнее сообщение',
+          latestMessageDate: '2024-01-01T12:00:00.000Z',
+          unreadCount: 2,
+        },
+        {
+          id: 2,
+          name: 'Мой чат 2',
+          avatar: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...',
+          latestMessage: 'Последнее сообщение 3',
+          latestMessageDate: '2024-01-01T12:00:00.000Z',
+          unreadCount: 2,
+        },
+      ],
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Не авторизован.' })
+  async getChatMembers(@Param('chatId') chatId: number, @Request() req) {
+    const userId = req.user.id;
+    return await this.chatService.getChatMembers(userId, chatId);
   }
 
   @Post('add-member')

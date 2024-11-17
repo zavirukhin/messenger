@@ -379,4 +379,40 @@ export class ChatService {
       ),
     };
   }
+
+  async getChatMembers(userId: number, chatId: number): Promise<any[]> {
+    const chat = await this.chatRepository.findOne({
+      where: { id: chatId },
+    });
+    if (!chat) {
+      throw new ChatNotFoundException();
+    }
+
+    const isMember = await this.chatMemberRepository.findOne({
+      where: { chat: { id: chatId }, user: { id: userId } },
+    });
+    if (!isMember) {
+      throw new UserNotAMemberChatException();
+    }
+
+    const chatMembers = await this.chatMemberRepository.find({
+      where: { chat: { id: chatId } },
+      relations: ['user', 'chatRole'],
+    });
+
+    return chatMembers.map((member) => {
+      return {
+        id: member.id,
+        user: {
+          id: member.user.id,
+          firstName: member.user.firstName,
+          lastName: member.user.lastName,
+          lastActivity: member.user.lastActivity,
+          avatar: member.user.avatar,
+          customName: member.user.customName,
+        },
+        chatRole: member.chatRole.name,
+      };
+    });
+  }
 }
