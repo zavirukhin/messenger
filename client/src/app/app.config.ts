@@ -12,10 +12,14 @@ import {
   provideZoneChangeDetection,
   isDevMode
 } from '@angular/core';
+import localeRu from '@angular/common/locales/ru';
+import localeRuExtra from '@angular/common/locales/extra/ru';
 import { firstValueFrom } from 'rxjs';
 import { appRoutes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader.service';
+import { registerLocaleData } from '@angular/common';
 
+registerLocaleData(localeRu, 'ru-RU', localeRuExtra);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -41,7 +45,6 @@ export const appConfig: ApplicationConfig = {
       deps: [TranslocoService, Sentry.TraceService],
       multi: true
     },
-
     provideHttpClient(
       withInterceptors([errorHandlerInterceptor, authorizationHandlerInterceptor])
     ),

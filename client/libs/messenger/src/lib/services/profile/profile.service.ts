@@ -64,5 +64,7 @@ export class ProfileService {
 
   public deleteToken(): void {
     localStorage.removeItem('token');
+    this.profile?.complete();
+    this.profile = null;
   }
 }

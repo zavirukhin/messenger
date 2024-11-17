@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { TuiAvatar, TuiChip, TuiSkeleton } from '@taiga-ui/kit';
 import { TuiButton, TuiFallbackSrcPipe, TuiTitle } from '@taiga-ui/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -81,16 +81,15 @@ export class UserPageComponent {
     )
   }
 
-  public getLastActivity(time: Date): string {
+  public getLastActivity(date: Date): string {
     const SECONDS_IN_DAY = 86400;
-    const userTime = new Date(time);
-    const seconds = new Date().getSeconds() - userTime.getTime();
+    const time = new Date(date);
 
-    if (seconds < SECONDS_IN_DAY) {
-      return `${userTime.getHours()}:${userTime.getMinutes()}`;
+    if ((new Date().getTime() - time.getTime()) < SECONDS_IN_DAY * 1000) {
+      return formatDate(time, 'HH:MM', 'ru-RU');
     }
 
-    return `${userTime.getDay()}:${userTime.getMonth()}:${userTime.getFullYear()}`;
+    return formatDate(time, 'dd:MM:yyyy', 'ru-RU');
   }
 
   public blockHandler(): void {
