@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class CacheService {
 
   private session = localStorage.getItem('token');
 
-  public set<T>(key: string, value: T): Observable<T> {
+  public set<T>(key: string, value: T): BehaviorSubject<T> {
     if (!this.isCurrentSession()) {
       this.destroyCache();
     }
@@ -30,7 +30,7 @@ export class CacheService {
     }
   }
 
-  public get<T>(key: string): Observable<T> | null {
+  public get<T>(key: string): BehaviorSubject<T> | null {
     if (!this.isCurrentSession()) {
       this.destroyCache();
     }

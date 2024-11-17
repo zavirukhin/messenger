@@ -33,11 +33,14 @@ export class ProfileService {
   public updateProfile(profile: Omit<Profile, 'id'>): Observable<void> {
     return this.http.patch<void>(environment.apiUrl + '/users/update', profile).pipe(
       tap(() => {
-        const profileCache = this.cacheService.get<ProfileResponse>('profile');
-        this.cacheService.set('profile', {
-          ...profileCache,
-          ...profile
-        });
+        const cache = this.cacheService.get<ProfileResponse>('profile');
+
+        if (cache !== null) {
+          this.cacheService.set<ProfileResponse>('profile', {
+            ...cache.value,
+            ...profile
+          });
+        }
       })
     );
   }
