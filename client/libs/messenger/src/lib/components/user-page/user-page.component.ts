@@ -84,8 +84,8 @@ export class UserPageComponent {
   public getLastActivity(time: Date): string {
     const SECONDS_IN_DAY = 86400;
     const userTime = new Date(time);
-
     const seconds = new Date().getSeconds() - userTime.getTime();
+
     if (seconds < SECONDS_IN_DAY) {
       return `${userTime.getHours()}:${userTime.getMinutes()}`;
     }
