@@ -22,10 +22,12 @@ export class CacheService {
       const subject = new BehaviorSubject(value);
       this.cache.set(key, subject);
       this.cacheList.add(key);
+
       return subject;
     }
     else {
       cache.next(value);
+
       return cache;
     }
   }
@@ -40,6 +42,7 @@ export class CacheService {
     if (cache !== undefined) {
       return cache;
     }
+
     return null;
   }
 
@@ -58,6 +61,7 @@ export class CacheService {
     if (this.session === localStorage.getItem('token')) {
       return true;
     }
+
     return false;
   }
 }

@@ -16,8 +16,7 @@ export class ChatService {
   public getChats(): Observable<Chat[]> {
     return this.http.get<Chat[]>(environment.apiUrl + '/chats/list').pipe(
       map((chats) => {
-        const cache = this.cacheSerivce.set<Chat[]>('chats', chats);
-        return cache;
+        return this.cacheSerivce.set<Chat[]>('chats', chats);
       }),
       switchMap((chats) => chats)
     );
