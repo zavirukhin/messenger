@@ -36,7 +36,7 @@ import {
 import { langReady } from '@social/shared';
 import { ProfileService } from '../../services/profile/profile.service';
 import { Profile } from '../../types/profile.type';
-import { fileToBase64 } from '../../utils/file-to-base64';
+import { fileToBase64$ } from '../../utils/file-to-base64';
 
 @Component({
   selector: 'lib-settings-page',
@@ -110,7 +110,7 @@ export class SettingsPageComponent {
     if (this.form.valid) {
       this.form.disable();
 
-      fileToBase64(this.form.controls.avatar.value).subscribe((avatar) => {
+      fileToBase64$(this.form.controls.avatar.value).subscribe((avatar) => {
         const custom_name = this.form.controls.customName.value;
         const avatar_old = this.profile()?.avatar ?? null;
 
@@ -143,6 +143,7 @@ export class SettingsPageComponent {
 
   public removeAvatar(): void {
     const profile = this.profile();
+
     if (profile) {
       this.form.disable();
 

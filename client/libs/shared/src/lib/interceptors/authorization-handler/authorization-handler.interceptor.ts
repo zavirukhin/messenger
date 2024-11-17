@@ -23,6 +23,7 @@ export const authorizationHandlerInterceptor: HttpInterceptorFn = (req, next) =>
         router.navigate(['/auth']);
         return of();
       }
+
       return throwError(() => error);
     })
   );

@@ -39,7 +39,7 @@
         tuiButton
         tuiButtonVertical
         type="button"
-        [disabled]="user()?.isBlockedByUser || awaitRequest()"
+        [disabled]="user()?.isBlockedByUser || isRequestSend()"
         [tuiSkeleton]="isLoading()"
         (click)="contactHandler()"
       >
@@ -57,7 +57,7 @@
         tuiButton
         tuiButtonVertical
         type="button"
-        [disabled]="user()?.isBlockedByUser || user()?.isBlockedByMe || awaitRequest()"
+        [disabled]="user()?.isBlockedByUser || user()?.isBlockedByMe || isRequestSend()"
         [tuiSkeleton]="isLoading()"
       >
         {{ t('messenger.addToChat') }}
@@ -69,7 +69,7 @@
         tuiButton
         tuiButtonVertical
         type="button"
-        [disabled]="awaitRequest()"
+        [disabled]="isRequestSend()"
         [tuiSkeleton]="isLoading()"
         (click)="blockHandler()"
       >

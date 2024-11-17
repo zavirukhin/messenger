@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-export function fileToBase64(file: File | null): Observable<string> {
+export function fileToBase64$(file: File | null): Observable<string> {
   return new Observable<string>((subscription) => {
     if (file === null) {
       subscription.next('');

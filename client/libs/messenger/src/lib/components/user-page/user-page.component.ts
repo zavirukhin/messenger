@@ -24,7 +24,7 @@ import { ProfileService } from '../../services/profile/profile.service';
 import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
-  selector: 'lib-messenger',
+  selector: 'lib-user-page',
   standalone: true,
   imports: [
     CommonModule,
@@ -45,7 +45,7 @@ export class UserPageComponent {
 
   public isLoading = signal<boolean>(true);
 
-  public awaitRequest = signal<boolean>(false);
+  public isRequestSend = signal<boolean>(false);
 
   private profileService = inject(ProfileService);
 
@@ -55,15 +55,16 @@ export class UserPageComponent {
 
   constructor() {
     this.activatedRoute.params.pipe(
+      take(1),
       map(params => params['id']),
-      switchMap(this.onLoadHandler.bind(this))
+      switchMap((id) => this.getUserData(id))
     ).subscribe((user) => {
       this.user.set(user);
       this.isLoading.set(false);
     });
   }
 
-  private onLoadHandler(id: string): Observable<User> {
+  private getUserData(id: string): Observable<User> {
     return combineLatest([
       this.profileService.getProfileById(id),
       langReady('messenger')
@@ -88,6 +89,7 @@ export class UserPageComponent {
     if (seconds < SECONDS_IN_DAY) {
       return `${userTime.getHours()}:${userTime.getMinutes()}`;
     }
+
     return `${userTime.getDay()}:${userTime.getMonth()}:${userTime.getFullYear()}`;
   }
 
@@ -98,10 +100,11 @@ export class UserPageComponent {
       return;
     }
 
+    this.isRequestSend.set(true);
+
     if (user.isBlockedByMe) {
-      this.awaitRequest.set(true);
       this.profileService.unblockUserById(user.id).pipe(
-        finalize(() => this.awaitRequest.set(false))
+        finalize(() => this.isRequestSend.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,
@@ -110,9 +113,8 @@ export class UserPageComponent {
       });
     }
     else {
-      this.awaitRequest.set(true);
       this.profileService.blockUserById(user.id).pipe(
-        finalize(() => this.awaitRequest.set(false))
+        finalize(() => this.isRequestSend.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,
@@ -129,11 +131,11 @@ export class UserPageComponent {
       return;
     }
 
-    this.awaitRequest.set(true);
+    this.isRequestSend.set(true);
 
     if (user.isContactedByMe) {
       this.profileService.removeToContact(user.id).pipe(
-        finalize(() => this.awaitRequest.set(false))
+        finalize(() => this.isRequestSend.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,
@@ -143,7 +145,7 @@ export class UserPageComponent {
     }
     else {
       this.profileService.addToContact(user.id).pipe(
-        finalize(() => this.awaitRequest.set(false))
+        finalize(() => this.isRequestSend.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,

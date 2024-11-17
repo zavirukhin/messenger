@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TuiIcon } from '@taiga-ui/core';
 import { Tab } from '../../types/tab.type';
 
@@ -22,7 +23,9 @@ export class NavigationBarComponent {
   public activeTab = signal<Tab>('messenger');
 
   constructor() {
-    this.router.events.subscribe((e) => {
+    this.router.events.pipe(
+      takeUntilDestroyed()
+    ).subscribe((e) => {
       if (e instanceof NavigationEnd) {
         this.changeTab(e.url);
       }
