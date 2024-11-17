@@ -58,8 +58,7 @@ export class MessageSocketService {
       const socket = this.getClient(member.user.id.toString());
       if (socket && (await this.verifyToken(socket))) {
         socket.emit('onNewChat', {
-          chatId: chat.id,
-          chatName: chat.name,
+          ...chat,
           memberIds: chatMembers.map((member) => member.user.id),
         });
       }
