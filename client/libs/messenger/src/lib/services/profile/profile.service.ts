@@ -71,6 +71,5 @@ export class ProfileService {
 
   public deleteToken(): void {
     localStorage.removeItem('token');
-    this.cacheService.destroyCache();
   }
 }

@@ -5,7 +5,7 @@ import { TuiAvatar, TuiChip } from '@taiga-ui/kit';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ChatService } from '../../services/chat/chat.service';
 import { Chat } from '../../interfaces/chat.interface';
-import { SocketService } from '@social/shared';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'lib-chat-list-page',
@@ -23,16 +23,12 @@ import { SocketService } from '@social/shared';
 export class ChatListPageComponent {
   private readonly chatService = inject(ChatService);
 
-  private readonly socketService = inject(SocketService);
-
   public chats: Signal<Chat[] | undefined>;
 
   constructor() {
-    this.chats = toSignal(this.chatService.getChats());
-
-    this.socketService.on<string>('newMessage').subscribe((e) => {
-      console.log(e);
-    });
+    this.chats = toSignal(this.chatService.getChats().pipe(
+      map((chats) => Object.values(chats))
+    ));
   }
 
   public getCountUnreadMessages(count: number): string {

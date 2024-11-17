@@ -5,9 +5,10 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class CacheService {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly cache: Map<string, BehaviorSubject<any>> = new Map();
 
-  private readonly cacheList: Set<string> = new Set();
+  private readonly cacheKeyList: Set<string> = new Set();
 
   private session = localStorage.getItem('token');
 
@@ -21,7 +22,7 @@ export class CacheService {
     if (cache === undefined) {
       const subject = new BehaviorSubject(value);
       this.cache.set(key, subject);
-      this.cacheList.add(key);
+      this.cacheKeyList.add(key);
 
       return subject;
     }
@@ -47,13 +48,13 @@ export class CacheService {
   }
 
   public destroyCache(): void {
-    this.cacheList.forEach((key) => {
+    this.cacheKeyList.forEach((key) => {
       const cache = this.cache.get(key);
       cache?.complete();
     });
 
     this.cache.clear();
-    this.cacheList.clear();
+    this.cacheKeyList.clear();
     this.session = localStorage.getItem('token');
   }
 
