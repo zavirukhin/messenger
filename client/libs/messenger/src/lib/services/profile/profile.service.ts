@@ -21,8 +21,7 @@ export class ProfileService {
 
     return this.http.get<ProfileResponse>(environment.apiUrl + '/users/profile').pipe(
       map((response: ProfileResponse) => {
-        this.profile = new BehaviorSubject<ProfileResponse>(response);
-        return this.profile;
+        return new BehaviorSubject<ProfileResponse>(response);
       }),
       switchMap((profile) => profile)
     );
