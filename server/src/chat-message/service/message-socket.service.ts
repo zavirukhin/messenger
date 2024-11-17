@@ -87,7 +87,10 @@ export class MessageSocketService {
       chatId: chatId,
       userId: userIdToRemove,
     };
-
+    const socketDeletedUser = this.getClient(userIdToRemove.toString());
+    if (socketDeletedUser && (await this.verifyToken(socketDeletedUser))) {
+      socketDeletedUser.emit('onUserRemovedFromChat', notificationMessage);
+    }
     for (const member of chatMembers) {
       const socket = this.getClient(member.user.id.toString());
       if (socket && (await this.verifyToken(socket))) {

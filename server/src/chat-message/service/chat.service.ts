@@ -305,14 +305,13 @@ export class ChatService {
     if (userId === memberIdToRemove) {
       throw new CannotRemoveSelfFromChatException();
     }
-
     await this.chatMemberRepository.remove(memberToRemove);
     const chatMembers = await this.chatMemberRepository.find({
       where: { chat: { id: chatId } },
       relations: ['user'],
     });
     this.messageSocketService.notifyUsersAboutUserRemoval(
-      memberToRemove.id,
+      memberIdToRemove,
       chatId,
       chatMembers,
     );
