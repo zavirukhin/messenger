@@ -5,7 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './profile/user.module';
 import { BlockedUserModule } from './blocked-user/blocked-user.module';
 import { ContactModule } from './contact/contact.module';
-import { ChatModule } from './chat/chat.module';
+import { ChatMessageModule } from './chat-message/chat-message.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { ChatModule } from './chat/chat.module';
     UserModule,
     BlockedUserModule,
     ContactModule,
-    ChatModule,
+    ChatMessageModule,
   ],
 })
 export class AppModule {}

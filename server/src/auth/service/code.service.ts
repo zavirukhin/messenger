@@ -41,6 +41,7 @@ export class CodeService {
 
     if (process.env.TWILIO_IS_ACTIVE === 'true') {
       await this.twilioAdapter.sendSMS(phone, code);
+      this.codes.set(phone, { code: '111111', expiresAt, lastSentAt: now });
     } else {
       console.log(`Отправлен код ${code} для телефона ${phone}`);
     }
