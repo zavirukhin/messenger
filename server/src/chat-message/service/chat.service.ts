@@ -199,6 +199,9 @@ export class ChatService {
       name: updateChatDto.name,
       avatar: updateChatDto.avatar,
     });
+
+    const chatMembers = await this.getChatMembers(userId, updateChatDto.chatId);
+    this.messageSocketService.notifyUsersAboutChatUpdate(chat, chatMembers);
   }
 
   async getUserChats(userId: number) {
@@ -276,7 +279,7 @@ export class ChatService {
       relations: ['user'],
     });
     this.messageSocketService.notifyUsersAboutUserAddition(
-      newUser.id,
+      newUser,
       chatId,
       chatMembers,
     );

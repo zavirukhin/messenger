@@ -97,14 +97,14 @@ export class MessageSocketService {
   }
 
   async notifyUsersAboutUserAddition(
-    userIdAdded: number,
+    user,
     chatId: number,
     chatMembers: ChatMember[],
   ) {
     const notificationMessage = {
       type: 'user_added',
       chatId: chatId,
-      userId: userIdAdded,
+      user,
     };
 
     for (const member of chatMembers) {
@@ -113,5 +113,14 @@ export class MessageSocketService {
         socket.emit('onUserAddedToChat', notificationMessage);
       }
     }
+  }
+
+  async notifyUsersAboutChatUpdate(chat, chatMembers: ChatMember[]) {
+    chatMembers.forEach((member) => {
+      const socket = this.getClient(member.user.id.toString());
+      if (socket) {
+        socket.emit('onChatUpdated', chat);
+      }
+    });
   }
 }
