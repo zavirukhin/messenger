@@ -1,11 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
+import { IsInt, IsNotEmpty } from 'class-validator';
 
 export class UpdateMessageStatusDto {
   @ApiProperty({
     description: 'ID чата, для изменения статуса сообщений',
     example: 2,
   })
-  @IsNumber()
+  @IsInt()
+  @IsNotEmpty({ message: 'ID чата не должно быть пустой строкой' })
   chatId: number;
 }

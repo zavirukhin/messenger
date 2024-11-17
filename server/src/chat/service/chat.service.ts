@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, In, Not, Repository } from 'typeorm';
+import { DataSource, EntityManager, In, Not, Repository } from 'typeorm';
 import { Chat } from '../../entity/chat.entity';
 import { ChatMember } from '../../entity/chat-member.entity';
 import { ChatRole, UserRole } from '../../entity/chat-role.entity';
@@ -20,6 +20,11 @@ import { UpdateChatDto } from '../dto/update-chat.dto';
 import { InsufficientPermissionsUpdateChatException } from '../../exception/insufficient-permissions-update-chat.exception';
 import { Message } from '../../entity/message.entity';
 import { MessageStatuses } from '../../entity/message-status.entity';
+import { InsufficientPermissionsDeleteUserFromChatException } from '../../exception/insufficient-permissions-delete-user-from-chat.exception';
+import { MessageSocketService } from './message-socket.service';
+import { UserAlreadyInChatException } from '../../exception/user-already-in-chat.exception';
+import { InsufficientPermissionsAddUserToChatException } from '../../exception/insufficient-permissions-add-user-to-chat.exception';
+import { CannotRemoveSelfFromChatException } from 'src/exception/cannot-remove-self-from-chat.exception';
 
 @Injectable()
 export class ChatService {
@@ -30,21 +35,21 @@ export class ChatService {
     private readonly chatRoleRepository: Repository<ChatRole>,
     @InjectRepository(Chat)
     private readonly chatRepository: Repository<Chat>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
+    private readonly messageSocketService: MessageSocketService,
     private readonly dataSource: DataSource,
   ) {}
 
-  private async createChatWithCreator(
+  async createChatWithCreator(
     chatName: string,
     creatorId: number,
   ): Promise<Chat> {
-    return this.dataSource.transaction(async (manager) => {
-      const creator = await manager.findOne(User, { where: { id: creatorId } });
-      if (!creator) {
-        throw new UserNotFoundException();
-      }
+    const creator = await this.findUserByIdOrFail(creatorId);
 
+    return this.dataSource.transaction(async (manager) => {
       const chat = await manager.create(Chat, { name: chatName });
       const savedChat = await manager.save(chat);
 
@@ -67,23 +72,22 @@ export class ChatService {
     creatorId: number,
     memberIds: number[],
   ): Promise<Chat> {
-    if (!memberIds || memberIds.length === 0)
+    if (!memberIds || memberIds.length === 0) {
       return await this.createChatWithCreator(chatName, creatorId);
+    }
+
+    memberIds = [...new Set(memberIds)];
+
+    if (memberIds.includes(creatorId)) {
+      throw new CannotAddSelfAsMemberChatException();
+    }
+
+    const creator = await this.findUserByIdOrFail(creatorId);
+
     return this.dataSource.transaction(async (manager) => {
-      const creator = await manager.findOne(User, { where: { id: creatorId } });
-      if (!creator) {
-        throw new UserNotFoundException();
-      }
-      memberIds = [...new Set(memberIds)];
-
-      if (memberIds.includes(creatorId)) {
-        throw new CannotAddSelfAsMemberChatException();
-      }
-
       const members = await manager.find(User, {
         where: memberIds.map((id) => ({ id })),
       });
-
       const foundMemberIds = members.map((member) => member.id);
       const missingMemberIds = memberIds.filter(
         (id) => !foundMemberIds.includes(id),
@@ -93,34 +97,15 @@ export class ChatService {
         throw new UsersNotFoundException(missingMemberIds);
       }
 
-      const blockingMembers = await await manager.find(BlockedUser, {
-        where: {
-          blockedByUser: { id: creatorId },
-          blockedUser: { id: In(foundMemberIds) },
-        },
-        relations: ['blockedUser'],
-      });
+      const { blockingMembers, blockedByMembers } =
+        await this.getBlockedUsersForChat(creatorId, foundMemberIds, manager);
 
       if (blockingMembers.length > 0) {
-        const blockingMemberIds = blockingMembers.map(
-          (blockStatus) => blockStatus.blockedUser.id,
-        );
-        throw new CannotCreateChatWithBlockedUsers(blockingMemberIds);
+        throw new CannotCreateChatWithBlockedUsers(blockingMembers);
       }
 
-      const blockedByMembers = await await manager.find(BlockedUser, {
-        where: {
-          blockedByUser: { id: In(foundMemberIds) },
-          blockedUser: { id: creatorId },
-        },
-        relations: ['blockedByUser'],
-      });
-
       if (blockedByMembers.length > 0) {
-        const blockedMemberIds = blockedByMembers.map(
-          (blockStatus) => blockStatus.blockedByUser.id,
-        );
-        throw new CannotCreateChatByBlockedUsers(blockedMemberIds);
+        throw new CannotCreateChatByBlockedUsers(blockedByMembers);
       }
 
       const chat = await manager.create(Chat, { name: chatName });
@@ -149,7 +134,10 @@ export class ChatService {
       );
 
       await manager.save(memberEntities);
-
+      await this.messageSocketService.notifyUsersAboutNewChat(savedChat, [
+        creatorMember,
+        ...memberEntities,
+      ]);
       return {
         ...savedChat,
         memberIds: [creatorId, foundMemberIds].flat(2),
@@ -163,32 +151,17 @@ export class ChatService {
     chatId: number,
     newRoleId: number,
   ) {
-    const chat = await this.chatRepository.findOne({ where: { id: chatId } });
-    if (!chat) {
-      throw new ChatNotFoundException();
-    }
+    const chat = await this.findChatByIdOrFail(chatId);
 
-    const requestingUser = await this.chatMemberRepository.findOne({
-      where: { user: { id: userId }, chat: { id: chatId } },
-      relations: ['chatRole'],
-    });
-
-    if (!requestingUser) {
-      throw new UserNotAMemberChatException();
-    }
-
+    const requestingUser = await this.getChatMemberOrFail(userId, chatId);
     if (userId === changeRoleUserId) {
       throw new CannotChangeSelfChatMemberRoleException();
     }
 
-    const targetUser = await this.chatMemberRepository.findOne({
-      where: { user: { id: changeRoleUserId }, chat: { id: chatId } },
-      relations: ['chatRole'],
-    });
-
-    if (!targetUser) {
-      throw new UserNotAMemberChatException();
-    }
+    const targetUser = await this.getChatMemberOrFail(
+      changeRoleUserId,
+      chat.id,
+    );
 
     if (
       requestingUser.chatRole.id >= targetUser.chatRole.id ||
@@ -209,25 +182,16 @@ export class ChatService {
   }
 
   async updateChat(userId: number, updateChatDto: UpdateChatDto) {
-    const chat = await this.chatRepository.findOne({
-      where: { id: updateChatDto.chatId },
-    });
+    const chat = await this.findChatByIdOrFail(updateChatDto.chatId);
 
-    if (!chat) {
-      throw new ChatNotFoundException();
-    }
+    const userInChat = await this.getChatMemberOrFail(userId, chat.id);
 
-    const userInChat = await this.chatMemberRepository.findOne({
-      where: { user: { id: userId }, chat: { id: updateChatDto.chatId } },
-      relations: ['chatRole'],
-    });
-
-    if (!userInChat) {
-      throw new UserNotAMemberChatException();
-    }
-
-    const userRole = userInChat.chatRole.name;
-    if (![UserRole.ADMIN, UserRole.OWNER].includes(userRole)) {
+    if (
+      !this.hasPermission(userInChat.chatRole.name, [
+        UserRole.ADMIN,
+        UserRole.OWNER,
+      ])
+    ) {
       throw new InsufficientPermissionsUpdateChatException();
     }
 
@@ -272,5 +236,147 @@ export class ChatService {
     );
 
     return chatDetails;
+  }
+
+  async addMemberToChat(userId: number, newMemberId: number, chatId: number) {
+    const chat = await this.findChatByIdOrFail(chatId);
+    const requestingUser = await this.getChatMemberOrFail(userId, chatId);
+
+    if (
+      !this.hasPermission(requestingUser.chatRole.name, [
+        UserRole.ADMIN,
+        UserRole.OWNER,
+      ])
+    ) {
+      throw new InsufficientPermissionsAddUserToChatException();
+    }
+
+    const newUser = await this.findUserByIdOrFail(newMemberId);
+    const existingMember = await this.chatMemberRepository.findOne({
+      where: { user: { id: newMemberId }, chat: { id: chatId } },
+    });
+    if (existingMember) {
+      throw new UserAlreadyInChatException();
+    }
+    const role = await this.chatRoleRepository.findOne({
+      where: { name: UserRole.USER },
+    });
+    if (!role) {
+      throw new MemberRoleNotFoundException();
+    }
+
+    const newChatMember = this.chatMemberRepository.create({
+      user: newUser,
+      chat: chat,
+      chatRole: role,
+    });
+    await this.chatMemberRepository.save(newChatMember);
+    const chatMembers = await this.chatMemberRepository.find({
+      where: { chat: { id: chatId } },
+      relations: ['user'],
+    });
+    this.messageSocketService.notifyUsersAboutUserAddition(
+      newUser.id,
+      chatId,
+      chatMembers,
+    );
+  }
+
+  async removeMemberFromChat(
+    userId: number,
+    memberIdToRemove: number,
+    chatId: number,
+  ) {
+    const chat = await this.findChatByIdOrFail(chatId);
+    const requestingUser = await this.getChatMemberOrFail(userId, chat.id);
+
+    if (!this.hasPermission(requestingUser.chatRole.name, [UserRole.OWNER])) {
+      throw new InsufficientPermissionsDeleteUserFromChatException();
+    }
+
+    const memberToRemove = await this.getChatMemberOrFail(
+      memberIdToRemove,
+      chatId,
+    );
+
+    if (userId === memberIdToRemove) {
+      throw new CannotRemoveSelfFromChatException();
+    }
+
+    await this.chatMemberRepository.remove(memberToRemove);
+    const chatMembers = await this.chatMemberRepository.find({
+      where: { chat: { id: chatId } },
+      relations: ['user'],
+    });
+    this.messageSocketService.notifyUsersAboutUserRemoval(
+      memberToRemove.id,
+      chatId,
+      chatMembers,
+    );
+  }
+
+  private async findUserByIdOrFail(userId: number): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    return user;
+  }
+
+  private async findChatByIdOrFail(chatId: number): Promise<Chat> {
+    const chat = await this.chatRepository.findOne({ where: { id: chatId } });
+    if (!chat) {
+      throw new ChatNotFoundException();
+    }
+    return chat;
+  }
+
+  private async getChatMemberOrFail(
+    userId: number,
+    chatId: number,
+  ): Promise<ChatMember> {
+    const chatMember = await this.chatMemberRepository.findOne({
+      where: { user: { id: userId }, chat: { id: chatId } },
+      relations: ['chatRole'],
+    });
+    if (!chatMember) {
+      throw new UserNotAMemberChatException();
+    }
+    return chatMember;
+  }
+
+  private hasPermission(userRole: string, requiredRoles: string[]): boolean {
+    return requiredRoles.includes(userRole);
+  }
+
+  private async getBlockedUsersForChat(
+    creatorId: number,
+    memberIds: number[],
+    manager: EntityManager,
+  ) {
+    const blockingMembers = await manager.find(BlockedUser, {
+      where: {
+        blockedByUser: { id: creatorId },
+        blockedUser: { id: In(memberIds) },
+      },
+      relations: ['blockedUser'],
+    });
+
+    const blockedByMembers = await manager.find(BlockedUser, {
+      where: {
+        blockedByUser: { id: In(memberIds) },
+        blockedUser: { id: creatorId },
+      },
+      relations: ['blockedByUser'],
+    });
+
+    return {
+      blockingMembers: blockingMembers.map(
+        (blockStatus) => blockStatus.blockedUser.id,
+      ),
+      blockedByMembers: blockedByMembers.map(
+        (blockStatus) => blockStatus.blockedByUser.id,
+      ),
+    };
   }
 }

@@ -7,6 +7,7 @@ import {
   Post,
   Patch,
   Get,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -22,6 +23,8 @@ import { ErrorCode } from '../../error-codes';
 import { ApiMultipleResponse } from '../../swagger/decorator/api-multi-response.decorator';
 import { ChangeUserRoleDto } from '../dto/change-user-role.dto';
 import { UpdateChatDto } from '../dto/update-chat.dto';
+import { RemoveMemberFromChatDto } from '../dto/remove-member-from-chat.dto';
+import { AddMemberToChatDto } from '../dto/add-member-to-chat.dto';
 
 @ApiTags('chats')
 @Controller('chats')
@@ -309,5 +312,139 @@ export class ChatController {
   async getUserChats(@Request() req) {
     const userId = req.user.id;
     return await this.chatService.getUserChats(userId);
+  }
+
+  @Post('add-member')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Добавление участника в чат' })
+  @ApiMultipleResponse(
+    {
+      status: 404,
+      schema: {
+        example: {
+          message: 'Чат не найден.',
+          errorCode: ErrorCode.CHAT_NOT_FOUND,
+          statusCode: HttpStatus.NOT_FOUND,
+        },
+      },
+      description: 'Чат не найден.',
+    },
+    {
+      status: 404,
+      schema: {
+        example: {
+          message: 'Пользователь не является членом чата.',
+          errorCode: ErrorCode.USER_NOT_A_MEMBER_CHAT,
+          statusCode: HttpStatus.FORBIDDEN,
+        },
+      },
+      description: 'Пользователь не является членом чата.',
+    },
+  )
+  @ApiResponse({
+    status: 403,
+    schema: {
+      example: {
+        message: 'Недостаточно прав для добавления пользователя в чат.',
+        errorCode: ErrorCode.INSUFFICIENT_PERMISSIONS_ADD_USER_TO_CHAT,
+        statusCode: HttpStatus.FORBIDDEN,
+      },
+    },
+    description: 'Недостаточно прав для добавления пользователя в чат.',
+  })
+  @ApiResponse({
+    status: 409,
+    schema: {
+      example: {
+        message: 'Пользователь уже участник чата.',
+        errorCode: ErrorCode.USER_ALREADY_IN_CHAT,
+        statusCode: HttpStatus.CONFLICT,
+      },
+    },
+    description: 'Пользователь уже участник чата.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Пользователь добавлен в чат.',
+  })
+  @ApiResponse({ status: 401, description: 'Не авторизован.' })
+  async addMemberToChat(
+    @Request() req,
+    @Body() addMemberToChatDto: AddMemberToChatDto,
+  ) {
+    const userId = req.user.id;
+    return this.chatService.addMemberToChat(
+      userId,
+      addMemberToChatDto.newMemberId,
+      addMemberToChatDto.chatId,
+    );
+  }
+
+  @Delete('remove-member')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Удаление участника из чата' })
+  @ApiMultipleResponse(
+    {
+      status: 404,
+      schema: {
+        example: {
+          message: 'Чат не найден.',
+          errorCode: ErrorCode.CHAT_NOT_FOUND,
+          statusCode: HttpStatus.NOT_FOUND,
+        },
+      },
+      description: 'Чат не найден.',
+    },
+    {
+      status: 404,
+      schema: {
+        example: {
+          message: 'Пользователь не является членом чата.',
+          errorCode: ErrorCode.USER_NOT_A_MEMBER_CHAT,
+          statusCode: HttpStatus.FORBIDDEN,
+        },
+      },
+      description: 'Пользователь не является членом чата.',
+    },
+  )
+  @ApiResponse({
+    status: 403,
+    schema: {
+      example: {
+        message: 'Недостаточно прав для удаления пользователя из чата.',
+        errorCode: ErrorCode.INSUFFICIENT_PERMISSIONS_DELETE_USER_FROM_CHAT,
+        statusCode: HttpStatus.FORBIDDEN,
+      },
+    },
+    description: 'Недостаточно прав для удаления пользователя из чата.',
+  })
+  @ApiResponse({
+    status: 409,
+    schema: {
+      example: {
+        message: 'Нельзя удалить себя из чата',
+        errorCode: ErrorCode.CANNOT_REMOVE_SELF_FROM_CHAT,
+        statusCode: HttpStatus.CONFLICT,
+      },
+    },
+    description: 'Нельзя удалить себя из чата',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Пользователь удален из чата.',
+  })
+  @ApiResponse({ status: 401, description: 'Не авторизован.' })
+  async removeMemberFromChat(
+    @Request() req,
+    @Body() removeMemberFromChatDto: RemoveMemberFromChatDto,
+  ) {
+    const userId = req.user.id;
+    return this.chatService.removeMemberFromChat(
+      userId,
+      removeMemberFromChatDto.memberIdToRemove,
+      removeMemberFromChatDto.chatId,
+    );
   }
 }

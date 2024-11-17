@@ -1,6 +1,6 @@
 import {
+  IsInt,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   Length,
@@ -12,7 +12,8 @@ export class UpdateChatDto {
     description: 'ID чата, для обновления данных',
     example: 2,
   })
-  @IsNumber()
+  @IsInt()
+  @IsNotEmpty({ message: 'ID чата не должно быть пустой строкой' })
   chatId: number;
 
   @ApiProperty({
