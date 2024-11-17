@@ -5,6 +5,8 @@ import { map, Observable, switchMap } from 'rxjs';
 import { CacheService, SocketService } from '@social/shared';
 import { Chat } from '../../interfaces/chat.interface';
 import { UserRemoveEvent } from '../../interfaces/user-remove-event.interface';
+import { ChatEvent } from '../../types/chat-event.type';
+import { MessageStatusEvent } from '../../interfaces/message-status-event.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -22,17 +24,19 @@ export class ChatService {
     this.subscribeToNewChats();
     this.subscribeToAddChats();
     this.subscribeToRemoveUserChats();
+    this.subscribeToChatUpdate();
+    this.subscribeToStatusMessagesChange();
   }
 
   private subscribeToNewChats(): void {
-    this.socketService.on<Chat>('onNewChat')
-    .subscribe((chat: Omit<Chat, 'latestMessage' | 'latestMessageDate' | 'unreadCount'>) => {
+    this.socketService.on<ChatEvent>('onNewChat')
+    .subscribe((chat) => {
       this.putChat(chat);
     });
   }
 
   private subscribeToAddChats(): void {
-    this.socketService.on<Chat>('onUserAddedToChat')
+    this.socketService.on<ChatEvent>('onUserAddedToChat')
     .subscribe(() => {
       this.getChats().subscribe();
     });
@@ -43,6 +47,69 @@ export class ChatService {
     .subscribe((event: UserRemoveEvent) => {
       this.removeChat(event.chatId);
     });
+  }
+
+  private subscribeToChatUpdate(): void {
+    this.socketService.on<ChatEvent>('onChatUpdated')
+    .subscribe((event: ChatEvent) => {
+      this.updateChat(event);
+    });
+  }
+
+  private subscribeToStatusMessagesChange(): void {
+    this.socketService.on<MessageStatusEvent[]>('onStatusMessagesChange')
+    .subscribe((event: MessageStatusEvent[]) => {
+      if (event.length !== 0) {
+        this.readChat(event[0].chatId);
+      }
+    });
+  }
+
+  private readChat(chatId: number) {
+    const chats = this.cacheService.get<Record<string, Chat>>('chats');
+    
+    if (chats === null) {
+      return;
+    }
+
+    const chatCache = chats.value;
+
+    if (chatCache === undefined) {
+      return;
+    }
+
+    const chatIdString = chatId.toString();
+
+    chatCache[chatIdString] = {
+      ...chatCache[chatId],
+      unreadCount: 0
+    }
+
+    this.cacheService.set<Record<string, Chat>>('chats', chatCache);
+  }
+
+  private updateChat(chat: ChatEvent): void {
+    const chats = this.cacheService.get<Record<string, Chat>>('chats');
+    
+    if (chats === null) {
+      return;
+    }
+
+    const chatCache = chats.value;
+
+    if (chatCache === undefined) {
+      return;
+    }
+
+    const chatId = chat.id.toString();
+
+    chatCache[chatId] = {
+      ...chatCache[chatId],
+      name: chat.name,
+      avatar: chat.avatar
+    }
+
+    this.cacheService.set<Record<string, Chat>>('chats', chatCache);
   }
 
   private removeChat(chatId: number): void {
@@ -72,6 +139,7 @@ export class ChatService {
         latestMessageDate: null,
         unreadCount: 0
       };
+
       this.cacheService.set<Record<string, Chat>>('chats', chats);
     }
   }
