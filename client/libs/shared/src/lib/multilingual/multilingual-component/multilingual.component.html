@@ -1,7 +1,7 @@
 <div class="toogle-language" *transloco="let t;">
     <tui-badged-content>
       <img
-        alt="countri flag"
+        alt="country flag"
         size="s"
         tuiBadge
         tuiSlot="bottom"
@@ -31,7 +31,7 @@
               [value]="name | titlecase"
               (click)="setLang(name)"
             >
-              <img alt="countri flag" class="t-flag language-switch-img" [src]="flagsMap.get(name) | tuiFlag" />
+              <img alt="country flag" class="t-flag language-switch-img" [src]="flagsMap.get(name) | tuiFlag" />
               {{ t('multilingual.'+name) | titlecase }}
             </button>
           </tui-opt-group>

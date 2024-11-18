@@ -10,6 +10,7 @@ export class MultilingualService {
   
   public getLanguageFromLocalStorage(): string {
     const language = localStorage.getItem('language');
-    return language ? language : '';
+
+    return language || '';
   }
 }
