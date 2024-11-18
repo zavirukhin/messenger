@@ -199,9 +199,14 @@ export class ChatService {
       name: updateChatDto.name,
       avatar: updateChatDto.avatar,
     });
-
+    const updatedChat = await this.chatRepository.findOne({
+      where: { id: chat.id },
+    });
     const chatMembers = await this.getChatMembers(userId, updateChatDto.chatId);
-    this.messageSocketService.notifyUsersAboutChatUpdate(chat, chatMembers);
+    this.messageSocketService.notifyUsersAboutChatUpdate(
+      updatedChat,
+      chatMembers,
+    );
   }
 
   async getUserChats(userId: number) {
