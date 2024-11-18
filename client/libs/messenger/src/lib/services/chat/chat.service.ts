@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@env';
-import { map, Observable, switchMap } from 'rxjs';
+import { map, Observable, switchMap, tap } from 'rxjs';
 import { CacheService, SocketService } from '@social/shared';
 import { Chat } from '../../interfaces/chat.interface';
 import { UserRemoveEvent } from '../../interfaces/user-remove-event.interface';
@@ -193,6 +193,16 @@ export class ChatService {
         return this.cacheService.set<Record<string, Chat>>('chats', chatMap);
       }),
       switchMap((chats) => chats)
+    );
+  }
+
+  public createChat(chatName: string): Observable<ChatEvent> {
+    return this.http.post<ChatEvent>(environment.apiUrl + '/chats/createWithMembers', { 
+      chatName 
+    }).pipe(
+      tap((chat: ChatEvent) => {
+        this.putChat(chat);
+      })
     );
   }
 }

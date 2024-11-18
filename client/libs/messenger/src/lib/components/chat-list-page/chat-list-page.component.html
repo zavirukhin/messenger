@@ -1,5 +1,14 @@
 <div class="chat-list-view-container">
   <div class="chat-list">
+    <button
+      class="button-add"
+      tuiIconButton
+      iconStart="@tui.plus"
+      [style.border-radius.%]="100"
+      (click)="openDialogCreateChat()"
+    >
+      New chat
+    </button>
     @for (chat of chats(); track $index) {
       <div
         class="chat-container"
@@ -45,3 +54,34 @@
     }
   </div>
 </div>
+
+<ng-container *transloco="let t;">
+  <ng-template
+    let-observer
+    [tuiDialogOptions]="{ label: t('messenger.createChat'), size: 's' }"
+    [(tuiDialog)]="openDialog"
+  >
+    <form
+      (ngSubmit)="onSubmitCreateChat()"
+      [formGroup]="form"
+      class="form-create-chat"
+    >
+      <tui-textfield>
+        <label tuiLabel>{{ t('messenger.chatName') }}</label>
+        <input
+          tuiTextfield
+          formControlName="chatName"
+          maxLength="50"
+        />
+      </tui-textfield>
+      <button
+        size="m"
+        tuiButton
+        type="submit"
+        [disabled]="form.disabled"
+      >
+        {{ t('messenger.createChatButton') }}
+      </button>
+    </form>
+  </ng-template>
+</ng-container>

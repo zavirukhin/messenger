@@ -1,12 +1,14 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
-import { TuiTitle } from '@taiga-ui/core';
+import { TuiButton, TuiDialog, TuiTextfield, TuiTitle } from '@taiga-ui/core';
 import { TuiAvatar, TuiChip } from '@taiga-ui/kit';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { finalize, map } from 'rxjs';
 import { ChatService } from '../../services/chat/chat.service';
 import { Chat } from '../../interfaces/chat.interface';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'lib-chat-list-page',
@@ -16,7 +18,12 @@ import { RouterLink } from '@angular/router';
     TuiAvatar,
     TuiTitle,
     TuiChip,
-    RouterLink
+    TuiButton,
+    TuiDialog,
+    TuiTextfield,
+    TranslocoDirective,
+    RouterLink,
+    ReactiveFormsModule
   ],
   templateUrl: './chat-list-page.component.html',
   styleUrl: './chat-list-page.component.less',
@@ -26,6 +33,12 @@ export class ChatListPageComponent {
   private readonly chatService = inject(ChatService);
 
   public chats: Signal<Chat[] | undefined>;
+
+  public openDialog = false;
+
+  public form = new FormGroup({
+    chatName: new FormControl('', [Validators.required])
+  });
 
   constructor() {
     this.chats = toSignal(this.chatService.getChats().pipe(
@@ -54,5 +67,24 @@ export class ChatListPageComponent {
     }
 
     return formatDate(time, 'dd:MM:yyyy', 'ru-RU');
+  }
+
+  public openDialogCreateChat(): void {
+    this.openDialog = true;
+  }
+
+  public onSubmitCreateChat(): void {
+    if (this.form.valid) {
+      this.form.disable();
+
+      this.chatService.createChat(this.form.value.chatName || '').pipe(
+        finalize(() => {
+          this.form.enable();
+          this.form.reset();
+        })
+      ).subscribe(() => {
+        this.openDialog = false;
+      });
+    }
   }
 }

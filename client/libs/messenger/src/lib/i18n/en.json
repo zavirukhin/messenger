@@ -11,5 +11,8 @@
   "removeContact": "Remove contact",
   "addToChat": "Add to chat",
   "blockUser": "Block user",
-  "unblockUser": "Unblock user"
+  "unblockUser": "Unblock user",
+  "createChat": "Create chat",
+  "chatName": "Chat name",
+  "createChatButton": "Create"
 }
