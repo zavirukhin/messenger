@@ -3,5 +3,13 @@
   "firstName": "Имя",
   "customName": "Ссылка",
   "logout": "Выйти",
-  "change": "Сохранить"
+  "change": "Сохранить",
+  "removeAvatar": "Удалить фото профиля",
+  "blocked": "Заблокирован",
+  "lastSeen": "Был в сети",
+  "addContact": "Добавить в контакты",
+  "removeContact": "Удалить из контактов",
+  "addToChat": "Добавить в чат",
+  "blockUser": "Заблокировать",
+  "unblockUser": "Разблокировать"
 }

@@ -33,7 +33,13 @@
         "quotes": ["error", "single"],
         "keyword-spacing": "error",
         "eqeqeq": "error",
-        "no-unreachable": "error"
+        "no-unreachable": "error",
+        "padding-line-between-statements": [
+          "error",
+          { "blankLine": "always", "prev": ["const", "let", "var"], "next": ["return", "block-like"] },
+          { "blankLine": "always", "prev": ["block-like"], "next": ["const", "let", "var"] },
+          { "blankLine": "always", "prev": "*", "next": "return" }
+        ]
       }
     },
     {

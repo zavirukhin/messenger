@@ -21,8 +21,10 @@ export const authorizationHandlerInterceptor: HttpInterceptorFn = (req, next) =>
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         router.navigate(['/auth']);
+
         return of();
       }
+
       return throwError(() => error);
     })
   );

@@ -16,7 +16,6 @@ import {
   Validators
 } from '@angular/forms';
 import {
-  provideTranslocoScope,
   TranslocoDirective,
   TranslocoService
 } from '@jsverse/transloco';
@@ -35,9 +34,9 @@ import {
   TuiTitle
 } from '@taiga-ui/core';
 import { langReady } from '@social/shared';
-import { loader } from '../../transloco-loader';
 import { ProfileService } from '../../services/profile/profile.service';
 import { Profile } from '../../types/profile.type';
+import { fileToBase64$ } from '../../utils/file-to-base64';
 
 @Component({
   selector: 'lib-settings-page',
@@ -66,11 +65,7 @@ import { Profile } from '../../types/profile.type';
       useFactory: (transloco: TranslocoService) => ({
         required: transloco.translate('required')
       })
-    },
-    provideTranslocoScope({
-      scope: 'messenger',
-      loader
-    })
+    }
   ]
 })
 export class SettingsPageComponent {
@@ -115,16 +110,22 @@ export class SettingsPageComponent {
     if (this.form.valid) {
       this.form.disable();
 
-      const custom_name = this.form.controls.customName.value;
+      fileToBase64$(this.form.controls.avatar.value).subscribe((avatar) => {
+        const custom_name = this.form.controls.customName.value;
+        const avatar_old = this.profile()?.avatar ?? null;
 
-      this.profileService.updateProfile({
-        firstName: this.form.controls.firstName.value ?? '',
-        lastName: this.form.controls.lastName.value ?? '',
-        customName: custom_name ? custom_name : null,
-        avatarBase64: null
-      }).pipe(
-        finalize(() => this.form.enable())
-      ).subscribe();
+        this.profileService.updateProfile({
+          firstName: this.form.controls.firstName.value ?? '',
+          lastName: this.form.controls.lastName.value ?? '',
+          customName: custom_name ? custom_name : null,
+          avatar: avatar !== '' ? avatar : avatar_old
+        }).pipe(
+          finalize(() => {
+            this.form.enable();
+            this.removeFile();
+          })
+        ).subscribe();
+      });
     }
     else {
       this.form.markAllAsTouched();
@@ -138,5 +139,25 @@ export class SettingsPageComponent {
 
   public removeFile(): void {
     this.form.controls.avatar.setValue(null);
+  }
+
+  public removeAvatar(): void {
+    const profile = this.profile();
+
+    if (profile) {
+      this.form.disable();
+
+      this.profileService.updateProfile({
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        customName: profile.customName,
+        avatar: null
+      }).pipe(
+        finalize(() => {
+          this.form.enable();
+          this.removeFile();
+        })
+      ).subscribe();
+    }
   }
 }

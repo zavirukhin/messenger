@@ -21,15 +21,17 @@ install:
   stage: install
   extends: .unpack-client
   script:
-    - npm ci
+    - npm ci --no-audit --no-fund --prefer-offline
   artifacts:
     paths:
       - node_modules/
+    expire_in: 1h
 
 build:
   stage: build
   extends: .unpack-client
   script:
+    - cp ${SENTRY_ENV} .env.sentry-build-plugin
     - npx nx build
   artifacts:
     paths:
@@ -54,6 +56,7 @@ pages:
   script:
     - mkdir public
     - mv dist/social/* public
+    - echo '/* /index.html 200' > public/_redirects
   only:
     - main
     - master

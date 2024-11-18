@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TuiIcon } from '@taiga-ui/core';
 import { Tab } from '../../types/tab.type';
 
@@ -17,9 +18,31 @@ import { Tab } from '../../types/tab.type';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavigationBarComponent {
-  public activeTab: Tab = 'settings';
+  private router = inject(Router);
 
-  public changeTab(tab: Tab) {
-    this.activeTab = tab;
+  public activeTab = signal<Tab>('messenger');
+
+  constructor() {
+    this.router.events.pipe(
+      takeUntilDestroyed()
+    ).subscribe((e) => {
+      if (e instanceof NavigationEnd) {
+        this.changeTab(e.url);
+      }
+    });
+  }
+
+  private changeTab(path: string) {
+    switch (path) {
+      case '/contacts':
+        this.activeTab.set('contacts');
+        break;
+      case '/settings':
+        this.activeTab.set('settings');
+        break;
+      default:
+        this.activeTab.set('messenger');
+        break;
+    }
   }
 }

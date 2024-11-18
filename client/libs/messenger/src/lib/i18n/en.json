@@ -3,5 +3,13 @@
   "firstName": "First Name",
   "customName": "Url",
   "logout": "Logout",
-  "change": "Change"
+  "removeAvatar": "Remove avatar",
+  "change": "Change",
+  "blocked": "Blocked",
+  "lastSeen": "Last seen",
+  "addContact": "Add contact",
+  "removeContact": "Remove contact",
+  "addToChat": "Add to chat",
+  "blockUser": "Block user",
+  "unblockUser": "Unblock user"
 }

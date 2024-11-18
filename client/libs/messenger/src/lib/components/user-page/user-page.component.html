@@ -1,0 +1,85 @@
+<ng-container *transloco="let t;">
+  <div class="user-container">
+    <div class="user-info">
+      <tui-avatar
+        size="xxl"
+        [tuiSkeleton]="isLoading()"
+        [src]="(user()?.avatar ?? '@tui.user') | tuiFallbackSrc: '@tui.user' | async"
+      />
+      <h1
+        class="username-container"
+        [tuiSkeleton]="isLoading()"
+        tuiTitle="m"
+      >
+        {{ user()?.lastName }} {{ user()?.firstName }}
+        @if (user()?.customName) {
+          <div tuiSubtitle>&#64;{{ user()?.customName }}</div>
+        }
+        @else {
+          <div tuiSubtitle>&#64;id{{ user()?.id }}</div>
+        }
+      </h1>
+      <div
+        class="chips"
+        [tuiSkeleton]="isLoading()"
+      >
+        @if (user()?.isBlockedByUser) {
+          <tui-chip appearance="error">{{ t('messenger.blocked') }}</tui-chip>
+        }
+        @if (user()?.lastActivity; as lastActivity) {
+          <tui-chip>{{ t('messenger.lastSeen') }}: {{ getLastActivity(lastActivity) }}</tui-chip>
+        }
+      </div>
+    </div>
+    <div class="user-actions">
+      <button
+        class="action-button"
+        appearance="secondary"
+        iconStart="@tui.user-plus"
+        tuiButton
+        tuiButtonVertical
+        type="button"
+        [disabled]="user()?.isBlockedByUser || isDisabled()"
+        [tuiSkeleton]="isLoading()"
+        (click)="contactHandler()"
+      >
+        @if (user()?.isContactedByMe) {
+          {{ t('messenger.removeContact') }}
+        }
+        @else {
+          {{ t('messenger.addContact') }}
+        }
+      </button>
+      <button
+        class="action-button"
+        appearance="secondary"
+        iconStart="@tui.message-circle-plus"
+        tuiButton
+        tuiButtonVertical
+        type="button"
+        [disabled]="user()?.isBlockedByUser || user()?.isBlockedByMe || isDisabled()"
+        [tuiSkeleton]="isLoading()"
+      >
+        {{ t('messenger.addToChat') }}
+      </button>
+      <button
+        class="action-button"
+        appearance="secondary"
+        iconStart="@tui.ban"
+        tuiButton
+        tuiButtonVertical
+        type="button"
+        [disabled]="isDisabled()"
+        [tuiSkeleton]="isLoading()"
+        (click)="blockHandler()"
+      >
+        @if (user()?.isBlockedByMe) {
+          {{ t('messenger.unblockUser') }}
+        }
+        @else {
+          {{ t('messenger.blockUser') }}
+        }
+      </button>
+    </div>
+  </div>
+</ng-container>

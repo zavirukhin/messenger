@@ -1,4 +1,4 @@
-.settings-container {
+.user-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -9,9 +9,11 @@
 }
 
 .user-info {
+  display: flex;
   align-items: center;
   overflow: hidden;
-  flex-shrink: 0;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .username-container {
@@ -19,13 +21,17 @@
   white-space: nowrap;
 }
 
-.form-container {
-  flex: 1;
-  justify-content: space-between;
-}
-
-.form-container, .input-container, .button-container, .user-info {
+.chips {
   display: flex;
   gap: 8px;
-  flex-direction: column;
+}
+
+.user-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.action-button {
+  width: 100px;
 }

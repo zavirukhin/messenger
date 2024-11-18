@@ -6,6 +6,7 @@ export function langReady(scope: string): Observable<'loaded'> {
   const translocoService = inject(TranslocoService);
 
   const translation = translocoService.getTranslation(scope);
+
   if (!isEmpty(translation)) {
     return of('loaded');
   }
