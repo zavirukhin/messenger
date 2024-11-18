@@ -7,6 +7,7 @@ import { Chat } from '../../interfaces/chat.interface';
 import { UserRemoveEvent } from '../../interfaces/user-remove-event.interface';
 import { MessageEvent } from '../../interfaces/message-event.interface';
 import { ChatEvent } from '../../interfaces/chat-event.interface';
+import { Contact } from '../../interfaces/contact.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -196,13 +197,21 @@ export class ChatService {
     );
   }
 
-  public createChat(chatName: string): Observable<ChatEvent> {
-    return this.http.post<ChatEvent>(environment.apiUrl + '/chats/createWithMembers', { 
-      chatName 
-    }).pipe(
+  public createChat(chatName: string, contantList?: number[]): Observable<ChatEvent> {
+    const body: { chatName: string; memberIds?: number[] } = { chatName };
+    
+    if (contantList && contantList.length) {
+      body.memberIds = contantList;
+    }
+
+    return this.http.post<ChatEvent>(environment.apiUrl + '/chats/createWithMembers', body).pipe(
       tap((chat: ChatEvent) => {
         this.putChat(chat);
       })
     );
+  }
+
+  public getContacts(): Observable<Contact[]> {
+    return this.http.get<Contact[]>(environment.apiUrl + '/contacts/list');
   }
 }
