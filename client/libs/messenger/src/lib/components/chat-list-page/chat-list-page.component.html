@@ -1,61 +1,67 @@
-<div class="chat-list-view-container">
-  <div class="chat-list">
-    <button
-      class="button-add"
-      tuiIconButton
-      iconStart="@tui.plus"
-      [style.border-radius.%]="100"
-      (click)="openDialogCreateChat()"
-    >
-      New chat
-    </button>
-    @for (chat of chats(); track $index) {
-      <div
-        class="chat-container"
-        [routerLink]="['/chat', chat.id]"
+<ng-container *transloco="let t;">
+  <div class="chat-list-view-container">
+    <div class="chat-list-header">
+      <button
+        class="button-add"
+        tuiIconButton
+        iconStart="@tui.plus"
+        [style.border-radius.%]="100"
+        (click)="openDialogCreateChat()"
       >
-        <tui-avatar
-          size="l"
-          [src]="'@tui.image'"
-        />
-        <div class="chat-description">
-          <h2
-            tuiTitle
-            class="chat-line"
-          >
-            <b class="chat-lint-text">{{ chat.name }}</b>
-            <span
-              tuiSubtitle
-              [style.color]="'var(--tui-text-secondary)'"
-              class="chat-lint-text"
+        New chat
+      </button>
+      <tui-textfield class="search-input">
+        <label tuiLabel>{{ t('messenger.chatSearch') }}</label>
+        <input tuiTextfield />
+      </tui-textfield>
+    </div>
+    <div class="chat-list">
+      @for (chat of chats(); track $index) {
+        <div
+          class="chat-container"
+          [routerLink]="['/chat', chat.id]"
+        >
+          <tui-avatar
+            size="l"
+            [src]="'@tui.image'"
+          />
+          <div class="chat-description">
+            <h2
+              tuiTitle
+              class="chat-line"
             >
-              {{ getDate(chat.latestMessageDate) }}
-            </span>
-          </h2>
-          <div class="chat-line">
-            <span
-              tuiSubtitle
-              [style.color]="'var(--tui-text-secondary)'"
-              class="chat-lint-text"
-            >
-              {{ chat.latestMessage }}
-            </span>
-            @if (chat.unreadCount > 0) {
-              <tui-chip
-                [style.height.%]="100"
+              <b class="chat-lint-text">{{ chat.name }}</b>
+              <span
+                tuiSubtitle
+                [style.color]="'var(--tui-text-secondary)'"
                 class="chat-lint-text"
               >
-                {{ getCountUnreadMessages(chat.unreadCount) }}
-              </tui-chip>
-            }
+                {{ getDate(chat.latestMessageDate) }}
+              </span>
+            </h2>
+            <div class="chat-line">
+              <span
+                tuiSubtitle
+                [style.color]="'var(--tui-text-secondary)'"
+                class="chat-lint-text"
+              >
+                {{ chat.latestMessage }}
+              </span>
+              @if (chat.unreadCount > 0) {
+                <tui-chip
+                  [style.height.%]="100"
+                  class="chat-lint-text"
+                >
+                  {{ getCountUnreadMessages(chat.unreadCount) }}
+                </tui-chip>
+              }
+            </div>
           </div>
         </div>
-      </div>
-    }
+      }
+    </div>
   </div>
-</div>
 
-<ng-container *transloco="let t;">
   <ng-template
     let-observer
     [tuiDialogOptions]="{ label: t('messenger.createChat'), size: 's' }"

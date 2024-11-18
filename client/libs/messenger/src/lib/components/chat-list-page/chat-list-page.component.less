@@ -1,13 +1,27 @@
 .chat-list-view-container {
-  padding: 8px;
   height: 100%;
   overflow: auto;
   box-sizing: border-box;
 }
 
+.chat-list-header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  background: var(--tui-background-base);
+  z-index: 1;
+}
+
+.search-input {
+  flex: 1;
+}
+
 .chat-list {
   display: flex;
   flex-direction: column;
+  padding: 8px;
   gap: 8px;
 }
 

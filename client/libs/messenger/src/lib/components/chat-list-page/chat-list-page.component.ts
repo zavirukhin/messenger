@@ -9,6 +9,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { finalize, map } from 'rxjs';
 import { ChatService } from '../../services/chat/chat.service';
 import { Chat } from '../../interfaces/chat.interface';
+import { sortChats } from '../../utils/sort-chats';
 
 @Component({
   selector: 'lib-chat-list-page',
@@ -42,7 +43,11 @@ export class ChatListPageComponent {
 
   constructor() {
     this.chats = toSignal(this.chatService.getChats().pipe(
-      map((chats) => Object.values(chats))
+      map((chats) => {
+        const chatsArray = Object.values(chats);
+
+        return sortChats(chatsArray);
+      })
     ));
   }
 
