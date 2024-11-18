@@ -5,15 +5,10 @@
         class="button-add"
         tuiIconButton
         iconStart="@tui.plus"
-        [style.border-radius.%]="100"
         (click)="openDialogCreateChat()"
       >
         New chat
       </button>
-      <tui-textfield class="search-input">
-        <label tuiLabel>{{ t('messenger.chatSearch') }}</label>
-        <input tuiTextfield />
-      </tui-textfield>
     </div>
     <div class="chat-list">
       @for (chat of chats(); track $index) {
@@ -30,11 +25,10 @@
               tuiTitle
               class="chat-line"
             >
-              <b class="chat-lint-text">{{ chat.name }}</b>
+              <b class="chat-line-text">{{ chat.name }}</b>
               <span
                 tuiSubtitle
-                [style.color]="'var(--tui-text-secondary)'"
-                class="chat-lint-text"
+                class="chat-line-text chat-line-text-subtitle"
               >
                 {{ getDate(chat.latestMessageDate) }}
               </span>
@@ -42,16 +36,12 @@
             <div class="chat-line">
               <span
                 tuiSubtitle
-                [style.color]="'var(--tui-text-secondary)'"
-                class="chat-lint-text"
+                class="chat-line-text"
               >
                 {{ chat.latestMessage }}
               </span>
               @if (chat.unreadCount > 0) {
-                <tui-chip
-                  [style.height.%]="100"
-                  class="chat-lint-text"
-                >
+                <tui-chip class="chat-line-text chat-line-chip">
                   {{ getCountUnreadMessages(chat.unreadCount) }}
                 </tui-chip>
               }

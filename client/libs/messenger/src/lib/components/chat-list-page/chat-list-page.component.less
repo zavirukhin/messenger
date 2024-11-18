@@ -27,13 +27,11 @@
 
 .button-add {
   border-radius: 100%;
-  z-index: 1;
 }
 
 .chat-container {
   display: flex;
   align-items: center;
-  flex-direction: row;
   gap: 8px;
   cursor: pointer;
 }
@@ -53,9 +51,17 @@
   align-items: center;
 }
 
-.chat-lint-text {
+.chat-line-text {
   text-wrap: nowrap;
   overflow: hidden;
+}
+
+.chat-lint-text-subtitle {
+  color: var(--tui-text-secondary);
+}
+
+.chat-line-chip {
+  height: 100%;
 }
 
 .form-create-chat {
