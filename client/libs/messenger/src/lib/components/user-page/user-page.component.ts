@@ -45,7 +45,7 @@ export class UserPageComponent {
 
   public isLoading = signal<boolean>(true);
 
-  public isRequestSend = signal<boolean>(false);
+  public isDisabled = signal<boolean>(false);
 
   private profileService = inject(ProfileService);
 
@@ -100,11 +100,11 @@ export class UserPageComponent {
       return;
     }
 
-    this.isRequestSend.set(true);
+    this.isDisabled.set(true);
 
     if (user.isBlockedByMe) {
       this.profileService.unblockUserById(user.id).pipe(
-        finalize(() => this.isRequestSend.set(false))
+        finalize(() => this.isDisabled.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,
@@ -114,7 +114,7 @@ export class UserPageComponent {
     }
     else {
       this.profileService.blockUserById(user.id).pipe(
-        finalize(() => this.isRequestSend.set(false))
+        finalize(() => this.isDisabled.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,
@@ -131,11 +131,11 @@ export class UserPageComponent {
       return;
     }
 
-    this.isRequestSend.set(true);
+    this.isDisabled.set(true);
 
     if (user.isContactedByMe) {
       this.profileService.removeToContact(user.id).pipe(
-        finalize(() => this.isRequestSend.set(false))
+        finalize(() => this.isDisabled.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,
@@ -145,7 +145,7 @@ export class UserPageComponent {
     }
     else {
       this.profileService.addToContact(user.id).pipe(
-        finalize(() => this.isRequestSend.set(false))
+        finalize(() => this.isDisabled.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,
