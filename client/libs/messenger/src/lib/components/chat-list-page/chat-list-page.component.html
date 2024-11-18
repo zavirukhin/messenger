@@ -1,7 +1,10 @@
 <div class="chat-list-view-container">
   <div class="chat-list">
     @for (chat of chats(); track $index) {
-      <div class="chat-container">
+      <div
+        class="chat-container"
+        [routerLink]="['/chat', chat.id]"
+      >
         <tui-avatar
           size="l"
           [src]="'@tui.image'"

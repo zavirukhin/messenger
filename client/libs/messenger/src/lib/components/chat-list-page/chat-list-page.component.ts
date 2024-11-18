@@ -3,9 +3,10 @@ import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/cor
 import { TuiTitle } from '@taiga-ui/core';
 import { TuiAvatar, TuiChip } from '@taiga-ui/kit';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 import { ChatService } from '../../services/chat/chat.service';
 import { Chat } from '../../interfaces/chat.interface';
-import { map } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'lib-chat-list-page',
@@ -14,7 +15,8 @@ import { map } from 'rxjs';
     CommonModule,
     TuiAvatar,
     TuiTitle,
-    TuiChip
+    TuiChip,
+    RouterLink
   ],
   templateUrl: './chat-list-page.component.html',
   styleUrl: './chat-list-page.component.less',

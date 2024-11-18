@@ -5,8 +5,8 @@ import { map, Observable, switchMap } from 'rxjs';
 import { CacheService, SocketService } from '@social/shared';
 import { Chat } from '../../interfaces/chat.interface';
 import { UserRemoveEvent } from '../../interfaces/user-remove-event.interface';
-import { ChatEvent } from '../../types/chat-event.type';
-import { MessageStatusEvent } from '../../interfaces/message-status-event.interface';
+import { MessageEvent } from '../../interfaces/message-event.interface';
+import { ChatEvent } from '../../interfaces/chat-event.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +26,7 @@ export class ChatService {
     this.subscribeToRemoveUserChats();
     this.subscribeToChatUpdate();
     this.subscribeToStatusMessagesChange();
+    this.subscribeToNewMessage();
   }
 
   private subscribeToNewChats(): void {
@@ -57,12 +58,43 @@ export class ChatService {
   }
 
   private subscribeToStatusMessagesChange(): void {
-    this.socketService.on<MessageStatusEvent[]>('onStatusMessagesChange')
-    .subscribe((event: MessageStatusEvent[]) => {
+    this.socketService.on<MessageEvent[]>('onStatusMessagesChange')
+    .subscribe((event: MessageEvent[]) => {
       if (event.length !== 0) {
         this.readChat(event[0].chatId);
       }
     });
+  }
+
+  private subscribeToNewMessage(): void {
+    this.socketService.on<MessageEvent>('onNewMessage')
+    .subscribe((event: MessageEvent) => {
+      this.updateLastMessage(event);
+    });
+  }
+
+  private updateLastMessage(message: MessageEvent): void {
+    const chats = this.cacheService.get<Record<string, Chat>>('chats');
+    
+    if (chats === null) {
+      return;
+    }
+
+    const chatCache = chats.value;
+    const chatId = message.chatId.toString();
+
+    if (chatCache[chatId] === undefined) {
+      return;
+    }
+
+    chatCache[chatId] = {
+      ...chatCache[chatId],
+      unreadCount: chatCache[chatId].unreadCount + 1,
+      latestMessage: message.content,
+      latestMessageDate: new Date()
+    }
+
+    this.cacheService.set<Record<string, Chat>>('chats', chatCache);
   }
 
   private readChat(chatId: number) {
@@ -73,15 +105,14 @@ export class ChatService {
     }
 
     const chatCache = chats.value;
+    const chatIdString = chatId.toString();
 
-    if (chatCache === undefined) {
+    if (chatCache[chatIdString] === undefined) {
       return;
     }
 
-    const chatIdString = chatId.toString();
-
     chatCache[chatIdString] = {
-      ...chatCache[chatId],
+      ...chatCache[chatIdString],
       unreadCount: 0
     }
 
@@ -96,12 +127,11 @@ export class ChatService {
     }
 
     const chatCache = chats.value;
+    const chatId = chat.id.toString();
 
-    if (chatCache === undefined) {
+    if (chatCache[chatId] === undefined) {
       return;
     }
-
-    const chatId = chat.id.toString();
 
     chatCache[chatId] = {
       ...chatCache[chatId],

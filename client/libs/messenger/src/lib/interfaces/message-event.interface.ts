@@ -1,4 +1,4 @@
-export interface MessageStatusEvent {
+export interface MessageEvent {
   chatId: number;
   userId: number;
   messageStatus: 'read' | 'send';
