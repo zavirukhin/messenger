@@ -11,5 +11,9 @@
   "removeContact": "Удалить из контактов",
   "addToChat": "Добавить в чат",
   "blockUser": "Заблокировать",
-  "unblockUser": "Разблокировать"
+  "unblockUser": "Разблокировать",
+  "createChat": "Создать чат",
+  "chatName": "Название чата",
+  "chatSearch": "Поиск",
+  "createChatButton": "Создать"
 }

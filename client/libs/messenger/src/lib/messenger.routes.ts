@@ -7,6 +7,11 @@ export const messengerRoutes: Route[] = [
     path: '',
     children: [
       {
+        path: '',
+        loadComponent: () => import('./components/chat-list-page/chat-list-page.component')
+          .then(m => m.ChatListPageComponent)
+      },
+      {
         path: 'settings',
         loadComponent: () => import('./components/settings-page/settings-page.component')
           .then(m => m.SettingsPageComponent)

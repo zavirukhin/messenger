@@ -1,0 +1,83 @@
+<ng-container *transloco="let t;">
+  <div class="chat-list-view-container">
+    <div class="chat-list-header">
+      <button
+        class="button-add"
+        tuiIconButton
+        iconStart="@tui.plus"
+        (click)="openDialogCreateChat()"
+      >
+        New chat
+      </button>
+    </div>
+    <div class="chat-list">
+      @for (chat of chats(); track $index) {
+        <div
+          class="chat-container"
+          [routerLink]="['/chat', chat.id]"
+        >
+          <tui-avatar
+            size="l"
+            [src]="'@tui.image'"
+          />
+          <div class="chat-description">
+            <h2
+              tuiTitle
+              class="chat-line"
+            >
+              <b class="chat-line-text">{{ chat.name }}</b>
+              <span
+                tuiSubtitle
+                class="chat-line-text chat-line-text-subtitle"
+              >
+                {{ getDate(chat.latestMessageDate) }}
+              </span>
+            </h2>
+            <div class="chat-line">
+              <span
+                tuiSubtitle
+                class="chat-line-text"
+              >
+                {{ chat.latestMessage }}
+              </span>
+              @if (chat.unreadCount > 0) {
+                <tui-chip class="chat-line-text chat-line-chip">
+                  {{ getCountUnreadMessages(chat.unreadCount) }}
+                </tui-chip>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <ng-template
+    let-observer
+    [tuiDialogOptions]="{ label: t('messenger.createChat'), size: 's' }"
+    [(tuiDialog)]="openDialog"
+  >
+    <form
+      (ngSubmit)="onSubmitCreateChat()"
+      [formGroup]="form"
+      class="form-create-chat"
+    >
+      <tui-textfield>
+        <label tuiLabel>{{ t('messenger.chatName') }}</label>
+        <input
+          tuiTextfield
+          formControlName="chatName"
+          maxLength="50"
+        />
+      </tui-textfield>
+      <button
+        size="m"
+        tuiButton
+        type="submit"
+        [disabled]="form.disabled"
+      >
+        {{ t('messenger.createChatButton') }}
+      </button>
+    </form>
+  </ng-template>
+</ng-container>

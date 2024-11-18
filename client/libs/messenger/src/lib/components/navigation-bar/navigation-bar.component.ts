@@ -18,9 +18,9 @@ import { Tab } from '../../types/tab.type';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavigationBarComponent {
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
-  public activeTab = signal<Tab>('messenger');
+  public readonly activeTab = signal<Tab>('messenger');
 
   constructor() {
     this.router.events.pipe(
