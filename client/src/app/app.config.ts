@@ -4,7 +4,7 @@ import { provideRouter, Router } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideTransloco, TranslocoService } from '@jsverse/transloco';
 import * as Sentry from '@sentry/angular';
-import { authorizationHandlerInterceptor, errorHandlerInterceptor } from '@social/shared';
+import { authorizationHandlerInterceptor, errorHandlerInterceptor, MultilingualService } from '@social/shared';
 import {
   APP_INITIALIZER,
   ApplicationConfig,
@@ -38,11 +38,18 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: (
-        translocoService: TranslocoService
+        translocoService: TranslocoService, multilingualService: MultilingualService
       ) => (() => {
+        const language = multilingualService.getLanguageFromLocalStorage() || 'en';
+        
+        if (language === 'en'){
+          multilingualService.saveLanguageToLocalStorage('en');
+        }
+        translocoService.setActiveLang(language);
+
         return firstValueFrom(translocoService.load('en'));
       }),
-      deps: [TranslocoService, Sentry.TraceService],
+      deps: [TranslocoService, MultilingualService, Sentry.TraceService],
       multi: true
     },
     provideHttpClient(

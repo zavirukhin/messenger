@@ -9,5 +9,9 @@
   "CODE_EXPIRED": "Code expired",
   "INVALID_CODE": "Invalid code",
   "INVALID_TOKEN": "Invalid token",
-  "USER_ALREADY_EXISTS": "User already exists"
+  "USER_ALREADY_EXISTS": "User already exists",
+  "multilingual": {
+    "en": "English",
+    "ru": "Russian"
+  }
 }
