@@ -246,6 +246,14 @@ export class ChatService {
     return chatDetails;
   }
 
+  async getChat(userId: number, chatId: number) {
+    const chat = await this.findChatByIdOrFail(chatId);
+
+    await this.getChatMemberOrFail(userId, chatId);
+
+    return chat;
+  }
+
   async addMemberToChat(userId: number, newMemberId: number, chatId: number) {
     const chat = await this.findChatByIdOrFail(chatId);
     const requestingUser = await this.getChatMemberOrFail(userId, chatId);
@@ -388,19 +396,9 @@ export class ChatService {
   }
 
   async getChatMembers(userId: number, chatId: number): Promise<any[]> {
-    const chat = await this.chatRepository.findOne({
-      where: { id: chatId },
-    });
-    if (!chat) {
-      throw new ChatNotFoundException();
-    }
+    await this.findChatByIdOrFail(chatId);
 
-    const isMember = await this.chatMemberRepository.findOne({
-      where: { chat: { id: chatId }, user: { id: userId } },
-    });
-    if (!isMember) {
-      throw new UserNotAMemberChatException();
-    }
+    await this.getChatMemberOrFail(userId, chatId);
 
     const chatMembers = await this.chatMemberRepository.find({
       where: { chat: { id: chatId } },
