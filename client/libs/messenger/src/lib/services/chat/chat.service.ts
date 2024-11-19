@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@env';
-import { map, Observable, switchMap, tap } from 'rxjs';
+import { map, Observable, switchMap, take, tap } from 'rxjs';
 import { CacheService, SocketService } from '@social/shared';
 import { Chat } from '../../interfaces/chat.interface';
 import { UserRemoveEvent } from '../../interfaces/user-remove-event.interface';
@@ -9,6 +9,7 @@ import { MessageEvent } from '../../interfaces/message-event.interface';
 import { ChatEvent } from '../../interfaces/chat-event.interface';
 import { Contact } from '../../interfaces/contact.interface';
 import { PaginationMessages } from '../../interfaces/pagination-messages.interface';
+import { ProfileService } from '../profile/profile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,9 @@ export class ChatService {
 
   private readonly cacheService = inject(CacheService);
 
-  private readonly socketService = inject(SocketService);
+  private readonly socketService = inject(SocketService); 
+
+  private readonly profileService = inject(ProfileService);
 
   public subscribeToAllEvents(): void {
     this.socketService.createConnect();
@@ -89,14 +92,24 @@ export class ChatService {
       return;
     }
 
-    chatCache[chatId] = {
-      ...chatCache[chatId],
-      unreadCount: chatCache[chatId].unreadCount + 1,
-      latestMessage: message.content,
-      latestMessageDate: new Date()
-    }
+    const profile = this.profileService.getProfile();
 
-    this.cacheService.set<Record<string, Chat>>('chats', chatCache);
+    profile.pipe(
+      take(1)
+    ).subscribe((profile) => {
+      if (profile.id === message.userId) {
+        return;
+      }
+
+      chatCache[chatId] = {
+        ...chatCache[chatId],
+        unreadCount: chatCache[chatId].unreadCount + 1,
+        latestMessage: message.content,
+        latestMessageDate: new Date()
+      }
+  
+      this.cacheService.set<Record<string, Chat>>('chats', chatCache);
+    });
   }
 
   private readChat(chatId: number) {
@@ -248,5 +261,9 @@ export class ChatService {
         }
       }
     );
+  }
+
+  public markAsRead(chatId: number): Observable<void> {
+    return this.http.post<void>(environment.apiUrl + '/messages/markChatMessagesAsRead', { chatId });
   }
 }

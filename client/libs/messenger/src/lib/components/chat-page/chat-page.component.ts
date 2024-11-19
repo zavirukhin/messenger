@@ -119,7 +119,7 @@ export class ChatPageComponent {
         });
       });
 
-      this.messagesHistory.set(history);
+      this.messagesHistory.set({...history});
     })
   }
 
@@ -153,6 +153,8 @@ export class ChatPageComponent {
             ...history.messages
           ]
         });
+
+        this.chatService.markAsRead(chat.id).subscribe();
       }
     });
   }
