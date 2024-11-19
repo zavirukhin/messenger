@@ -121,11 +121,14 @@ export class ChatPageComponent {
     }
 
     this.chatService.getMessages(chat.id, history.page + 1, 100).subscribe((messages) => {
+      const messagesIds = new Set(history.messages.map((message) => message.id));
+      const newMessages = messages.messages.filter((message) => !messagesIds.has(message.id));
+
       this.messagesHistory.set({
         ...messages,
         messages: [
           ...history.messages,
-          ...messages.messages
+          ...newMessages
         ]
       });
     });
