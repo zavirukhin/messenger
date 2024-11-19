@@ -41,8 +41,9 @@
               <span>
                 {{ getDate(message.createdAt ?? null) }}
               </span>
-              @if (message.messageStatus === 'send') {
+              @if (message.messageStatus === 'send' && profile()?.id === message.userId) {
                 <tui-icon
+                  class="message-status-icon"
                   icon="@tui.dot"
                 />
               }

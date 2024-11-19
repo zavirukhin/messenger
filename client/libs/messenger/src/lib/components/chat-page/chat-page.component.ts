@@ -87,10 +87,43 @@ export class ChatPageComponent {
       this.profile.set(profile);
 
       this.subscribeToNewMessages();
+      this.subscribeToMessageStatusChange();
     });
   }
 
-  public subscribeToNewMessages() {
+  public subscribeToMessageStatusChange(): void {
+    this.socketService.on<MessageEvent[]>('onStatusMessagesChange').pipe(
+      takeUntilDestroyed(this.destoryRef)
+    ).subscribe((messages) => {
+      const chat = this.chat();
+
+      if (chat === undefined) {
+        return;
+      }
+
+      const history = this.messagesHistory();
+
+      if (history === undefined) {
+        return;
+      }
+
+      messages.forEach((message) => {
+        if (message.chatId !== chat.id) {
+          return;
+        }
+
+        history.messages.forEach((v) => {
+          if (v.id === message.id) {
+            v.messageStatus = message.messageStatus;
+          }
+        });
+      });
+
+      this.messagesHistory.set(history);
+    })
+  }
+
+  public subscribeToNewMessages(): void {
     this.socketService.on<MessageEvent>('onNewMessage').pipe(
       takeUntilDestroyed(this.destoryRef)
     ).subscribe((message) => {
