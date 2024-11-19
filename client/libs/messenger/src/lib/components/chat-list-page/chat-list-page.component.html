@@ -49,6 +49,9 @@
           </div>
         </div>
       }
+      @empty {
+        <h2 tuiTitle>{{ t('messenger.noChatsSubtittle') }}</h2>
+      }
     </div>
   </div>
 
@@ -94,6 +97,9 @@
               />
             </p>
           </div>
+        }
+        @empty {
+          <p>{{ t('messenger.noContacts') }}</p>
         }
       </div>
       <button

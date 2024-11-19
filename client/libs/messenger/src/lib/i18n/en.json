@@ -16,5 +16,8 @@
   "chatName": "Chat name",
   "chatSearch": "Seach",
   "createChatButton": "Create",
-  "message": "Message"
+  "message": "Message",
+  "noContacts": "No contacts",
+  "noChats": "No chats",
+  "noChatsSubtittle": "Create a new chat to start messaging"
 }

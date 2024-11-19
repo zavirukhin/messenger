@@ -154,7 +154,9 @@ export class ChatPageComponent {
           ]
         });
 
-        this.chatService.markAsRead(chat.id).subscribe();
+        if (message.userId !== this.profile()?.id) {
+          this.chatService.markAsRead(chat.id).subscribe();
+        }
       }
     });
   }
@@ -182,7 +184,7 @@ export class ChatPageComponent {
       return;
     }
 
-    if (event.target.offsetHeight + event.target.scrollTop < event.target.scrollHeight) {
+    if (event.target.offsetHeight - event.target.scrollTop < event.target.scrollHeight) {
       return;
     }
 

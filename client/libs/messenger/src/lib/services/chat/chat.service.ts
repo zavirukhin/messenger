@@ -44,7 +44,7 @@ export class ChatService {
   private subscribeToAddChats(): void {
     this.socketService.on<ChatEvent>('onUserAddedToChat')
     .subscribe(() => {
-      this.getChats().subscribe();
+      this.getChats(true).subscribe();
     });
   }
 
@@ -189,11 +189,13 @@ export class ChatService {
     }
   }
 
-  public getChats(): Observable<Record<string, Chat>> {
-    const chat = this.cacheService.get<Record<string, Chat>>('chats');
+  public getChats(force?: boolean): Observable<Record<string, Chat>> {
+    if (force !== true) {
+      const chat = this.cacheService.get<Record<string, Chat>>('chats');
 
-    if (chat !== null) {
-      return chat;
+      if (chat !== null) {
+        return chat;
+      }
     }
 
     return this.http.get<Chat[]>(environment.apiUrl + '/chats/list').pipe(

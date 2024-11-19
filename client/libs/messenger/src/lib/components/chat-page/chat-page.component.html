@@ -51,7 +51,7 @@
           </div>
           <tui-avatar
             size="m"
-            [src]="'@tui.user'"
+            [src]="(message.userAvatar ?? '@tui.user') | tuiFallbackSrc: '@tui.user' | async"
             class="message-avatar"
           />
         </div>

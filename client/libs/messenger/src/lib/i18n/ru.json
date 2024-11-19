@@ -16,5 +16,8 @@
   "chatName": "Название чата",
   "chatSearch": "Поиск",
   "createChatButton": "Создать",
-  "message": "Сообщение"
+  "message": "Сообщение",
+  "noContacts": "Нет контактов",
+  "noChats": "Нет чатов",
+  "noChatsSubtittle": "Создайте новый чат чтобы начать общение"
 }
