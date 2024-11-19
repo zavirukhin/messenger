@@ -6,7 +6,6 @@ import { AboutPageComponent } from './components/about-page/about-page.component
 export const appRoutes: Route[] = [
   {
     path: '',
-    loadComponent: () => import('@social/messenger').then(m => m.MessengerComponent),
     loadChildren: () => import('@social/messenger').then(m => m.messengerRoutes),
     canActivate: [AuthGuard]
   },

@@ -1,0 +1,94 @@
+.chat-view {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  display: flex;
+  height: 56px;
+  align-items: center;
+  padding: 0px 8px;
+  gap: 8px;
+  border-bottom: 1px solid var(--tui-border-normal);
+}
+
+.chat-history {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 8px;
+  gap: 8px;
+  overflow: auto;
+}
+
+.chat-icon-back {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.chat-information-container {
+  display: flex;
+  cursor: pointer;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.chat-name {
+  text-wrap: nowrap;
+}
+
+.chat-control {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-top: 1px solid var(--tui-border-normal);
+}
+
+.message-input {
+  flex: 1;
+}
+
+.send-button {
+  cursor: pointer;
+}
+
+.message-text-container {
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+  width: 200px;
+  padding: 16px;
+  background: var(--tui-background-accent-1);
+  border-radius: 16px;
+  color: var(--tui-text-primary-on-accent-1);
+  word-wrap: break-word;
+}
+
+.message-container {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.message-self-container, .message-avatar {
+  align-self: flex-end;
+  flex-direction: row;
+}
+
+.message-text-container-self {
+  background: var(--tui-background-base-alt);
+  color: var(--tui-text-primary);
+}
+
+.message-text-subtittle {
+  align-self: flex-end;
+}
+
+.message-status-icon {
+  height: 16px;
+  width: 8px;
+}

@@ -59,6 +59,7 @@
         type="button"
         [disabled]="user()?.isBlockedByUser || user()?.isBlockedByMe || isDisabled()"
         [tuiSkeleton]="isLoading()"
+        (click)="openDialogAddToChat()"
       >
         {{ t('messenger.addToChat') }}
       </button>
@@ -82,4 +83,31 @@
       </button>
     </div>
   </div>
+</ng-container>
+
+<ng-container *transloco="let t;">
+  <ng-template
+    let-observer
+    [tuiDialogOptions]="{ label: t('messenger.addToChat'), size: 's' }"
+    [(tuiDialog)]="openDialog"
+  >
+    <div class="list-chats">
+      @for (chat of chats(); track $index) {
+        <div
+          class="chat-container"
+          (click)="addToChatHandler(chat.id)"
+        >
+          <tui-avatar
+            size="l"
+            [src]="(chat.avatar ?? '@tui.image') | tuiFallbackSrc: '@tui.image' | async"
+          />
+          <h2 
+            tuiTitle  
+          >
+            <b>{{ chat.name }}</b>
+          </h2>
+        </div>
+      }
+    </div>
+  </ng-template>
 </ng-container>

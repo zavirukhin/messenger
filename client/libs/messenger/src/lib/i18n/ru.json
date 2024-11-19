@@ -15,5 +15,6 @@
   "createChat": "Создать чат",
   "chatName": "Название чата",
   "chatSearch": "Поиск",
-  "createChatButton": "Создать"
+  "createChatButton": "Создать",
+  "message": "Сообщение"
 }

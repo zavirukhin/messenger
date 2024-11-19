@@ -12,6 +12,8 @@
   padding: 8px;
   background: var(--tui-background-base);
   z-index: 1;
+  border-bottom: 1px solid var(--tui-border-normal);
+  border-left: 1px solid var(--tui-border-normal);
 }
 
 .search-input {
@@ -68,4 +70,16 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.contact-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.contact-line-text {
+  flex: 1;
 }

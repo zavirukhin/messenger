@@ -1,12 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@env';
-import { map, Observable, switchMap, tap } from 'rxjs';
+import { map, Observable, switchMap, take, tap } from 'rxjs';
 import { CacheService, SocketService } from '@social/shared';
 import { Chat } from '../../interfaces/chat.interface';
 import { UserRemoveEvent } from '../../interfaces/user-remove-event.interface';
 import { MessageEvent } from '../../interfaces/message-event.interface';
 import { ChatEvent } from '../../interfaces/chat-event.interface';
+import { Contact } from '../../interfaces/contact.interface';
+import { PaginationMessages } from '../../interfaces/pagination-messages.interface';
+import { ProfileService } from '../profile/profile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +19,9 @@ export class ChatService {
 
   private readonly cacheService = inject(CacheService);
 
-  private readonly socketService = inject(SocketService);
+  private readonly socketService = inject(SocketService); 
+
+  private readonly profileService = inject(ProfileService);
 
   public subscribeToAllEvents(): void {
     this.socketService.createConnect();
@@ -87,14 +92,24 @@ export class ChatService {
       return;
     }
 
-    chatCache[chatId] = {
-      ...chatCache[chatId],
-      unreadCount: chatCache[chatId].unreadCount + 1,
-      latestMessage: message.content,
-      latestMessageDate: new Date()
-    }
+    const profile = this.profileService.getProfile();
 
-    this.cacheService.set<Record<string, Chat>>('chats', chatCache);
+    profile.pipe(
+      take(1)
+    ).subscribe((profile) => {
+      if (profile.id === message.userId) {
+        return;
+      }
+
+      chatCache[chatId] = {
+        ...chatCache[chatId],
+        unreadCount: chatCache[chatId].unreadCount + 1,
+        latestMessage: message.content,
+        latestMessageDate: new Date()
+      }
+  
+      this.cacheService.set<Record<string, Chat>>('chats', chatCache);
+    });
   }
 
   private readChat(chatId: number) {
@@ -196,13 +211,59 @@ export class ChatService {
     );
   }
 
-  public createChat(chatName: string): Observable<ChatEvent> {
-    return this.http.post<ChatEvent>(environment.apiUrl + '/chats/createWithMembers', { 
-      chatName 
-    }).pipe(
+  public createChat(chatName: string, contantList?: number[]): Observable<ChatEvent> {
+    const body: { chatName: string; memberIds?: number[] } = { chatName };
+    
+    if (contantList && contantList.length) {
+      body.memberIds = contantList;
+    }
+
+    return this.http.post<ChatEvent>(environment.apiUrl + '/chats/createWithMembers', body).pipe(
       tap((chat: ChatEvent) => {
         this.putChat(chat);
       })
     );
+  }
+
+  public getContacts(): Observable<Contact[]> {
+    return this.http.get<Contact[]>(environment.apiUrl + '/contacts/list');
+  }
+
+  public addToChat(chatId: number, userId: number): Observable<void> {
+    return this.http.post<void>(environment.apiUrl + '/chats/add-member', {
+      chatId,
+      newMemberId: userId
+    });
+  }
+
+  public getChat(chatId: number): Observable<Chat> {
+    return this.http.get<Chat>(environment.apiUrl + '/chats/' + chatId);
+  }
+
+  public sendMessage(chatId: number, message: string): Observable<void> {
+    return this.http.post<void>(environment.apiUrl + '/messages/create', {
+      chatId,
+      content: message
+    });
+  }
+
+  public getMessages(
+    chatId: number,
+    page: number,
+    limit: number
+  ): Observable<PaginationMessages> {
+    return this.http.get<PaginationMessages>(
+      environment.apiUrl + '/messages/' + chatId + '/history',
+      {
+        params: {
+          page: page.toString(),
+          limit: limit.toString()
+        }
+      }
+    );
+  }
+
+  public markAsRead(chatId: number): Observable<void> {
+    return this.http.post<void>(environment.apiUrl + '/messages/markChatMessagesAsRead', { chatId });
   }
 }

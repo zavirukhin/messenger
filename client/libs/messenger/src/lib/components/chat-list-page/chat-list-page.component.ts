@@ -1,7 +1,7 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
-import { TuiButton, TuiDialog, TuiTextfield, TuiTitle } from '@taiga-ui/core';
-import { TuiAvatar, TuiChip } from '@taiga-ui/kit';
+import { ChangeDetectionStrategy, Component, inject, signal, Signal } from '@angular/core';
+import { TuiButton, TuiDialog, TuiFallbackSrcPipe, TuiTextfield, TuiTitle } from '@taiga-ui/core';
+import { TuiAvatar, TuiCheckbox, TuiChip } from '@taiga-ui/kit';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -10,6 +10,7 @@ import { finalize, map } from 'rxjs';
 import { ChatService } from '../../services/chat/chat.service';
 import { Chat } from '../../interfaces/chat.interface';
 import { sortChats } from '../../utils/sort-chats';
+import { Contact } from '../../interfaces/contact.interface';
 
 @Component({
   selector: 'lib-chat-list-page',
@@ -24,6 +25,8 @@ import { sortChats } from '../../utils/sort-chats';
     TuiTextfield,
     TranslocoDirective,
     RouterLink,
+    TuiCheckbox,
+    TuiFallbackSrcPipe,
     ReactiveFormsModule
   ],
   templateUrl: './chat-list-page.component.html',
@@ -34,6 +37,10 @@ export class ChatListPageComponent {
   private readonly chatService = inject(ChatService);
 
   public chats: Signal<Chat[] | undefined>;
+
+  public contacts = signal<Contact[] | undefined>(undefined);
+
+  public selectedContactList = signal<number[]>([]);
 
   public openDialog = false;
 
@@ -68,7 +75,7 @@ export class ChatListPageComponent {
     const time = new Date(date);
 
     if ((new Date().getTime() - time.getTime()) < SECONDS_IN_DAY * 1000) {
-      return formatDate(time, 'HH:MM', 'ru-RU');
+      return formatDate(time, 'HH:mm', 'ru-RU');
     }
 
     return formatDate(time, 'dd:MM:yyyy', 'ru-RU');
@@ -76,13 +83,31 @@ export class ChatListPageComponent {
 
   public openDialogCreateChat(): void {
     this.openDialog = true;
+    this.selectedContactList.set([]);
+
+    this.chatService.getContacts().subscribe((contacts) => {
+      this.contacts.set(contacts);
+    });
+  }
+
+  public buttonContactSelectHandler(id: number): void {
+    const list = this.selectedContactList();
+
+    if (list.includes(id)) {
+      this.selectedContactList.update((v) => v.filter((item) => item !== id));
+    }
+    else {
+      this.selectedContactList.update((v) => [...v, id]);
+    }
   }
 
   public onSubmitCreateChat(): void {
     if (this.form.valid) {
       this.form.disable();
 
-      this.chatService.createChat(this.form.value.chatName || '').pipe(
+      const contacts = this.selectedContactList();
+
+      this.chatService.createChat(this.form.value.chatName || '', contacts).pipe(
         finalize(() => {
           this.form.enable();
           this.form.reset();

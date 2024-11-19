@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { environment } from '@env';
+import { SocketEvent } from '../../types/SocketEvent.type';
 
 @Injectable({
   providedIn: 'root'
@@ -34,19 +35,15 @@ export class SocketService {
     });
   }
 
-  public emit(event: string, data: unknown) {
+  public emit(event: SocketEvent, data: unknown) {
     this.socket.emit(event, data);
   }
 
-  public on<T>(event: string): Observable<T> {
+  public on<T>(event: SocketEvent): Observable<T> {
     return new Observable<T>((observer) => {
       this.socket.on(event, (data: T) => {
         observer.next(data);
       });
-
-      return () => {
-        this.socket.off(event);
-      };
     }).pipe(
       takeUntil(this.destory$)
     );

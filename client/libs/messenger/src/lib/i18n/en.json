@@ -15,5 +15,6 @@
   "createChat": "Create chat",
   "chatName": "Chat name",
   "chatSearch": "Seach",
-  "createChatButton": "Create"
+  "createChatButton": "Create",
+  "message": "Message"
 }

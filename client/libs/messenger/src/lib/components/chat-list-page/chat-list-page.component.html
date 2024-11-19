@@ -18,7 +18,7 @@
         >
           <tui-avatar
             size="l"
-            [src]="'@tui.image'"
+            [src]="(chat.avatar ?? '@tui.image') | tuiFallbackSrc: '@tui.image' | async"
           />
           <div class="chat-description">
             <h2
@@ -70,6 +70,32 @@
           maxLength="50"
         />
       </tui-textfield>
+      <div class="contact-list">
+        @for (contact of contacts(); track $index) {
+          <div
+            class="contact-container"
+            (click)="buttonContactSelectHandler(contact.id)"
+          >
+            <tui-avatar
+              size="l"
+              [src]="(contact.avatar ?? '@tui.image') | tuiFallbackSrc: '@tui.image' | async"
+            />
+            <h2 
+              tuiTitle  
+              class="chat-line-text contact-line-text"
+            >
+              <b>{{ contact.lastName }} {{ contact.firstName }}</b>
+            </h2>
+            <p>
+              <input
+                [checked]="selectedContactList().includes(contact.id)"
+                tuiCheckbox
+                type="checkbox"
+              />
+            </p>
+          </div>
+        }
+      </div>
       <button
         size="m"
         tuiButton

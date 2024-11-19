@@ -1,0 +1,92 @@
+<ng-container *transloco="let t;">
+  <div class="chat-view">
+    <header class="header">
+      <div
+        class="chat-icon-back"
+        [routerLink]="['/']"
+      >
+        <tui-icon icon="@tui.chevron-left" />
+      </div>
+      <div
+        class="chat-information-container"
+        [routerLink]="['settings']"
+      >
+        <tui-avatar
+          size="m"
+          [src]="(chat()?.avatar ?? '@tui.user') | tuiFallbackSrc: '@tui.user' | async"
+        />
+        <h2
+          tuiTitle
+          class="chat-name"
+        >
+          <b>{{ chat()?.name }}</b>
+        </h2>
+      </div>
+    </header>
+    <main
+      (scroll)="loadMoreMessages($event)"
+      class="chat-history"
+    >
+      @for (message of messagesHistory()?.messages; track $index) {
+        <div
+          class="message-container"
+          [ngClass]="{'message-self-container': profile()?.id === message.userId}"
+        >
+          <div
+            class="message-text-container"
+            [ngClass]="{'message-text-container-self': profile()?.id === message.userId}"
+          >
+            <span>{{ message.content }}</span>
+            <div class="message-text-subtittle">
+              <span>
+                {{ getDate(message.createdAt ?? null) }}
+              </span>
+              @if (message.messageStatus === 'send' && profile()?.id === message.userId) {
+                <tui-icon
+                  class="message-status-icon"
+                  icon="@tui.dot"
+                />
+              }
+            </div>
+          </div>
+          <tui-avatar
+            size="m"
+            [src]="'@tui.user'"
+            class="message-avatar"
+          />
+        </div>
+      }
+    </main>
+    <footer class="chat-control">
+      <tui-textfield
+        class="message-input"
+        tuiTextfieldSize="l"
+      >
+        <label tuiLabel>
+          {{ t('messenger.message') }}
+        </label>
+        <input
+          maxLength="200"
+          tuiTextfield
+          [formControl]="message"
+          (keydown.enter)="sendMessage()"
+        />
+      </tui-textfield>
+      <tui-loader
+        [inheritColor]="true"
+        [overlay]="true"
+        [showLoader]="isLoading()"
+      >
+        <button
+          class="send-button"
+          tuiIconButton
+          iconStart="@tui.send-horizontal"
+          (click)="sendMessage()"
+          [disabled]="message.invalid || isLoading()"
+        >
+          Send
+        </button>
+      </tui-loader>
+    </footer>
+  </div>
+<ng-container />
