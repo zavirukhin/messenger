@@ -1,6 +1,11 @@
-<div class="view-container">
+<div
+  class="view-container"
+  [style.padding-left]="isExclude() ? '0px' : ''"
+>
   <router-outlet />
 </div>
 <div class="navigation-container">
-  <lib-navigation-bar />
+  @if (!isExclude()) {
+    <lib-navigation-bar />
+  }
 </div>
