@@ -8,6 +8,7 @@ import { UserRemoveEvent } from '../../interfaces/user-remove-event.interface';
 import { MessageEvent } from '../../interfaces/message-event.interface';
 import { ChatEvent } from '../../interfaces/chat-event.interface';
 import { Contact } from '../../interfaces/contact.interface';
+import { PaginationMessages } from '../../interfaces/pagination-messages.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -231,5 +232,21 @@ export class ChatService {
       chatId,
       content: message
     });
+  }
+
+  public getMessages(
+    chatId: number,
+    page: number,
+    limit: number
+  ): Observable<PaginationMessages> {
+    return this.http.get<PaginationMessages>(
+      environment.apiUrl + '/messages/' + chatId + '/history',
+      {
+        params: {
+          page: page.toString(),
+          limit: limit.toString()
+        }
+      }
+    );
   }
 }

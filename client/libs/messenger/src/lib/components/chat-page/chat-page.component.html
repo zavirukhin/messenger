@@ -7,7 +7,10 @@
       >
         <tui-icon icon="@tui.chevron-left" />
       </div>
-      <div class="chat-information-container">
+      <div
+        class="chat-information-container"
+        [routerLink]="['settings']"
+      >
         <tui-avatar
           size="m"
           [src]="(chat()?.avatar ?? '@tui.user') | tuiFallbackSrc: '@tui.user' | async"
@@ -20,8 +23,18 @@
         </h2>
       </div>
     </header>
-    <main class="chat-history">
-  
+    <main
+      (scroll)="loadMoreMessages($event)"
+      class="chat-history"
+    >
+      @for (message of messagesHistory()?.messages; track $index) {
+        <div
+          class="message-container"
+          [ngClass]="{'message-container-self': profile()?.id === message.userId}"
+        >
+          <span>{{ message.content }}</span>
+        </div>
+      }
     </main>
     <footer class="chat-control">
       <tui-textfield
@@ -43,6 +56,7 @@
         [showLoader]="isLoading()"
       >
         <button
+          class="send-button"
           tuiIconButton
           iconStart="@tui.send-horizontal"
           (click)="sendMessage()"

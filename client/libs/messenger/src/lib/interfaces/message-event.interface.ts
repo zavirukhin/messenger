@@ -3,4 +3,5 @@ export interface MessageEvent {
   userId: number;
   messageStatus: 'read' | 'send';
   content: string;
+  createdAt?: Date;
 }
