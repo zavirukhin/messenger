@@ -48,6 +48,7 @@
           maxLength="200"
           tuiTextfield
           [formControl]="message"
+          (keydown.enter)="sendMessage()"
         />
       </tui-textfield>
       <tui-loader

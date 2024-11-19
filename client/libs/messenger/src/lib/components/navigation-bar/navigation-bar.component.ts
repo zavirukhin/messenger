@@ -20,13 +20,25 @@ import { Tab } from '../../types/tab.type';
 export class NavigationBarComponent {
   private readonly router = inject(Router);
 
+  private readonly excludeList = ['/chat'];
+
   public readonly activeTab = signal<Tab>('messenger');
+
+  public isExclude = signal<boolean>(false);
 
   constructor() {
     this.router.events.pipe(
       takeUntilDestroyed()
     ).subscribe((e) => {
       if (e instanceof NavigationEnd) {
+        this.isExclude.set(false);
+
+        this.excludeList.forEach((path) => {
+          if (e.url.startsWith(path)) {
+            this.isExclude.set(e.url.startsWith(path));
+          }
+        });
+
         this.changeTab(e.url);
       }
     });

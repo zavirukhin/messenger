@@ -44,10 +44,6 @@ export class SocketService {
       this.socket.on(event, (data: T) => {
         observer.next(data);
       });
-
-      return () => {
-        this.socket.off(event);
-      };
     }).pipe(
       takeUntil(this.destory$)
     );

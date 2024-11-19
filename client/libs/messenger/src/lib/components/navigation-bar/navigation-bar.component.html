@@ -1,23 +1,25 @@
-<div class="navigation-bar">
-  <span
-    class="button-container"
-    [style.color]="activeTab() === 'contacts' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
-    [routerLink]="['/contacts']"
-  >
-    <tui-icon icon="@tui.circle-user" />
-  </span>
-  <span
-    class="button-container"
-    [style.color]="activeTab() === 'messenger' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
-    [routerLink]="['/']"
-  >
-    <tui-icon icon="@tui.mail" />
-  </span>
-  <span
-    class="button-container"
-    [style.color]="activeTab() === 'settings' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
-    [routerLink]="['/settings']"
-  >
-    <tui-icon icon="@tui.settings" />
-  </span>
-</div>
+@if (!isExclude()) {
+  <div class="navigation-bar">
+    <span
+      class="button-container"
+      [style.color]="activeTab() === 'contacts' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
+      [routerLink]="['/contacts']"
+    >
+      <tui-icon icon="@tui.circle-user" />
+    </span>
+    <span
+      class="button-container"
+      [style.color]="activeTab() === 'messenger' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
+      [routerLink]="['/']"
+    >
+      <tui-icon icon="@tui.mail" />
+    </span>
+    <span
+      class="button-container"
+      [style.color]="activeTab() === 'settings' ? 'var(--tui-text-primary)' : 'var(--tui-text-secondary)'"
+      [routerLink]="['/settings']"
+    >
+      <tui-icon icon="@tui.settings" />
+    </span>
+  </div>
+}
