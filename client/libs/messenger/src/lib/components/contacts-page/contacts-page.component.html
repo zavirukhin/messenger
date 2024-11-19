@@ -1,20 +1,29 @@
-<div *ngFor="let contact of contacts$ | async">
-  <div class="contact-line" [routerLink]="['/user/' + contact.id]">
-    <div class="contact">
-      <tui-avatar [src]="contact.avatarBase64 ?? '@tui.user'" />
-      {{ contact.firstName }}
-      {{ contact.lastName }}
-    </div>
-    <button
-      appearance="secondary-destructive"
-      iconStart="@tui.mail-plus"
-      size="l"
-      tuiIconButton
-      type="button"
-      [style.border-radius.%]="100"
-      [routerLink]="['/']"
-    >
-      Favorite
-    </button>
-  </div>
+<div *ngIf="contacts$ | async as contacts">
+  <ng-container *transloco="let t">
+    <ng-container *ngIf="contacts.length === 0; else contactList">
+      <div>{{ t('messenger.notContacts') }}</div>
+    </ng-container>
+    <ng-template #contactList>
+      <div *ngFor="let contact of contacts">
+        <div class="contact-line" [routerLink]="['/user/' + contact.id]">
+          <div class="contact">
+            <tui-avatar [src]="contact.avatar ?? '@tui.user'" />
+            {{ contact.firstName }}
+            {{ contact.lastName }}
+          </div>
+          <button
+            appearance="secondary-destructive"
+            iconStart="@tui.mail-plus"
+            size="l"
+            tuiIconButton
+            type="button"
+            [style.border-radius.%]="100"
+            [routerLink]="['/']"
+          >
+            Favorite
+          </button>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
 </div>

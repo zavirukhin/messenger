@@ -19,5 +19,6 @@
   "message": "Message",
   "noContacts": "No contacts",
   "noChats": "No chats",
-  "noChatsSubtittle": "Create a new chat to start messaging"
+  "noChatsSubtittle": "Create a new chat to start messaging",
+  "notContacts": "Contacts list is empty"
 }

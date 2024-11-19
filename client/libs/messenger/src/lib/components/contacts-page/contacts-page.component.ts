@@ -10,6 +10,7 @@ import {
 } from '@taiga-ui/core';
 import { TuiAvatar, TuiAvatarLabeled } from '@taiga-ui/kit';
 import { RouterLink } from '@angular/router';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'lib-contacts-page',
@@ -23,7 +24,8 @@ import { RouterLink } from '@angular/router';
     TuiAvatarLabeled,
     TuiFallbackSrcPipe,
     TuiButton,
-    RouterLink
+    RouterLink,
+    TranslocoDirective
   ],
   templateUrl: './contacts-page.component.html',
   styleUrl: './contacts-page.component.less',
@@ -40,6 +42,6 @@ export class ContactsPageComponent implements OnInit {
   }
 
   private loadContacts(): void {
-    this.contacts$ = this.contactsService.getContacts();
+    this.contacts$ = this.contactsService.getContacts$();
   }
 }
