@@ -13,7 +13,6 @@ export class MetricsService {
   messageHistoryRequestDuration: Histogram<string>;
 
   constructor() {
-    // Check if the metric is already registered before creating a new one
     this.successCounter =
       (register.getSingleMetric('auth_success_count') as Counter<string>) ||
       new Counter({

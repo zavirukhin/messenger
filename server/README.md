@@ -22,7 +22,7 @@
   - **Пример**: `postgres`
   
 - `DB_HOST`: Имя хоста сервера базы данных.
-  - **Пример**: `localhost`
+  - **Пример**: `localhost` (для Docker выставлять как db)
   
 - `DB_PORT`: Номер порта, на котором работает сервер базы данных.
   - **Пример**: `5432`
@@ -68,6 +68,13 @@
 
 - `SOCKET_ALLOWED_ORIGINS`: Указывает допустимые источники для WebSocket соединений.
   - **Пример**: `http://localhost:3000`
+
+## Настройки Grafana
+
+Следующие переменные окружения необходимы для настройки Grafana:
+
+- `GF_SECURITY_ADMIN_PASSWORD`: Устанавливает пароль для входа по умолчанию в Grafana.
+  - **Пример**: `admin`
   
 ## Пример файла `.env`
 
@@ -76,7 +83,7 @@ JWT_SECRET='MYSECRET'
 JWT_EXPIRATION='5m'
 
 DB_TYPE=postgres
-DB_HOST=localhost
+DB_HOST=db
 DB_PORT=5432
 DB_USERNAME=postgres
 DB_PASSWORD=sa
@@ -91,6 +98,8 @@ TWILIO_MESSAGING_SERVICE_ID=VA9b8958********
 TWILIO_IS_ACTIVE=true
 
 SOCKET_ALLOWED_ORIGINS=http://localhost:3000
+
+GF_SECURITY_ADMIN_PASSWORD=admin
 ```
 
 ## Установка зависимостей
@@ -134,3 +143,7 @@ $ npm run test:cov
 ## Доступ к документации
 
 Документация API доступна по следующему адресу: http://localhost:3000/api-docs
+
+Grafana: доступен по адресу: http://localhost:3001 для мониторинга и визуализации метрик.
+
+Prometheus: доступен по адресу: http://localhost:9090 для сбора и анализа метрик.
