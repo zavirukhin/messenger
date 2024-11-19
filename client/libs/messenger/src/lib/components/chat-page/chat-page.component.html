@@ -37,9 +37,16 @@
             [ngClass]="{'message-text-container-self': profile()?.id === message.userId}"
           >
             <span>{{ message.content }}</span>
-            <span class="message-text-subtittle">
-              {{ getDate(message.createdAt ?? null) }}
-            </span>
+            <div class="message-text-subtittle">
+              <span>
+                {{ getDate(message.createdAt ?? null) }}
+              </span>
+              @if (message.messageStatus === 'send') {
+                <tui-icon
+                  icon="@tui.dot"
+                />
+              }
+            </div>
           </div>
           <tui-avatar
             size="m"
