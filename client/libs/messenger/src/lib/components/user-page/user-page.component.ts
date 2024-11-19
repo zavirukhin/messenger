@@ -106,7 +106,7 @@ export class UserPageComponent {
     const time = new Date(date);
 
     if ((new Date().getTime() - time.getTime()) < SECONDS_IN_DAY * 1000) {
-      return formatDate(time, 'HH:MM', 'ru-RU');
+      return formatDate(time, 'HH:mm', 'ru-RU');
     }
 
     return formatDate(time, 'dd:MM:yyyy', 'ru-RU');

@@ -30,9 +30,22 @@
       @for (message of messagesHistory()?.messages; track $index) {
         <div
           class="message-container"
-          [ngClass]="{'message-container-self': profile()?.id === message.userId}"
+          [ngClass]="{'message-self-container': profile()?.id === message.userId}"
         >
-          <span>{{ message.content }}</span>
+          <div
+            class="message-text-container"
+            [ngClass]="{'message-text-container-self': profile()?.id === message.userId}"
+          >
+            <span>{{ message.content }}</span>
+            <span class="message-text-subtittle">
+              {{ getDate(message.createdAt ?? null) }}
+            </span>
+          </div>
+          <tui-avatar
+            size="m"
+            [src]="'@tui.user'"
+            class="message-avatar"
+          />
         </div>
       }
     </main>

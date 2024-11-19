@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TuiButton, TuiFallbackSrcPipe, TuiIcon, TuiLoader, TuiTextfield, TuiTitle } from '@taiga-ui/core';
@@ -7,6 +7,7 @@ import { provideTranslocoScope, TranslocoDirective } from '@jsverse/transloco';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { catchError, combineLatest, EMPTY, finalize, map, switchMap, take } from 'rxjs';
 import { SocketService } from '@social/shared';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChatService } from '../../services/chat/chat.service';
 import { Chat } from '../../interfaces/chat.interface';
 import { loader } from '../../transloco-loader';
@@ -14,7 +15,6 @@ import { Profile } from '../../types/profile.type';
 import { ProfileService } from '../../services/profile/profile.service';
 import { PaginationMessages } from '../../interfaces/pagination-messages.interface';
 import { MessageEvent } from '../../interfaces/message-event.interface';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lib-chat-page',
@@ -175,5 +175,20 @@ export class ChatPageComponent {
         ]
       });
     });
+  }
+
+  public getDate(date: Date | null): string {
+    if (date === null) {
+      return '';
+    }
+
+    const SECONDS_IN_DAY = 86400;
+    const time = new Date(date);
+
+    if ((new Date().getTime() - time.getTime()) < SECONDS_IN_DAY * 1000) {
+      return formatDate(time, 'HH:mm', 'ru-RU');
+    }
+
+    return formatDate(time, 'dd:MM:yyyy', 'ru-RU');
   }
 }

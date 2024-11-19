@@ -29,6 +29,7 @@
 
 .chat-information-container {
   display: flex;
+  cursor: pointer;
   flex: 1;
   align-items: center;
   gap: 8px;
@@ -54,8 +55,11 @@
   cursor: pointer;
 }
 
-.message-container {
-  width: 240px;
+.message-text-container {
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+  width: 200px;
   padding: 16px;
   background: var(--tui-background-accent-1);
   border-radius: 16px;
@@ -63,8 +67,23 @@
   word-wrap: break-word;
 }
 
-.message-container-self {
+.message-container {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.message-self-container, .message-avatar {
+  align-self: flex-end;
+  flex-direction: row;
+}
+
+.message-text-container-self {
   background: var(--tui-background-base-alt);
   color: var(--tui-text-primary);
+}
+
+.message-text-subtittle {
   align-self: flex-end;
 }
