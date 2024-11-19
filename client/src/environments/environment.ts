@@ -1,4 +1,4 @@
 export const environment = {
-  apiUrl: 'https://example:3000/',
+  apiUrl: 'https://api.zavirukhin.com/',
   production: true
 };
