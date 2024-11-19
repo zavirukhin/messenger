@@ -60,6 +60,9 @@ export class MessageService {
     return {
       id: message.id,
       chatId: message.chat.id,
+      userAvatar: message.user.avatar,
+      firstName: message.user.firstName,
+      lastName: message.user.lastName,
       userId: message.user.id,
       messageStatus: message.messageStatus.name,
       content: message.content,

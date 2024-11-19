@@ -58,7 +58,17 @@
   
 - `TWILIO_IS_ACTIVE`: Флаг для активации или деактивации использования Twilio в приложении.
   - **Пример**: `true` (установите `false`, чтобы отключить Twilio ("Режим для разработки"))
+  
+- `FALLBACK_CODE`: Код для использования при авторизации если в twillio ошибка.
+  - **Пример**: `111111`
 
+## Настройки WebSocket
+
+Следующие переменные окружения необходимы для настройки WebSocket:
+
+- `SOCKET_ALLOWED_ORIGINS`: Указывает допустимые источники для WebSocket соединений.
+  - **Пример**: `http://localhost:3000`
+  
 ## Пример файла `.env`
 
 ```plaintext
@@ -79,6 +89,8 @@ TWILIO_ACCOUNT_SID=AC81219ede1**********************
 TWILIO_AUTH_TOKEN=84bc721b***********
 TWILIO_MESSAGING_SERVICE_ID=VA9b8958********
 TWILIO_IS_ACTIVE=true
+
+SOCKET_ALLOWED_ORIGINS=http://localhost:3000
 ```
 
 ## Установка зависимостей

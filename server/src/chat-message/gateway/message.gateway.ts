@@ -3,44 +3,30 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
+import { Socket } from 'socket.io';
 import { MessageSocketService } from '../service/message-socket.service';
-import { MyJwtService } from '../../jwt/service/jwt.service';
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway({ origins: process.env.SOCKET_ALLOWED_ORIGINS || '*' })
 export class MessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
-  private server: Server;
-
-  constructor(
-    private readonly messageSocketService: MessageSocketService,
-    private readonly jwtService: MyJwtService,
-  ) {}
+  constructor(private readonly messageSocketService: MessageSocketService) {}
 
   async handleConnection(socket: Socket) {
-    const authHeader = socket.handshake.headers.authorization;
+    const isValid = await this.messageSocketService.verifyToken(socket);
 
-    if (typeof authHeader === 'string') {
-      const token = authHeader.split(' ')[1];
-
-      if (!token) {
-        socket.disconnect();
-        return;
-      }
-
-      try {
-        const user = await this.jwtService.verifyToken(token);
-        this.messageSocketService.addClient(user.id.toString(), socket);
-      } catch {
-        socket.disconnect();
-      }
+    if (isValid) {
+      const user = socket.data.user;
+      this.messageSocketService.addClient(user.id.toString(), socket);
     } else {
       socket.disconnect();
     }
   }
 
   handleDisconnect(socket: Socket) {
-    this.messageSocketService.removeClient(socket.id);
+    const user = socket.data.user;
+    if (user) {
+      this.messageSocketService.removeClient(user.id.toString(), socket);
+    }
   }
 }

@@ -2,24 +2,37 @@ import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { ChatMember } from '../../entity/chat-member.entity';
 import { MyJwtService } from '../../jwt/service/jwt.service';
+
 @Injectable()
 export class MessageSocketService {
   constructor(private readonly jwtService: MyJwtService) {}
-  private clients: Map<string, Socket> = new Map();
+  private clients: Map<string, Socket[]> = new Map();
 
   addClient(userId: string, socket: Socket) {
-    this.clients.set(userId, socket);
+    if (!this.clients.has(userId)) {
+      this.clients.set(userId, []);
+    }
+    this.clients.get(userId)?.push(socket);
   }
 
-  removeClient(userId: string) {
-    this.clients.delete(userId);
+  removeClient(userId: string, socket: Socket) {
+    const userSockets = this.clients.get(userId);
+    if (userSockets) {
+      const index = userSockets.indexOf(socket);
+      if (index !== -1) {
+        userSockets.splice(index, 1);
+      }
+      if (userSockets.length === 0) {
+        this.clients.delete(userId);
+      }
+    }
   }
 
-  getClient(userId: string): Socket | undefined {
+  getClients(userId: string): Socket[] | undefined {
     return this.clients.get(userId);
   }
 
-  private async verifyToken(socket: Socket): Promise<boolean> {
+  async verifyToken(socket: Socket): Promise<boolean> {
     const authHeader = socket.handshake.headers.authorization;
 
     if (typeof authHeader === 'string') {
@@ -44,23 +57,36 @@ export class MessageSocketService {
     return false;
   }
 
+  private isClientMemberOfChat(
+    userId: string,
+    chatMembers: ChatMember[],
+  ): boolean {
+    return chatMembers.some((member) => member.user.id.toString() === userId);
+  }
+
   async notifyUsersAboutNewMessage(message, chatMembers: ChatMember[]) {
-    for (const member of chatMembers) {
-      const socket = this.getClient(member.user.id.toString());
-      if (socket && (await this.verifyToken(socket))) {
-        socket.emit('onNewMessage', message);
+    for (const [userId, sockets] of this.clients) {
+      if (this.isClientMemberOfChat(userId, chatMembers)) {
+        for (const socket of sockets) {
+          if (await this.verifyToken(socket)) {
+            socket.emit('onNewMessage', message);
+          }
+        }
       }
     }
   }
 
   async notifyUsersAboutNewChat(chat, chatMembers: ChatMember[]) {
-    for (const member of chatMembers) {
-      const socket = this.getClient(member.user.id.toString());
-      if (socket && (await this.verifyToken(socket))) {
-        socket.emit('onNewChat', {
-          ...chat,
-          memberIds: chatMembers.map((member) => member.user.id),
-        });
+    for (const [userId, sockets] of this.clients) {
+      if (this.isClientMemberOfChat(userId, chatMembers)) {
+        for (const socket of sockets) {
+          if (await this.verifyToken(socket)) {
+            socket.emit('onNewChat', {
+              ...chat,
+              memberIds: chatMembers.map((member) => member.user.id),
+            });
+          }
+        }
       }
     }
   }
@@ -69,10 +95,13 @@ export class MessageSocketService {
     updatedMessages,
     chatMembers: ChatMember[],
   ) {
-    for (const member of chatMembers) {
-      const socket = this.getClient(member.user.id.toString());
-      if (socket && (await this.verifyToken(socket))) {
-        socket.emit('onStatusMessagesChange', updatedMessages);
+    for (const [userId, sockets] of this.clients) {
+      if (this.isClientMemberOfChat(userId, chatMembers)) {
+        for (const socket of sockets) {
+          if (await this.verifyToken(socket)) {
+            socket.emit('onStatusMessagesChange', updatedMessages);
+          }
+        }
       }
     }
   }
@@ -87,14 +116,23 @@ export class MessageSocketService {
       chatId: chatId,
       userId: userIdToRemove,
     };
-    const socketDeletedUser = this.getClient(userIdToRemove.toString());
-    if (socketDeletedUser && (await this.verifyToken(socketDeletedUser))) {
-      socketDeletedUser.emit('onUserRemovedFromChat', notificationMessage);
+
+    const socketsToRemove = this.getClients(userIdToRemove.toString());
+    if (socketsToRemove) {
+      for (const socket of socketsToRemove) {
+        if (await this.verifyToken(socket)) {
+          socket.emit('onUserRemovedFromChat', notificationMessage);
+        }
+      }
     }
-    for (const member of chatMembers) {
-      const socket = this.getClient(member.user.id.toString());
-      if (socket && (await this.verifyToken(socket))) {
-        socket.emit('onUserRemovedFromChat', notificationMessage);
+
+    for (const [userId, sockets] of this.clients) {
+      if (this.isClientMemberOfChat(userId, chatMembers)) {
+        for (const socket of sockets) {
+          if (await this.verifyToken(socket)) {
+            socket.emit('onUserRemovedFromChat', notificationMessage);
+          }
+        }
       }
     }
   }
@@ -110,20 +148,26 @@ export class MessageSocketService {
       user,
     };
 
-    for (const member of chatMembers) {
-      const socket = this.getClient(member.user.id.toString());
-      if (socket && (await this.verifyToken(socket))) {
-        socket.emit('onUserAddedToChat', notificationMessage);
+    for (const [userId, sockets] of this.clients) {
+      if (this.isClientMemberOfChat(userId, chatMembers)) {
+        for (const socket of sockets) {
+          if (await this.verifyToken(socket)) {
+            socket.emit('onUserAddedToChat', notificationMessage);
+          }
+        }
       }
     }
   }
 
   async notifyUsersAboutChatUpdate(chat, chatMembers: ChatMember[]) {
-    chatMembers.forEach((member) => {
-      const socket = this.getClient(member.user.id.toString());
-      if (socket) {
-        socket.emit('onChatUpdated', chat);
+    for (const [userId, sockets] of this.clients) {
+      if (this.isClientMemberOfChat(userId, chatMembers)) {
+        for (const socket of sockets) {
+          if (await this.verifyToken(socket)) {
+            socket.emit('onChatUpdated', chat);
+          }
+        }
       }
-    });
+    }
   }
 }
