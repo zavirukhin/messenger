@@ -1,0 +1,63 @@
+<ng-container *transloco="let t">
+  <div class="settings-container" *ngIf="chat$ | async as chat">
+    <div class="user-info">
+      <tui-avatar size="xxl" [src]="chat.avatar ?? '@tui.user'" />
+    </div>
+    <h1 class="username-container" tuiTitle="m">
+      {{ chat.name }}
+    </h1>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" class="form-container">
+    <div class="input-container">
+      <div>
+        @if (!form.controls.avatar.value) {
+        <label tuiInputFiles>
+          <input tuiInputFiles accept="image/*" formControlName="avatar" />
+        </label>
+        } @if (file$ | async; as file) {
+        <tui-files class="tui-space_top-1">
+          <tui-file [file]="file" (remove)="removeFile()" />
+        </tui-files>
+        }
+      </div>
+    </div>
+
+    <div>
+      <tui-textfield tuiTextfieldSize="l">
+        <label tuiLabel>{{ t('messenger.chatName') }}</label>
+        <input formControlName="name" maxLength="50" tuiTextfield />
+      </tui-textfield>
+      <tui-error
+        formControlName="firstName"
+        [error]="[] | tuiFieldError | async"
+      />
+    </div>
+    <div class="button-container">
+        <button
+          size="m"
+          tuiButton
+          type="button"
+          [disabled]="form.disabled"
+          (click)="removeAvatar()"
+        >
+          {{ t('messenger.removeAvatar') }}
+        </button>
+        <button
+          size="m"
+          tuiButton
+          type="submit"
+          [disabled]="form.disabled"          
+        >
+          {{ t('messenger.change') }}
+        </button>
+        <button
+          size="m"
+          tuiButton
+          [routerLink]="['/chat', id]"         
+        >
+        {{ t('messenger.cancel') }}
+        </button>
+      </div>
+  </form>
+</ng-container>
