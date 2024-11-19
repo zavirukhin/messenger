@@ -1,0 +1,16 @@
+<div class="about-page" *transloco="let t">
+    <lib-app-switch-panel></lib-app-switch-panel>
+    <div class="container-started">
+      <p class="title">{{ t('messenger') }}</p>
+      <p class="description">{{ t('description') }}</p>
+      <button
+        appearance="primary"
+        tuiButton
+        type="button"
+        [routerLink]="['/auth']"
+      >
+        {{ t('startChatting') }}
+      </button>
+    </div>
+  </div>
+  

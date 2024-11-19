@@ -1,6 +1,7 @@
 import { Route } from '@angular/router';
 import { AuthGuard } from './guards/with-authorization.guard';
 import { NoAuthGuard } from './guards/without-authorization.guard';
+import { AboutPageComponent } from './components/about-page/about-page.component';
 
 export const appRoutes: Route[] = [
   {
@@ -13,5 +14,9 @@ export const appRoutes: Route[] = [
     path: 'auth',
     loadChildren: () => import('@social/authorization').then(m => m.authorizationRoutes),
     canActivate: [NoAuthGuard]
+  },
+  {
+    path: 'about',
+    component: AboutPageComponent
   }
 ];

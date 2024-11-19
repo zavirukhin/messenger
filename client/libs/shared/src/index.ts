@@ -8,3 +8,4 @@ export * from './lib/services/cache/cache.service';
 export * from './lib/multilingual/multilingual-component/multilingual.component';
 export * from './lib/multilingual/services/multilingual.service';
 export * from './lib/theme-switch/theme-switch.component';
+export * from './lib/switch-panel/switch-panel.component';
