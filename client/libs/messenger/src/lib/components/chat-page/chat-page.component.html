@@ -1,0 +1,56 @@
+<ng-container *transloco="let t;">
+  <div class="chat-view">
+    <header class="header">
+      <div
+        class="chat-icon-back"
+        [routerLink]="['/']"
+      >
+        <tui-icon icon="@tui.chevron-left" />
+      </div>
+      <div class="chat-information-container">
+        <tui-avatar
+          size="m"
+          [src]="(chat()?.avatar ?? '@tui.user') | tuiFallbackSrc: '@tui.user' | async"
+        />
+        <h2
+          tuiTitle
+          class="chat-name"
+        >
+          <b>{{ chat()?.name }}</b>
+        </h2>
+      </div>
+    </header>
+    <main class="chat-history">
+  
+    </main>
+    <footer class="chat-control">
+      <tui-textfield
+        class="message-input"
+        tuiTextfieldSize="l"
+      >
+        <label tuiLabel>
+          {{ t('messenger.message') }}
+        </label>
+        <input
+          maxLength="200"
+          tuiTextfield
+          [formControl]="message"
+        />
+      </tui-textfield>
+      <tui-loader
+        [inheritColor]="true"
+        [overlay]="true"
+        [showLoader]="isLoading()"
+      >
+        <button
+          tuiIconButton
+          iconStart="@tui.send-horizontal"
+          (click)="sendMessage()"
+          [disabled]="message.invalid || isLoading()"
+        >
+          Send
+        </button>
+      </tui-loader>
+    </footer>
+  </div>
+<ng-container />

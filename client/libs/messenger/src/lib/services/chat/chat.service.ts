@@ -221,4 +221,15 @@ export class ChatService {
       newMemberId: userId
     });
   }
+
+  public getChat(chatId: number): Observable<Chat> {
+    return this.http.get<Chat>(environment.apiUrl + '/chats/' + chatId);
+  }
+
+  public sendMessage(chatId: number, message: string): Observable<void> {
+    return this.http.post<void>(environment.apiUrl + '/messages/create', {
+      chatId,
+      content: message
+    });
+  }
 }
