@@ -214,4 +214,11 @@ export class ChatService {
   public getContacts(): Observable<Contact[]> {
     return this.http.get<Contact[]>(environment.apiUrl + '/contacts/list');
   }
+
+  public addToChat(chatId: number, userId: number): Observable<void> {
+    return this.http.post<void>(environment.apiUrl + '/chats/add-member', {
+      chatId,
+      newMemberId: userId
+    });
+  }
 }

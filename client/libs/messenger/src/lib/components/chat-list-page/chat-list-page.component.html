@@ -78,7 +78,7 @@
           >
             <tui-avatar
               size="l"
-              [src]="'@tui.image'"
+              [src]="(contact.avatar ?? '@tui.image') | tuiFallbackSrc: '@tui.image' | async"
             />
             <h2 
               tuiTitle  

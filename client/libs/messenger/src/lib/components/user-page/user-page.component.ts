@@ -1,6 +1,6 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { TuiAvatar, TuiChip, TuiSkeleton } from '@taiga-ui/kit';
-import { TuiButton, TuiFallbackSrcPipe, TuiTitle } from '@taiga-ui/core';
+import { TuiButton, TuiDialog, TuiFallbackSrcPipe, TuiTitle } from '@taiga-ui/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   catchError,
@@ -16,12 +16,17 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  Signal,
   signal
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { langReady, RequestError } from '@social/shared';
 import { User } from '../../interfaces/user.interface';
 import { ProfileService } from '../../services/profile/profile.service';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { Chat } from '../../interfaces/chat.interface';
+import { ChatService } from '../../services/chat/chat.service';
+import { sortChats } from '../../utils/sort-chats';
 
 @Component({
   selector: 'lib-user-page',
@@ -34,6 +39,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
     TuiTitle,
     TuiChip,
     TuiButton,
+    TuiDialog,
     TuiFallbackSrcPipe
   ],
   templateUrl: './user-page.component.html',
@@ -45,15 +51,29 @@ export class UserPageComponent {
 
   public isLoading = signal<boolean>(true);
 
-  public isRequestSend = signal<boolean>(false);
+  public isDisabled = signal<boolean>(false);
 
-  private profileService = inject(ProfileService);
+  public chats: Signal<Chat[] | undefined>;
 
-  private activatedRoute = inject(ActivatedRoute);
+  public openDialog = false;
 
-  private router = inject(Router);
+  private readonly profileService = inject(ProfileService);
+
+  private readonly activatedRoute = inject(ActivatedRoute);
+
+  private readonly chatService = inject(ChatService);
+
+  private readonly router = inject(Router);
 
   constructor() {
+    this.chats = toSignal(this.chatService.getChats().pipe(
+      map((chats) => {
+        const chatsArray = Object.values(chats);
+
+        return sortChats(chatsArray);
+      })
+    ));
+
     this.activatedRoute.params.pipe(
       take(1),
       map(params => params['id']),
@@ -99,11 +119,11 @@ export class UserPageComponent {
       return;
     }
 
-    this.isRequestSend.set(true);
+    this.isDisabled.set(true);
 
     if (user.isBlockedByMe) {
       this.profileService.unblockUserById(user.id).pipe(
-        finalize(() => this.isRequestSend.set(false))
+        finalize(() => this.isDisabled.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,
@@ -113,7 +133,7 @@ export class UserPageComponent {
     }
     else {
       this.profileService.blockUserById(user.id).pipe(
-        finalize(() => this.isRequestSend.set(false))
+        finalize(() => this.isDisabled.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,
@@ -130,11 +150,11 @@ export class UserPageComponent {
       return;
     }
 
-    this.isRequestSend.set(true);
+    this.isDisabled.set(true);
 
     if (user.isContactedByMe) {
       this.profileService.removeToContact(user.id).pipe(
-        finalize(() => this.isRequestSend.set(false))
+        finalize(() => this.isDisabled.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,
@@ -144,7 +164,7 @@ export class UserPageComponent {
     }
     else {
       this.profileService.addToContact(user.id).pipe(
-        finalize(() => this.isRequestSend.set(false))
+        finalize(() => this.isDisabled.set(false))
       ).subscribe(() => {
         this.user.set({
           ...user,
@@ -152,5 +172,27 @@ export class UserPageComponent {
         });
       })
     }
+  }
+
+  public openDialogAddToChat(): void {
+    this.openDialog = true;
+  }
+
+  public addToChatHandler(chatId: number): void {
+    const user = this.user();
+
+    if (!user || this.isDisabled()) {
+      return;
+    }
+
+    this.isDisabled.set(true);
+
+    this.chatService.addToChat(chatId, user.id).pipe(
+      finalize(() => {
+        this.isDisabled.set(false);
+      })
+    ).subscribe(() => {
+      this.openDialog = false;
+    });
   }
 }
