@@ -16,6 +16,7 @@ import { MessageStatus } from '../entity/message-status.entity';
 import { MessageGateway } from './gateway/message.gateway';
 import { MessageSocketService } from './service/message-socket.service';
 import { User } from '../entity/user.entity';
+import { MetricsService } from 'src/metrics/service/metrics.service';
 
 dotenv.config();
 @Module({
@@ -40,6 +41,7 @@ dotenv.config();
     MyJwtService,
     MessageGateway,
     MessageSocketService,
+    MetricsService,
   ],
   controllers: [ChatController, MessageController],
 })

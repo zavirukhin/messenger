@@ -9,6 +9,7 @@ import * as dotenv from 'dotenv';
 import { CodeService } from './service/code.service';
 import { JwtStrategy } from '../jwt/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { MetricsService } from '../metrics/service/metrics.service';
 
 dotenv.config();
 @Module({
@@ -20,7 +21,13 @@ dotenv.config();
       signOptions: { expiresIn: process.env.JWT_EXPIRATION },
     }),
   ],
-  providers: [AuthService, JwtStrategy, MyJwtService, CodeService],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    MyJwtService,
+    CodeService,
+    MetricsService,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

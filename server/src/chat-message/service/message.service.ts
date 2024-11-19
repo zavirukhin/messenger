@@ -12,6 +12,7 @@ import { ChatNotFoundException } from '../../exception/chat-not-found.exception'
 import { UserNotAMemberChatException } from '../../exception/user-not-a-member-chat.exception';
 import { ChatMember } from '../../entity/chat-member.entity';
 import { MessageSocketService } from './message-socket.service';
+import { MetricsService } from '../../metrics/service/metrics.service';
 
 @Injectable()
 export class MessageService {
@@ -29,6 +30,7 @@ export class MessageService {
     private readonly messageStatusRepository: Repository<MessageStatus>,
 
     private readonly messageSocketService: MessageSocketService,
+    private readonly metricsService: MetricsService,
   ) {}
 
   private async findChatById(chatId: number) {
@@ -72,6 +74,7 @@ export class MessageService {
   }
 
   async createMessage(createMessageDto: CreateMessageDto, userId: number) {
+    const startTime = Date.now();
     const { chatId, content } = createMessageDto;
 
     const chat = await this.findChatById(chatId);
@@ -98,7 +101,11 @@ export class MessageService {
       response,
       chatMembers,
     );
-
+    this.metricsService.incrementMessagesSent(chatId.toString());
+    this.metricsService.observeMessageSendDuration(
+      chatId.toString(),
+      (Date.now() - startTime) / 1000,
+    );
     return response;
   }
 
@@ -145,6 +152,7 @@ export class MessageService {
     page: number = 1,
     limit: number = 20,
   ) {
+    const startTime = Date.now();
     const chat = await this.findChatById(chatId);
     await this.findUserInChat(chat.id, userId);
 
@@ -201,7 +209,10 @@ export class MessageService {
         chatMembers,
       );
     }
-
+    this.metricsService.observeMessageHistoryRequestDuration(
+      chatId.toString(),
+      (Date.now() - startTime) / 1000,
+    );
     return {
       messages: allMessagesResponse,
       totalMessages,
