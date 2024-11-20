@@ -20,5 +20,6 @@
   "noContacts": "No contacts",
   "noChats": "No chats",
   "noChatsSubtittle": "Create a new chat to start messaging",
-  "notContacts": "Contacts list is empty"
+  "notContacts": "Contacts list is empty",
+  "selfProfile": "Yes, it's you"
 }

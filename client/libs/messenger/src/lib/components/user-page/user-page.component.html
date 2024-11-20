@@ -29,59 +29,64 @@
         @if (user()?.lastActivity; as lastActivity) {
           <tui-chip>{{ t('messenger.lastSeen') }}: {{ getLastActivity(lastActivity) }}</tui-chip>
         }
+        @if (currentProfile()?.id === user()?.id) {
+          <tui-chip appearance="error">{{ t('messenger.selfProfile') }}</tui-chip>
+        }
       </div>
     </div>
-    <div class="user-actions">
-      <button
-        class="action-button"
-        appearance="secondary"
-        iconStart="@tui.user-plus"
-        tuiButton
-        tuiButtonVertical
-        type="button"
-        [disabled]="user()?.isBlockedByUser || isDisabled()"
-        [tuiSkeleton]="isLoading()"
-        (click)="contactHandler()"
-      >
-        @if (user()?.isContactedByMe) {
-          {{ t('messenger.removeContact') }}
-        }
-        @else {
-          {{ t('messenger.addContact') }}
-        }
-      </button>
-      <button
-        class="action-button"
-        appearance="secondary"
-        iconStart="@tui.message-circle-plus"
-        tuiButton
-        tuiButtonVertical
-        type="button"
-        [disabled]="user()?.isBlockedByUser || user()?.isBlockedByMe || isDisabled()"
-        [tuiSkeleton]="isLoading()"
-        (click)="openDialogAddToChat()"
-      >
-        {{ t('messenger.addToChat') }}
-      </button>
-      <button
-        class="action-button"
-        appearance="secondary"
-        iconStart="@tui.ban"
-        tuiButton
-        tuiButtonVertical
-        type="button"
-        [disabled]="isDisabled()"
-        [tuiSkeleton]="isLoading()"
-        (click)="blockHandler()"
-      >
-        @if (user()?.isBlockedByMe) {
-          {{ t('messenger.unblockUser') }}
-        }
-        @else {
-          {{ t('messenger.blockUser') }}
-        }
-      </button>
-    </div>
+    @if (currentProfile()?.id !== user()?.id) {
+      <div class="user-actions">
+        <button
+          class="action-button"
+          appearance="secondary"
+          iconStart="@tui.user-plus"
+          tuiButton
+          tuiButtonVertical
+          type="button"
+          [disabled]="user()?.isBlockedByUser || isDisabled()"
+          [tuiSkeleton]="isLoading()"
+          (click)="contactHandler()"
+        >
+          @if (user()?.isContactedByMe) {
+            {{ t('messenger.removeContact') }}
+          }
+          @else {
+            {{ t('messenger.addContact') }}
+          }
+        </button>
+        <button
+          class="action-button"
+          appearance="secondary"
+          iconStart="@tui.message-circle-plus"
+          tuiButton
+          tuiButtonVertical
+          type="button"
+          [disabled]="user()?.isBlockedByUser || user()?.isBlockedByMe || isDisabled()"
+          [tuiSkeleton]="isLoading()"
+          (click)="openDialogAddToChat()"
+        >
+          {{ t('messenger.addToChat') }}
+        </button>
+        <button
+          class="action-button"
+          appearance="secondary"
+          iconStart="@tui.ban"
+          tuiButton
+          tuiButtonVertical
+          type="button"
+          [disabled]="isDisabled()"
+          [tuiSkeleton]="isLoading()"
+          (click)="blockHandler()"
+        >
+          @if (user()?.isBlockedByMe) {
+            {{ t('messenger.unblockUser') }}
+          }
+          @else {
+            {{ t('messenger.blockUser') }}
+          }
+        </button>
+      </div>
+    }
   </div>
 </ng-container>
 

@@ -27,6 +27,7 @@ import { ProfileService } from '../../services/profile/profile.service';
 import { Chat } from '../../interfaces/chat.interface';
 import { ChatService } from '../../services/chat/chat.service';
 import { sortChats } from '../../utils/sort-chats';
+import { ProfileResponse } from '../../interfaces/profile-response.interface';
 
 @Component({
   selector: 'lib-user-page',
@@ -48,6 +49,8 @@ import { sortChats } from '../../utils/sort-chats';
 })
 export class UserPageComponent {
   public user = signal<User | null>(null);
+
+  public currentProfile = signal<ProfileResponse | null>(null);
 
   public isLoading = signal<boolean>(true);
 
@@ -77,9 +80,13 @@ export class UserPageComponent {
     this.activatedRoute.params.pipe(
       take(1),
       map(params => params['id']),
-      switchMap((id) => this.getUserData(id))
-    ).subscribe((user) => {
+      switchMap((id) => combineLatest([
+        this.getUserData(id),
+        this.profileService.getProfile()
+      ]))
+    ).subscribe(([user, currentProfile]) => {
       this.user.set(user);
+      this.currentProfile.set(currentProfile);
       this.isLoading.set(false);
     });
   }
