@@ -25,5 +25,7 @@
   "contactList": "Contact List",
   "messenger": "Messenger",
   "settings": "Settings",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "listContacts": "List members",
+  "removeChatMember": "Remove chat member"
 }

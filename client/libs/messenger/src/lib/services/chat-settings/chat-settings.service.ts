@@ -4,7 +4,9 @@ import { Observable, tap } from 'rxjs';
 import { ChatEvent } from '../../interfaces/chat-event.interface';
 import { environment } from '@env';
 import { CacheService } from '@social/shared';
-import { UpdateChatPayload } from '../../types/chat.type';
+import { UpdateChatPayload } from '../../types/update-chat-payload.type';
+import { Members } from '../../interfaces/members.interface';
+import { removeMembers } from '../../interfaces/remove-member.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +17,19 @@ export class ChatSettingsService {
   private readonly cacheService = inject(CacheService);
 
   public getChat$(id: string): Observable<ChatEvent> {
-    return this.http
-      .get<ChatEvent>(environment.apiUrl + '/chats/' + id)
-      .pipe(tap());
+    return this.http.get<ChatEvent>(environment.apiUrl + '/chats/' + id);
+  }
+
+  public getChatMembers$(id: string): Observable<Members[]> {
+    return this.http.get<Members[]>(
+      environment.apiUrl + '/chats/' + id + '/listMembers'
+    );
+  }
+
+  public removeChatMember$(data: removeMembers): Observable<void> {
+    return this.http.delete<void>(environment.apiUrl + '/chats/remove-member', {
+      body: data
+    });
   }
 
   public updateChat$(chat: UpdateChatPayload): Observable<void> {

@@ -1,10 +1,10 @@
 <ng-container *transloco="let t">
   <div class="settings-container" *ngIf="chat">
     <div class="user-info">
-      <tui-avatar size="xxl" [src]="chat.avatar ?? '@tui.user'" />
+      <tui-avatar size="xxl" [src]="chat.avatar || '@tui.user'" />
     </div>
     <h1 class="username-container" tuiTitle="m">
-      {{ chat.name }}
+      {{ form.controls.name.value }}
     </h1>
   </div>
 
@@ -48,4 +48,35 @@
       </button>
     </div>
   </form>
+  <div class="list">
+    <h1 tuiTitle="m">
+      {{ t('messenger.listContacts') }}
+    </h1>
+    <ul class="list list-members">
+      <li *ngFor="let member of listMembers" class="member-data">
+        <div
+          class="member-data"
+          *ngIf="chat"
+          [routerLink]="['/user', member.user.id]"
+        >
+          <div class="contact-avatar">
+            <tui-avatar size="xs" [src]="member.user.avatar || '@tui.user'" />
+          </div>
+          <h1 class="username-container" tuiTitle="s">
+            {{ member.user.firstName }} {{ member.user.lastName }}
+          </h1>
+        </div>
+        <button
+          *ngIf="idUser !== member.user.id"
+          appearance="accent"
+          class="delete-contact"
+          size="s"
+          tuiButton
+          (click)="removeChatMember(member.user.id)"
+        >
+          {{ t('messenger.removeChatMember') }}
+        </button>
+      </li>
+    </ul>
+  </div>
 </ng-container>

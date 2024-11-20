@@ -26,5 +26,7 @@
   "messenger": "Мессенджер",
   "settings": "Настройки",
   "cancel": "Отмена",
-  "removeAvatarChat": "Удалить фото чата"
+  "removeAvatarChat": "Удалить фото чата",
+  "listContacts": "Список участников",
+  "removeChatMember": "Удалить из чата"
 }

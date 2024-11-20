@@ -1,11 +1,19 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   inject,
   OnInit
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { finalize, map, Observable, switchMap, take } from 'rxjs';
+import {
+  combineLatest,
+  finalize,
+  map,
+  Observable,
+  switchMap,
+  take
+} from 'rxjs';
 import { fileToBase64$ } from '../../utils/file-to-base64';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
@@ -30,6 +38,9 @@ import {
 } from '@taiga-ui/core';
 import { ChatEvent } from '../../interfaces/chat-event.interface';
 import { ChatSettingsService } from '../../services/chat-settings/chat-settings.service';
+import { UpdateChatPayload } from '../../types/update-chat-payload.type';
+import { Members } from '../../interfaces/members.interface';
+import { ProfileService } from '../../services/profile/profile.service';
 
 @Component({
   selector: 'lib-chat-settings-page',
@@ -61,18 +72,33 @@ export class ChatSettingsPageComponent implements OnInit {
 
   public chat$: Observable<ChatEvent> | null = null;
   public chat: ChatEvent | null = null;
-  public id: string | null = null;
-  private updateChat = (): void => {
-    this.router.navigate(['/chat', this.id]);
-    this.form.enable();
-    this.removeFile();
+  public listMembers: Members[] | null = null;
+  public id: number | null = null;
+  private updateChat = (data: ChatEvent | UpdateChatPayload): void => {
+    this.chatService
+      .updateChat$(data)
+      .pipe(
+        finalize(() => {
+          this.router.navigate(['/chat', this.id]);
+          this.form.enable();
+          this.removeFile();
+        })
+      )
+      .subscribe(),
+      take(1);
   };
 
   public readonly file$ = this.form.controls.avatar.valueChanges;
 
+  public idUser: number | null = null;
+
+  private readonly profileService = inject(ProfileService);
+
   private activatedRoute = inject(ActivatedRoute);
 
   private readonly router = inject(Router);
+
+  private cdRef = inject(ChangeDetectorRef);
 
   constructor(private readonly chatService: ChatSettingsService) {}
 
@@ -83,17 +109,34 @@ export class ChatSettingsPageComponent implements OnInit {
         switchMap((id) => {
           this.id = id;
 
-          return this.chatService.getChat$(id);
+          return combineLatest({
+            chat: this.chatService.getChat$(id),
+            listMembers: this.chatService.getChatMembers$(id),
+            profile: this.profileService.getProfile()
+          });
         }),
         take(1)
       )
-      .subscribe((chat) => {
+      .subscribe(({ chat, listMembers, profile }) => {
         this.chat = chat;
+        this.idUser = profile.id;
+        this.listMembers = listMembers;
         this.form.setValue({
           name: chat?.name ?? '',
           avatar: null
         });
       });
+
+    this.form.controls.avatar.valueChanges.subscribe((file) => {
+      fileToBase64$(file)
+        .pipe(take(1))
+        .subscribe((base64) => {
+          if (this.chat && base64) {
+            this.chat.avatar = base64;
+            this.cdRef.markForCheck();
+          }
+        });
+    });
   }
 
   public onSubmit(): void {
@@ -104,23 +147,18 @@ export class ChatSettingsPageComponent implements OnInit {
     }
     this.form.disable();
 
-    fileToBase64$(this.form.controls.avatar.value)
-      .pipe(take(1))
-      .subscribe((avatar) => {
-        const avatarOld = this.chat?.avatar ?? null;
+    fileToBase64$(this.form.controls.avatar.value).subscribe((avatar) => {
+      const avatarOld = this.chat?.avatar ?? null;
 
-        if (this.chat?.id) {
-          this.chatService
-            .updateChat$({
-              name: this.form.controls.name.value ?? '',
-              chatId: this.chat?.id,
-              avatar: avatar !== '' ? avatar : avatarOld
-            })
-            .pipe(finalize(this.updateChat))
-            .pipe(take(1))
-            .subscribe();
-        }
-      });
+      if (this.chat?.id) {
+        this.updateChat({
+          name: this.form.controls.name.value ?? '',
+          chatId: this.chat?.id,
+          avatar: avatar !== '' ? avatar : avatarOld
+        });
+      }
+    }),
+      take(1);
   }
 
   public removeFile(): void {
@@ -130,15 +168,26 @@ export class ChatSettingsPageComponent implements OnInit {
   public removeAvatar(): void {
     if (this.chat) {
       this.form.disable();
+      this.updateChat({
+        chatId: this.chat.id,
+        name: this.chat.name,
+        avatar: null
+      });
+    }
+  }
 
+  public removeChatMember(id: number) {
+    if (this.id && id) {
       this.chatService
-        .updateChat$({
-          chatId: this.chat.id,
-          name: this.chat.name,
-          avatar: null
+        .removeChatMember$({
+          memberIdToRemove: +id,
+          chatId: +this.id
         })
-        .pipe(finalize(this.updateChat), take(1))
-        .subscribe();
+        .subscribe((req) => {
+          console.log(req);
+          this.router.navigate(['/chat', this.id]);
+        }),
+        take(1);
     }
   }
 }
