@@ -97,15 +97,15 @@ export class ChatService {
     profile.pipe(
       take(1)
     ).subscribe((profile) => {
-      if (profile.id === message.userId) {
-        return;
-      }
-
       chatCache[chatId] = {
         ...chatCache[chatId],
-        unreadCount: chatCache[chatId].unreadCount + 1,
+        unreadCount: chatCache[chatId].unreadCount,
         latestMessage: message.content,
         latestMessageDate: new Date()
+      }
+
+      if (profile.id !== message.userId) {
+        chatCache[chatId].unreadCount = chatCache[chatId].unreadCount + 1;
       }
   
       this.cacheService.set<Record<string, Chat>>('chats', chatCache);

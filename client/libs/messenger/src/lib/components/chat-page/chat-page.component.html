@@ -52,6 +52,7 @@
           <tui-avatar
             size="m"
             [src]="(message.userAvatar ?? '@tui.user') | tuiFallbackSrc: '@tui.user' | async"
+            [routerLink]="['/', 'user', message.userId]"
             class="message-avatar"
           />
         </div>
