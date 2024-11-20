@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { combineLatest, filter, finalize, take } from 'rxjs';
+import { combineLatest, filter, finalize, switchMap, take } from 'rxjs';
 import {
   ChangeDetectionStrategy, 
   Component,
@@ -84,10 +84,18 @@ export class SettingsPageComponent {
 
   public profile: Signal<Profile | undefined>;
 
+  public incomingAvatar: Signal<string | undefined>;
+
   public readonly file$ = this.form.controls.avatar.valueChanges;
 
   constructor() {
     this.profile = toSignal(this.profileService.getProfile());
+
+    this.incomingAvatar = toSignal(
+      this.form.controls.avatar.valueChanges.pipe(
+        switchMap((file) => fileToBase64$(file))
+      )
+    );
 
     combineLatest([
       toObservable(this.profile),
