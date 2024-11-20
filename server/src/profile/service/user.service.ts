@@ -91,6 +91,7 @@ export class UserService {
         id: true,
         firstName: true,
         lastName: true,
+        lastActivity: true,
         avatar: true,
         customName: true,
         createdAt: true,
