@@ -1,13 +1,12 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TuiButton, TuiFallbackSrcPipe, TuiIcon, TuiLoader, TuiTextfield, TuiTitle } from '@taiga-ui/core';
 import { TuiAvatar } from '@taiga-ui/kit';
 import { provideTranslocoScope, TranslocoDirective } from '@jsverse/transloco';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { catchError, combineLatest, EMPTY, finalize, map, switchMap, take } from 'rxjs';
+import { catchError, combineLatest, EMPTY, finalize, map, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { SocketService } from '@social/shared';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChatService } from '../../services/chat/chat.service';
 import { Chat } from '../../interfaces/chat.interface';
 import { loader } from '../../transloco-loader';
@@ -42,7 +41,7 @@ import { MessageEvent } from '../../interfaces/message-event.interface';
     })
   ]
 })
-export class ChatPageComponent {
+export class ChatPageComponent implements OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
 
   private readonly chatService = inject(ChatService);
@@ -53,7 +52,7 @@ export class ChatPageComponent {
 
   private readonly socketService = inject(SocketService);
 
-  private destoryRef = inject(DestroyRef);
+  private destory$ = new Subject<void>();
 
   public chat = signal<Chat | undefined>(undefined);
 
@@ -93,7 +92,7 @@ export class ChatPageComponent {
 
   public subscribeToMessageStatusChange(): void {
     this.socketService.on<MessageEvent[]>('onStatusMessagesChange').pipe(
-      takeUntilDestroyed(this.destoryRef)
+      takeUntil(this.destory$)
     ).subscribe((messages) => {
       const chat = this.chat();
 
@@ -125,7 +124,7 @@ export class ChatPageComponent {
 
   public subscribeToNewMessages(): void {
     this.socketService.on<MessageEvent>('onNewMessage').pipe(
-      takeUntilDestroyed(this.destoryRef)
+      takeUntil(this.destory$)
     ).subscribe((message) => {
       const chat = this.chat();
 
@@ -227,5 +226,10 @@ export class ChatPageComponent {
     }
 
     return formatDate(time, 'dd:MM:yyyy', 'ru-RU');
+  }
+
+  ngOnDestroy(): void {
+    this.destory$.next();
+    this.destory$.complete();
   }
 }
