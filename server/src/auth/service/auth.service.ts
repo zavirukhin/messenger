@@ -6,6 +6,7 @@ import { MyJwtService } from '../../jwt/service/jwt.service';
 import { UserNotFoundException } from '../../exception/user-not-found.exception';
 import { UserAlreadyExistsException } from '../../exception/user-already-exists.exception';
 import { CodeService } from './code.service';
+import { MetricsService } from '../../metrics/service/metrics.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     private readonly jwtService: MyJwtService,
     private readonly codeService: CodeService,
+    private readonly metricsService: MetricsService,
   ) {}
 
   async sendCode(phone: string) {
@@ -21,9 +23,19 @@ export class AuthService {
   }
 
   async validateCode(phone: string, code: string) {
+    const start = Date.now();
     await this.codeService.validateCode(phone, code, false);
     const user = await this.findUserByPhone(phone);
     this.codeService.deleteCode(phone);
+
+    this.metricsService.incrementAuthSuccess('POST', '200');
+
+    this.metricsService.observeAuthRequestDuration(
+      'POST',
+      '200',
+      (Date.now() - start) / 1000,
+    );
+
     return { token: await this.jwtService.generateToken(user.id) };
   }
 
@@ -33,6 +45,7 @@ export class AuthService {
     firstName: string,
     lastName: string,
   ): Promise<{ token: string }> {
+    const start = Date.now();
     await this.codeService.validateCode(phone, code, false);
 
     if (await this.userExists(phone)) {
@@ -42,12 +55,21 @@ export class AuthService {
 
     const newUser = await this.createUser(phone, firstName, lastName);
     const token = await this.jwtService.generateToken(newUser.id);
+
+    this.metricsService.incrementAuthSuccess('POST', '200');
+    this.metricsService.observeAuthRequestDuration(
+      'POST',
+      '200',
+      (Date.now() - start) / 1000,
+    );
+
     return { token };
   }
 
   private async findUserByPhone(phone: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { phone } });
     if (!user) {
+      this.metricsService.incrementAuthFailure('POST', '404');
       throw new UserNotFoundException();
     }
     return user;

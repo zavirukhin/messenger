@@ -56,5 +56,5 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString({ message: 'Аватар пользователя должен быть строкой' })
   @IsNotEmpty({ message: 'Аватар пользователя не должно быть пустой строкой' })
-  avatarBase64?: string;
+  avatar?: string;
 }

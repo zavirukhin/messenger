@@ -101,7 +101,7 @@ export class ContactService {
           id: true,
           firstName: true,
           lastName: true,
-          avatarBase64: true,
+          avatar: true,
           customName: true,
         },
       },

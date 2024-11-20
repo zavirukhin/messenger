@@ -57,17 +57,6 @@ export class AuthController {
     },
     description: 'Код уже был отправлен',
   })
-  @ApiResponse({
-    status: 503,
-    schema: {
-      example: {
-        message: 'Ошибка Twilio.',
-        errorCode: ErrorCode.TWILIO_ERROR,
-        statusCode: HttpStatus.SERVICE_UNAVAILABLE,
-      },
-    },
-    description: 'Ошибка Twilio.',
-  })
   async sendCode(
     @Body() sendCodeDto: SendCodeDto,
   ): Promise<{ nextAttempt: number; message: string; statusCode: HttpStatus }> {

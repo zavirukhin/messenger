@@ -1,0 +1,4 @@
+scrape_configs:
+  - job_name: 'message-backend'
+    static_configs:
+      - targets: ['app:3000']
