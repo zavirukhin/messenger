@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import {
   interval,
-  Subject,
+  ReplaySubject,
   takeUntil,
   takeWhile,
   tap
@@ -52,7 +52,7 @@ export class AuthorizationPageComponent implements OnDestroy {
 
   public step: Step = 'phone';
 
-  public destroy$ = new Subject<void>();
+  public destroy$ = new ReplaySubject<void>(1);
 
   public onPhoneChanged(phoneVerify: PhoneVerify) {
     const nextAttempt = Math.floor(phoneVerify.nextAttempt / 1000); 

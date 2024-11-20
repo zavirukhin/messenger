@@ -5,7 +5,17 @@ import { TuiButton, TuiFallbackSrcPipe, TuiIcon, TuiLoader, TuiTextfield, TuiTit
 import { TuiAvatar } from '@taiga-ui/kit';
 import { provideTranslocoScope, TranslocoDirective } from '@jsverse/transloco';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { catchError, combineLatest, EMPTY, finalize, map, Subject, switchMap, take, takeUntil } from 'rxjs';
+import {
+  catchError,
+  combineLatest,
+  EMPTY,
+  finalize,
+  map,
+  ReplaySubject, 
+  switchMap, 
+  take, 
+  takeUntil
+} from 'rxjs';
 import { SocketService } from '@social/shared';
 import { ChatService } from '../../services/chat/chat.service';
 import { Chat } from '../../interfaces/chat.interface';
@@ -52,7 +62,7 @@ export class ChatPageComponent implements OnDestroy {
 
   private readonly socketService = inject(SocketService);
 
-  private destory$ = new Subject<void>();
+  private destory$ = new ReplaySubject<void>(1);
 
   public chat = signal<Chat | undefined>(undefined);
 

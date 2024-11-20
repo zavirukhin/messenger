@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Observable, ReplaySubject, takeUntil } from 'rxjs';
 import { environment } from '@env';
 import { SocketEvent } from '../../types/SocketEvent.type';
 
@@ -10,7 +10,7 @@ import { SocketEvent } from '../../types/SocketEvent.type';
 export class SocketService {
   private socket: Socket;
 
-  private destory$: Subject<void> = new Subject<void>();
+  private destory$ = new ReplaySubject<void>(1);
 
   private isSocketConnected = false;
 
