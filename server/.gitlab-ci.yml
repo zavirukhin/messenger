@@ -10,7 +10,7 @@ workflow:
     
 .unpack-server:
   before_script:
-    - rm -r frontend || true
+    - rm -r client || true
     - cp -a server/. .
     - rm -r server
 
