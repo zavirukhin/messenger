@@ -79,13 +79,13 @@ export class ChatService {
   }
 
   private updateLastMessage(message: MessageEvent): void {
-    const chats = this.cacheService.get<Record<string, Chat>>('chats');
+    const chats$ = this.cacheService.get<Record<string, Chat>>('chats');
     
-    if (chats === null) {
+    if (chats$ === null) {
       return;
     }
 
-    const chatCache = chats.value;
+    const chatCache = chats$.value;
     const chatId = message.chatId.toString();
 
     if (chatCache[chatId] === undefined) {
@@ -113,13 +113,13 @@ export class ChatService {
   }
 
   private readChat(chatId: number) {
-    const chats = this.cacheService.get<Record<string, Chat>>('chats');
+    const chats$ = this.cacheService.get<Record<string, Chat>>('chats');
     
-    if (chats === null) {
+    if (chats$ === null) {
       return;
     }
 
-    const chatCache = chats.value;
+    const chatCache = chats$.value;
     const chatIdString = chatId.toString();
 
     if (chatCache[chatIdString] === undefined) {
@@ -135,13 +135,13 @@ export class ChatService {
   }
 
   private updateChat(chat: ChatEvent): void {
-    const chats = this.cacheService.get<Record<string, Chat>>('chats');
+    const chats$ = this.cacheService.get<Record<string, Chat>>('chats');
     
-    if (chats === null) {
+    if (chats$ === null) {
       return;
     }
 
-    const chatCache = chats.value;
+    const chatCache = chats$.value;
     const chatId = chat.id.toString();
 
     if (chatCache[chatId] === undefined) {
@@ -158,12 +158,12 @@ export class ChatService {
   }
 
   private removeChat(chatId: number): void {
-    const chats = this.cacheService.get<Record<string, Chat>>('chats');
+    const chats$ = this.cacheService.get<Record<string, Chat>>('chats');
     
-    if (chats) {
+    if (chats$) {
       const newChats: Record<string, Chat> = {};
 
-      Object.entries(chats.value).forEach(([k, v]) => {
+      Object.entries(chats$.value).forEach(([k, v]) => {
         if (k !== chatId.toString()) {
           newChats[k] = v;
         }
@@ -174,8 +174,8 @@ export class ChatService {
   }
 
   private putChat(chat: Omit<Chat, 'latestMessage' | 'latestMessageDate' | 'unreadCount'>): void {
-    const cache = this.cacheService.get<Record<string, Chat>>('chats');
-    const chats = cache?.value;
+    const cache$ = this.cacheService.get<Record<string, Chat>>('chats');
+    const chats = cache$?.value;
 
     if (chats !== undefined) {
       chats[chat.id.toString()] = {
@@ -191,10 +191,10 @@ export class ChatService {
 
   public getChats(force?: boolean): Observable<Record<string, Chat>> {
     if (force !== true) {
-      const chat = this.cacheService.get<Record<string, Chat>>('chats');
+      const chat$ = this.cacheService.get<Record<string, Chat>>('chats');
 
-      if (chat !== null) {
-        return chat;
+      if (chat$ !== null) {
+        return chat$;
       }
     }
 
@@ -209,7 +209,7 @@ export class ChatService {
 
         return this.cacheService.set<Record<string, Chat>>('chats', chatMap);
       }),
-      switchMap((chats) => chats)
+      switchMap((chats$) => chats$)
     );
   }
 

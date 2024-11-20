@@ -16,28 +16,28 @@ export class ProfileService {
   private readonly cacheService = inject(CacheService);
 
   public getProfile(): Observable<ProfileResponse> {
-    const profile = this.cacheService.get<ProfileResponse>('profile');
+    const profile$ = this.cacheService.get<ProfileResponse>('profile');
 
-    if (profile !== null) {
-      return profile;
+    if (profile$ !== null) {
+      return profile$;
     }
 
     return this.http.get<ProfileResponse>(environment.apiUrl + '/users/profile').pipe(
       map((response: ProfileResponse) => {
         return this.cacheService.set<ProfileResponse>('profile', response);
       }),
-      switchMap((profile) => profile)
+      switchMap((profile$) => profile$)
     );
   }
 
   public updateProfile(profile: Omit<Profile, 'id'>): Observable<void> {
     return this.http.patch<void>(environment.apiUrl + '/users/update', profile).pipe(
       tap(() => {
-        const cache = this.cacheService.get<ProfileResponse>('profile');
+        const cache$ = this.cacheService.get<ProfileResponse>('profile');
 
-        if (cache !== null) {
+        if (cache$ !== null) {
           this.cacheService.set<ProfileResponse>('profile', {
-            ...cache.value,
+            ...cache$.value,
             ...profile
           });
         }

@@ -17,9 +17,9 @@ export class CacheService {
       this.destroyCache();
     }
 
-    const cache = this.cache.get(key);
+    const cache$ = this.cache.get(key);
 
-    if (cache === undefined) {
+    if (cache$ === undefined) {
       const subject = new BehaviorSubject(value);
       this.cache.set(key, subject);
       this.cacheKeyList.add(key);
@@ -27,9 +27,9 @@ export class CacheService {
       return subject;
     }
     else {
-      cache.next(value);
+      cache$.next(value);
 
-      return cache;
+      return cache$;
     }
   }
 
@@ -38,10 +38,10 @@ export class CacheService {
       this.destroyCache();
     }
 
-    const cache = this.cache.get(key);
+    const cache$ = this.cache.get(key);
 
-    if (cache !== undefined) {
-      return cache;
+    if (cache$ !== undefined) {
+      return cache$;
     }
 
     return null;
@@ -49,8 +49,8 @@ export class CacheService {
 
   public destroyCache(): void {
     this.cacheKeyList.forEach((key) => {
-      const cache = this.cache.get(key);
-      cache?.complete();
+      const cache$ = this.cache.get(key);
+      cache$?.complete();
     });
 
     this.cache.clear();
