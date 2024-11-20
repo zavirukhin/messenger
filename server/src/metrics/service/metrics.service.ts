@@ -18,7 +18,9 @@ export class MetricsService {
     this.registry = register;
 
     this.successCounter =
-      (this.registry.getSingleMetric('auth_success_count') as Counter<string>) ||
+      (this.registry.getSingleMetric(
+        'auth_success_count',
+      ) as Counter<string>) ||
       new Counter({
         name: 'auth_success_count',
         help: 'Количество успешных запросов на авторизацию',
@@ -27,7 +29,9 @@ export class MetricsService {
       });
 
     this.failureCounter =
-      (this.registry.getSingleMetric('auth_failure_count') as Counter<string>) ||
+      (this.registry.getSingleMetric(
+        'auth_failure_count',
+      ) as Counter<string>) ||
       new Counter({
         name: 'auth_failure_count',
         help: 'Количество неуспешных запросов на авторизацию',
@@ -58,7 +62,9 @@ export class MetricsService {
       });
 
     this.messageSentCounter =
-      (this.registry.getSingleMetric('messages_sent_total') as Counter<string>) ||
+      (this.registry.getSingleMetric(
+        'messages_sent_total',
+      ) as Counter<string>) ||
       new Counter({
         name: 'messages_sent_total',
         help: 'Общее количество сообщений, отправленных пользователями',
@@ -114,5 +120,8 @@ export class MetricsService {
 
   getMetrics(): Promise<string> {
     return this.registry.metrics();
+  }
+  getResponseType(): string {
+    return this.registry.contentType;
   }
 }
