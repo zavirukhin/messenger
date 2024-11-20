@@ -33,7 +33,7 @@ export class UserInit1730566248080 implements MigrationInterface {
             type: 'timestamp',
           },
           {
-            name: 'avatarBase64',
+            name: 'avatar',
             type: 'text',
             isNullable: true,
           },
@@ -47,12 +47,12 @@ export class UserInit1730566248080 implements MigrationInterface {
           {
             name: 'createdAt',
             type: 'timestamp',
-            default: 'CURRENT_TIMESTAMP',
+            default: 'now()',
           },
           {
             name: 'updatedAt',
             type: 'timestamp',
-            default: 'CURRENT_TIMESTAMP',
+            default: 'now()',
           },
         ],
       }),
