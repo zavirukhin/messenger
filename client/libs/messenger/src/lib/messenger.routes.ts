@@ -32,6 +32,11 @@ export const messengerRoutes: Route[] = [
         path: 'chat/:id',
         loadComponent: () => import('./components/chat-page/chat-page.component')
           .then((m) => m.ChatPageComponent)
+      },
+      {
+        path: 'contacts',
+        loadComponent: () => import('./components/contacts-page/contacts-page.component')
+        .then((m) => m.ContactsPageComponent)
       }
     ],
     providers: [
