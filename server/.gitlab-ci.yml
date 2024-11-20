@@ -58,6 +58,7 @@ test:
   extends: .unpack-server
   script:
     - npm run test
+  timeout: 30m
   dependencies:
     - install
     
