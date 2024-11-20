@@ -25,5 +25,6 @@
   "contactList": "Список контактов",
   "messenger": "Мессенджер",
   "settings": "Настройки",
-  "cancel": "Отмена"
+  "cancel": "Отмена",
+  "removeAvatarChat": "Удалить фото чата"
 }
