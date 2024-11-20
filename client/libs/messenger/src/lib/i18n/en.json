@@ -28,5 +28,10 @@
   "removeAvatarChat": "Delete chat photo",
   "cancel": "Cancel",
   "listContacts": "List members",
-  "removeChatMember": "Remove chat member"
+  "removeChatMember": "Remove chat member",
+  "enterPhoneNumberNameId": "Enter your phone number, unique name or user id",
+  "userDoesNotExist": "User does not exist",
+  "oops": "Oops!",
+  "addingContact": "Contact added!",
+  "hooray": "Hooray!"
 }
