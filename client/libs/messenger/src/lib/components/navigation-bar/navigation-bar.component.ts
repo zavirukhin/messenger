@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TuiIcon } from '@taiga-ui/core';
+import { TuiHint, TuiIcon } from '@taiga-ui/core';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { Tab } from '../../types/tab.type';
 
 @Component({
@@ -11,6 +12,8 @@ import { Tab } from '../../types/tab.type';
   imports: [
     CommonModule,
     TuiIcon,
+    TuiHint,
+    TranslocoDirective,
     RouterLink
   ],
   templateUrl: './navigation-bar.component.html',

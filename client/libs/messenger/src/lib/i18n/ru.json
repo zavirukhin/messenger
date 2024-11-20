@@ -21,5 +21,8 @@
   "noChats": "Нет чатов",
   "noChatsSubtittle": "Создайте новый чат чтобы начать общение",
   "notContacts": "Список контактов пуст",
-  "selfProfile": "Да, это ты"
+  "selfProfile": "Да, это ты",
+  "contactList": "Список контактов",
+  "messenger": "Мессенджер",
+  "settings": "Настройки"
 }
