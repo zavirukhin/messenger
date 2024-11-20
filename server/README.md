@@ -1,3 +1,14 @@
+# Курсовая работа на курсе Т-Банк Финтех
+
+### Студент:  
+*Ярощук Никита Сергеевич*
+
+### Название веб-приложения:  
+*ANIMessenger Backend*
+
+### Ссылка на общедоступный адрес веб-приложения:  
+[*API документация*](http://130.193.56.129/api-docs)
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
