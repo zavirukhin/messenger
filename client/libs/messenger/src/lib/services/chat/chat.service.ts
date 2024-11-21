@@ -92,7 +92,7 @@ export class ChatService {
       return;
     }
 
-    const profile = this.profileService.getProfile();
+    const profile = this.profileService.getProfile$();
 
     profile.pipe(
       take(1)

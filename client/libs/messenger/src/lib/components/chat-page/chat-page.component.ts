@@ -75,7 +75,7 @@ export class ChatPageComponent implements OnDestroy {
         return combineLatest([
           this.chatService.getChat(id),
           this.chatService.getMessages(id, 1, 100),
-          this.profileService.getProfile()
+          this.profileService.getProfile$()
         ])
       }),
       catchError(() => {
