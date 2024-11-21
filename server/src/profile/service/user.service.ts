@@ -19,14 +19,6 @@ export class UserService {
     private readonly contactedUserRepository: Repository<Contact>,
   ) {}
 
-  private async findUserById(userId: number): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-    if (!user) {
-      throw new UserNotFoundException();
-    }
-    return user;
-  }
-
   private async customNameExceptUserExists(
     userId: number,
     customName: string,
@@ -37,6 +29,10 @@ export class UserService {
         where: { customName: customName, id: Not(userId) },
       })) > 0
     );
+  }
+
+  async getAllUsers() {
+    return await this.userRepository.find();
   }
 
   async updateUser(userId: number, updateUserDto: UpdateUserDto) {
@@ -91,6 +87,7 @@ export class UserService {
         id: true,
         firstName: true,
         lastName: true,
+        lastActivity: true,
         avatar: true,
         customName: true,
         createdAt: true,

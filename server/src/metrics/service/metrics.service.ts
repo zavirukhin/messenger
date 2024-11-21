@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Counter, Histogram, register } from 'prom-client';
+import { Counter, Histogram, Registry, register } from 'prom-client';
 
 @Injectable()
 export class MetricsService {
@@ -12,59 +12,75 @@ export class MetricsService {
 
   messageHistoryRequestDuration: Histogram<string>;
 
+  registry: Registry;
+
   constructor() {
+    this.registry = register;
+
     this.successCounter =
-      (register.getSingleMetric('auth_success_count') as Counter<string>) ||
+      (this.registry.getSingleMetric(
+        'auth_success_count',
+      ) as Counter<string>) ||
       new Counter({
         name: 'auth_success_count',
         help: 'Количество успешных запросов на авторизацию',
         labelNames: ['method', 'status_code'],
+        registers: [this.registry],
       });
 
     this.failureCounter =
-      (register.getSingleMetric('auth_failure_count') as Counter<string>) ||
+      (this.registry.getSingleMetric(
+        'auth_failure_count',
+      ) as Counter<string>) ||
       new Counter({
         name: 'auth_failure_count',
         help: 'Количество неуспешных запросов на авторизацию',
         labelNames: ['method', 'status_code'],
+        registers: [this.registry],
       });
 
     this.requestDuration =
-      (register.getSingleMetric(
+      (this.registry.getSingleMetric(
         'auth_request_duration_seconds',
       ) as Histogram<string>) ||
       new Histogram({
         name: 'auth_request_duration_seconds',
         help: 'Время выполнения запросов на авторизацию в секундах',
         labelNames: ['method', 'status_code'],
+        registers: [this.registry],
       });
 
     this.messageSendDuration =
-      (register.getSingleMetric(
+      (this.registry.getSingleMetric(
         'message_send_duration_seconds',
       ) as Histogram<string>) ||
       new Histogram({
         name: 'message_send_duration_seconds',
         help: 'Время, затраченное на отправку сообщения',
         labelNames: ['chatId'],
+        registers: [this.registry],
       });
 
     this.messageSentCounter =
-      (register.getSingleMetric('messages_sent_total') as Counter<string>) ||
+      (this.registry.getSingleMetric(
+        'messages_sent_total',
+      ) as Counter<string>) ||
       new Counter({
         name: 'messages_sent_total',
         help: 'Общее количество сообщений, отправленных пользователями',
         labelNames: ['chatId'],
+        registers: [this.registry],
       });
 
     this.messageHistoryRequestDuration =
-      (register.getSingleMetric(
+      (this.registry.getSingleMetric(
         'message_history_request_duration_seconds',
       ) as Histogram<string>) ||
       new Histogram({
         name: 'message_history_request_duration_seconds',
         help: 'Время, затраченное на обработку запроса истории сообщений',
         labelNames: ['chatId'],
+        registers: [this.registry],
       });
   }
 
@@ -103,6 +119,9 @@ export class MetricsService {
   }
 
   getMetrics(): Promise<string> {
-    return register.metrics();
+    return this.registry.metrics();
+  }
+  getResponseType(): string {
+    return this.registry.contentType;
   }
 }

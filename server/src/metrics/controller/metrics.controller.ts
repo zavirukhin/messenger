@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { MetricsService } from '../service/metrics.service';
+import { Response } from 'express';
 
 @ApiTags('Metrics')
 @Controller('metrics')
@@ -9,7 +10,9 @@ export class MetricsController {
 
   @Get()
   @ApiOperation({ summary: 'Получить метрики для Prometheus' })
-  async getMetrics(): Promise<string> {
-    return this.metricsService.getMetrics();
+  async getMetrics(@Res() res: Response): Promise<void> {
+    const contentType = this.metricsService.getResponseType();
+    res.setHeader('Content-Type', contentType);
+    res.send(await this.metricsService.getMetrics());
   }
 }

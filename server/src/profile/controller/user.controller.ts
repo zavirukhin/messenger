@@ -119,6 +119,47 @@ export class UserController {
     return req.user;
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('list')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Получить информацию о пользователях',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Список пользователей.',
+    schema: {
+      example: [
+        {
+          id: 1,
+          firstName: 'Иван',
+          lastName: 'Иванов',
+          lastActivity: '2024-01-01T12:00:00.000Z',
+          avatar: 'data:image/png;base64,...',
+          phone: '+79230446782',
+          customName: 'Кастомное имя',
+          createdAt: '2024-01-01T12:00:00.000Z',
+          updatedAt: '2024-01-01T12:00:00.000Z',
+        },
+        {
+          id: 2,
+          firstName: 'Иван',
+          lastName: 'Иванов',
+          lastActivity: '2024-01-01T12:00:00.000Z',
+          avatar: 'data:image/png;base64,...',
+          phone: '+79230446782',
+          customName: 'Кастомное имя',
+          createdAt: '2024-01-01T12:00:00.000Z',
+          updatedAt: '2024-01-01T12:00:00.000Z',
+        },
+      ],
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  async getAllUsers(): Promise<User[]> {
+    return await this.userService.getAllUsers();
+  }
+
   @Get('profile/:id([0-9]+)')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

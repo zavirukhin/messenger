@@ -6,7 +6,9 @@ import {
 import { Socket } from 'socket.io';
 import { MessageSocketService } from '../service/message-socket.service';
 
-@WebSocketGateway({cors: { origin: process.env.SOCKET_ALLOWED_ORIGINS || '*' }})
+@WebSocketGateway({
+  cors: { origin: process.env.SOCKET_ALLOWED_ORIGINS || '*' },
+})
 export class MessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {

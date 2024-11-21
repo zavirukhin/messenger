@@ -10,7 +10,7 @@ workflow:
     
 .unpack-server:
   before_script:
-    - rm -r frontend || true
+    - rm -r client || true
     - cp -a server/. .
     - rm -r server
 
@@ -29,6 +29,7 @@ install:
   extends: .unpack-server
   script:
     - npm ci
+  timeout: 30m
   artifacts:
     paths:
       - node_modules/
@@ -40,6 +41,7 @@ lint:
   extends: .unpack-server
   script:
     - npm run lint
+  timeout: 30m
   dependencies:
     - install
 
@@ -49,6 +51,7 @@ format:
   extends: .unpack-server
   script:
     - npm run format -- --check
+  timeout: 30m
   dependencies:
     - install
 
@@ -58,6 +61,7 @@ test:
   extends: .unpack-server
   script:
     - npm run test
+  timeout: 30m
   dependencies:
     - install
     
@@ -67,5 +71,6 @@ coverage:
   extends: .unpack-server
   script:
     - npm run test:cov
+  timeout: 30m
   dependencies:
     - install
