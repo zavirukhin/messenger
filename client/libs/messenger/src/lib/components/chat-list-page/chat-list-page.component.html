@@ -106,7 +106,7 @@
         size="m"
         tuiButton
         type="submit"
-        [disabled]="form.disabled"
+        [disabled]="form.disabled || form.invalid"
       >
         {{ t('messenger.createChatButton') }}
       </button>

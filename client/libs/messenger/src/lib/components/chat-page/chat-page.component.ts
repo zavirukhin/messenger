@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal } from '@
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TuiButton, TuiFallbackSrcPipe, TuiIcon, TuiLoader, TuiTextfield, TuiTitle } from '@taiga-ui/core';
 import { TuiAvatar } from '@taiga-ui/kit';
-import { provideTranslocoScope, TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   catchError,
@@ -19,7 +19,6 @@ import {
 import { SocketService } from '@social/shared';
 import { ChatService } from '../../services/chat/chat.service';
 import { Chat } from '../../interfaces/chat.interface';
-import { loader } from '../../transloco-loader';
 import { Profile } from '../../types/profile.type';
 import { ProfileService } from '../../services/profile/profile.service';
 import { PaginationMessages } from '../../interfaces/pagination-messages.interface';
@@ -43,13 +42,7 @@ import { MessageEvent } from '../../interfaces/message-event.interface';
   ],
   templateUrl: './chat-page.component.html',
   styleUrl: './chat-page.component.less',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    provideTranslocoScope({
-      scope: 'messenger',
-      loader
-    })
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatPageComponent implements OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
