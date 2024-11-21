@@ -14,7 +14,7 @@ import {
   TuiFallbackSrcPipe,
   TuiFormatNumberPipe
 } from '@taiga-ui/core';
-import { TuiAvatar, TuiAvatarLabeled } from '@taiga-ui/kit';
+import { TuiAvatar, TuiAvatarLabeled, TuiButtonLoading } from '@taiga-ui/kit';
 import { RouterLink } from '@angular/router';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import {
@@ -26,7 +26,6 @@ import {
 import { TuiInputModule } from '@taiga-ui/legacy';
 import { Users } from '../../interfaces/users.interface';
 import { ProfileService } from '../../services/profile/profile.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lib-contacts-page',
@@ -43,7 +42,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     RouterLink,
     TranslocoDirective,
     ReactiveFormsModule,
-    TuiInputModule
+    TuiInputModule,
+    TuiButtonLoading
   ],
   templateUrl: './contacts-page.component.html',
   styleUrl: './contacts-page.component.less',
@@ -54,11 +54,13 @@ export class ContactsPageComponent implements OnInit {
   public columns: string[] = ['avatar', 'firstName', 'lastName'];
   public listUsers: Users[] = [];
   public profile: ProfileResponse | null = null;
+  public loading = false;
   private readonly tuiAlertsService = inject(TuiAlertService);
   private readonly queue$ = new Subject<Observable<unknown>>();
   private readonly profileService = inject(ProfileService);
-  protected testForm = new FormGroup({
-    testValue: new FormControl('', Validators.required)
+  public contacts: ProfileResponse[] = [];
+  protected form = new FormGroup({
+    search: new FormControl('', Validators.required)
   });
   constructor(
     private readonly contactsService: ContactsService,
@@ -72,13 +74,12 @@ export class ContactsPageComponent implements OnInit {
       .pipe(take(1))
       .subscribe((data) => (this.listUsers = data));
     this.profileService
-      .getProfile()
+      .getProfile$()
       .pipe(take(1))
       .subscribe((data) => {
         this.profile = data;
       });
-    this.queue$.pipe(takeUntilDestroyed()).pipe(take(1)).subscribe();
-
+    this.contacts$.pipe(take(1)).subscribe((data) => (this.contacts = data));
   }
 
   private loadContacts(): void {
@@ -88,16 +89,19 @@ export class ContactsPageComponent implements OnInit {
   public addContact(): void {
     let alertMessage = this.transloco.translate('messenger.userDoesNotExist');
     let oops = this.transloco.translate('messenger.oops');
+    this.loading = true;
     this.listUsers.forEach((user) => {
       const isExistUser =
-        this.testForm.value.testValue &&
+        this.form.value.search &&
+        this.form.value.search &&
         this.profile &&
-        (String(user.id) === this.testForm.value.testValue ||
-          String(user.phone) === this.testForm.value.testValue ||
-          String(user.customName) === this.testForm.value.testValue) &&
-        (String(this.profile.id) !== this.testForm.value.testValue ||
-          String(this.profile.customName) === this.testForm.value.testValue ||
-          (String(user.phone) === this.testForm.value.testValue &&
+        !this.contacts.find((contact) => contact.id === user.id) &&
+        (String(user.id) === this.form.value.search ||
+          String(user.phone) === this.form.value.search ||
+          String(user.customName) === this.form.value.search) &&
+        (String(this.profile.id) !== this.form.value.search ||
+          String(this.profile.customName) === this.form.value.search ||
+          (String(user.phone) === this.form.value.search &&
             user.id !== this.profile.id));
 
       if (isExistUser) {
@@ -108,11 +112,18 @@ export class ContactsPageComponent implements OnInit {
           .pipe(take(1))
           .subscribe(() => {
             this.loadContacts();
+            this.contacts$
+              .pipe(take(1))
+              .subscribe((data) => (this.contacts = data));
+            this.loading = false;
           });
 
         return;
+      } else {
+        this.loading = false;
       }
     });
+    this.form.setValue({ search: '' });
     this.tuiAlertsService
       .open(alertMessage, {
         label: oops

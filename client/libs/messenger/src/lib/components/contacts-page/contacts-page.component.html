@@ -1,10 +1,16 @@
 <div *transloco="let t">
-  <form [formGroup]="testForm" class="add-contact">
-    <tui-input formControlName="testValue" class="add-contact-input">
+  <form [formGroup]="form" class="add-contact">
+    <tui-input formControlName="search" class="add-contact-input">
       {{ t('messenger.enterPhoneNumberNameId') }}
       <input tuiTextfieldLegacy type="text" />
     </tui-input>
-    <button size="m" tuiButton type="button" (click)="addContact()">
+    <button
+      size="m"
+      tuiButton
+      type="button"
+      (click)="addContact()"
+      [loading]="loading"
+    >
       {{ t('messenger.addContact') }}
     </button>
   </form>

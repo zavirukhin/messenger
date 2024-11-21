@@ -115,7 +115,7 @@ export class ChatSettingsPageComponent implements OnInit {
           return combineLatest({
             chat: this.chatService.getChat$(id),
             listMembers: this.chatService.getChatMembers$(id),
-            profile: this.profileService.getProfile()
+            profile: this.profileService.getProfile$()
           });
         }),
         take(1)

@@ -15,7 +15,7 @@ export class ProfileService {
 
   private readonly cacheService = inject(CacheService);
 
-  public getProfile(): Observable<ProfileResponse> {
+  public getProfile$(): Observable<ProfileResponse> {
     const profile$ = this.cacheService.get<ProfileResponse>('profile');
 
     if (profile$ !== null) {

@@ -82,7 +82,7 @@ export class UserPageComponent {
       map(params => params['id']),
       switchMap((id) => combineLatest([
         this.getUserData(id),
-        this.profileService.getProfile()
+        this.profileService.getProfile$()
       ]))
     ).subscribe(([user, currentProfile]) => {
       this.user.set(user);

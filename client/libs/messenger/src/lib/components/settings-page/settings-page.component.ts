@@ -92,7 +92,7 @@ export class SettingsPageComponent {
   public readonly file$ = this.form.controls.avatar.valueChanges;
 
   constructor() {
-    this.profile = toSignal(this.profileService.getProfile());
+    this.profile = toSignal(this.profileService.getProfile$());
 
     this.incomingAvatar = toSignal(
       this.form.controls.avatar.valueChanges.pipe(
