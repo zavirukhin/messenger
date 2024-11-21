@@ -115,7 +115,7 @@ export class UserController {
     },
   })
   @ApiResponse({ status: 401, description: 'Не авторизован' })
-  async getProfile$(@Request() req): Promise<User> {
+  async getProfile(@Request() req): Promise<User> {
     return req.user;
   }
 
