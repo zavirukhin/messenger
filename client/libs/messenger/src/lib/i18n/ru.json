@@ -24,5 +24,9 @@
   "selfProfile": "Да, это ты",
   "contactList": "Список контактов",
   "messenger": "Мессенджер",
-  "settings": "Настройки"
+  "settings": "Настройки",
+  "cancel": "Отмена",
+  "removeAvatarChat": "Удалить фото чата",
+  "listContacts": "Список участников",
+  "removeChatMember": "Удалить из чата"
 }

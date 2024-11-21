@@ -1,0 +1,83 @@
+<ng-container *transloco="let t">
+  <div class="settings-container" *ngIf="chat">
+    <div class="user-info">
+      <tui-avatar size="xxl" [src]="chat.avatar || '@tui.user'" />
+    </div>
+    <h1 class="username-container" tuiTitle="m">
+      {{ form.controls.name.value }}
+    </h1>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" class="form-container">
+    <div class="input-container"  *ngIf="isOwner">
+      <div>
+        @if (!form.controls.avatar.value) {
+        <label tuiInputFiles>
+          <input tuiInputFiles accept="image/*" formControlName="avatar" />
+        </label>
+        } @if (file$ | async; as file) {
+        <tui-files  *ngIf="isOwner" class="tui-space_top-1">
+          <tui-file [file]="file" (remove)="removeFile()" />
+        </tui-files>
+        }
+      </div>
+    </div>
+
+    <div *ngIf="isOwner">
+      <tui-textfield tuiTextfieldSize="l">
+        <label tuiLabel>{{ t('messenger.chatName') }}</label>
+        <input formControlName="name" maxLength="50" tuiTextfield />
+      </tui-textfield>
+      <tui-error formControlName="name" [error]="[] | tuiFieldError | async" />
+    </div>
+    <div class="button-container">
+      <button
+        *ngIf="isOwner"
+        size="m"
+        tuiButton
+        type="button"
+        [disabled]="form.disabled"
+        (click)="removeAvatar()"
+      >
+        {{ t('messenger.removeAvatarChat') }}
+      </button>
+      <button *ngIf="isOwner" size="m" tuiButton type="submit" [disabled]="form.disabled">
+        {{ t('messenger.change') }}
+      </button>
+      <button size="m" tuiButton [routerLink]="['/chat', id]">
+        {{ t('messenger.cancel') }}
+      </button>
+    </div>
+  </form>
+  <div class="list">
+    <h1 tuiTitle="m">
+      {{ t('messenger.listContacts') }}
+    </h1>
+    <ul class="list list-members">
+      <li *ngFor="let member of listMembers" class="member-data">
+        <div
+          class="member-data"
+          *ngIf="chat"
+          [routerLink]="['/user', member.user.id]"
+        >
+          <div class="contact-avatar">
+            <tui-avatar size="xs" [src]="member.user.avatar || '@tui.user'" />
+          </div>
+          <h1 class="username-container" tuiTitle="s">
+            {{ member.user.firstName }} {{ member.user.lastName }}
+          </h1>
+        </div>
+        <button
+          *ngIf="idUser !== member.user.id && isOwner"
+          appearance="accent"
+          class="delete-contact"
+          size="s"
+          tuiButton
+          (click)="removeChatMember(member.user.id)"
+        >
+          {{ t('messenger.removeChatMember') }}
+        </button>
+      </li>
+    </ul>
+  </div>
+</ng-container>

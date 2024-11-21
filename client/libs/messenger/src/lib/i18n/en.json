@@ -24,5 +24,9 @@
   "selfProfile": "Yes, it's you",
   "contactList": "Contact List",
   "messenger": "Messenger",
-  "settings": "Settings"
+  "settings": "Settings",
+  "removeAvatarChat": "Delete chat photo",
+  "cancel": "Cancel",
+  "listContacts": "List members",
+  "removeChatMember": "Remove chat member"
 }
