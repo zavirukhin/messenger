@@ -1,20 +1,21 @@
-<div *transloco="let t">
-  <form [formGroup]="form" class="add-contact">
-    <tui-input formControlName="search" class="add-contact-input">
-      {{ t('messenger.enterPhoneNumberNameId') }}
-      <input tuiTextfieldLegacy type="text" />
-    </tui-input>
-    <button
-      size="m"
-      tuiButton
-      type="button"
-      (click)="addContact()"
-      [loading]="loading"
-    >
-      {{ t('messenger.addContact') }}
-    </button>
-  </form>
-  <ng-container *ngIf="contacts$ | async as contacts">
+<ng-container *ngIf="contacts$ | async as contacts">
+  <div *transloco="let t" class="container-contacts">
+    <form [formGroup]="form">
+      <tui-input formControlName="search" class="add-contact-input">
+        {{ t('messenger.enterPhoneNumberNameId') }}
+        <input tuiTextfieldLegacy type="text" />
+      </tui-input>
+      <button
+        size="m"
+        tuiButton
+        class="add-contact"
+        type="button"
+        (click)="addContact()"
+        [loading]="loading"
+      >
+        {{ t('messenger.addContact') }}
+      </button>
+    </form>
     <ng-container *ngIf="contacts.length === 0; else contactList">
       <div class="not-contacts">
         <h1 tuiTitle="l">{{ t('messenger.notContacts') }}</h1>
@@ -42,5 +43,5 @@
         </div>
       </div>
     </ng-template>
-  </ng-container>
-</div>
+  </div>
+</ng-container>

@@ -123,7 +123,7 @@ export class ContactsPageComponent implements OnInit {
         this.loading = false;
       }
     });
-    this.form.setValue({ search: '' });
+    this.form.reset();
     this.tuiAlertsService
       .open(alertMessage, {
         label: oops
