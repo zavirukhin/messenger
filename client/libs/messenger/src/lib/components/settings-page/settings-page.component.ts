@@ -37,6 +37,7 @@ import { langReady } from '@social/shared';
 import { ProfileService } from '../../services/profile/profile.service';
 import { Profile } from '../../types/profile.type';
 import { fileToBase64$ } from '../../utils/file-to-base64';
+import { latinValidator } from '../../validators/latin.validator';
 
 @Component({
   selector: 'lib-settings-page',
@@ -63,7 +64,8 @@ import { fileToBase64$ } from '../../utils/file-to-base64';
       provide: TUI_VALIDATION_ERRORS,
       deps: [TranslocoService],
       useFactory: (transloco: TranslocoService) => ({
-        required: transloco.translate('required')
+        required: transloco.translate('required'),
+        latinValidator: transloco.translate('latin')
       })
     }
   ]
@@ -72,7 +74,7 @@ export class SettingsPageComponent {
   public readonly form = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
     lastName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
-    customName: new FormControl('', [Validators.maxLength(50)]),
+    customName: new FormControl('', [Validators.maxLength(50), latinValidator]),
     avatar: new FormControl<File | null>(null)
   });
 
