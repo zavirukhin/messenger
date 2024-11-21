@@ -1,4 +1,4 @@
-export interface removeMembers {
+export interface RemoveMembers {
   memberIdToRemove: number;
   chatId: number;
 }

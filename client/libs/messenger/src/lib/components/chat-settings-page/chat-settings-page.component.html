@@ -9,21 +9,21 @@
   </div>
 
   <form (ngSubmit)="onSubmit()" [formGroup]="form" class="form-container">
-    <div class="input-container">
+    <div class="input-container"  *ngIf="isOwner">
       <div>
         @if (!form.controls.avatar.value) {
         <label tuiInputFiles>
           <input tuiInputFiles accept="image/*" formControlName="avatar" />
         </label>
         } @if (file$ | async; as file) {
-        <tui-files class="tui-space_top-1">
+        <tui-files  *ngIf="isOwner" class="tui-space_top-1">
           <tui-file [file]="file" (remove)="removeFile()" />
         </tui-files>
         }
       </div>
     </div>
 
-    <div>
+    <div *ngIf="isOwner">
       <tui-textfield tuiTextfieldSize="l">
         <label tuiLabel>{{ t('messenger.chatName') }}</label>
         <input formControlName="name" maxLength="50" tuiTextfield />
@@ -32,6 +32,7 @@
     </div>
     <div class="button-container">
       <button
+        *ngIf="isOwner"
         size="m"
         tuiButton
         type="button"
@@ -40,7 +41,7 @@
       >
         {{ t('messenger.removeAvatarChat') }}
       </button>
-      <button size="m" tuiButton type="submit" [disabled]="form.disabled">
+      <button *ngIf="isOwner" size="m" tuiButton type="submit" [disabled]="form.disabled">
         {{ t('messenger.change') }}
       </button>
       <button size="m" tuiButton [routerLink]="['/chat', id]">
@@ -67,7 +68,7 @@
           </h1>
         </div>
         <button
-          *ngIf="idUser !== member.user.id"
+          *ngIf="idUser !== member.user.id && isOwner"
           appearance="accent"
           class="delete-contact"
           size="s"

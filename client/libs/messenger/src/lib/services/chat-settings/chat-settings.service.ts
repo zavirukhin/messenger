@@ -6,7 +6,7 @@ import { environment } from '@env';
 import { CacheService } from '@social/shared';
 import { UpdateChatPayload } from '../../types/update-chat-payload.type';
 import { Members } from '../../interfaces/members.interface';
-import { removeMembers } from '../../interfaces/remove-member.interface';
+import { RemoveMembers } from '../../interfaces/remove-member.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class ChatSettingsService {
     );
   }
 
-  public removeChatMember$(data: removeMembers): Observable<void> {
+  public removeChatMember$(data: RemoveMembers): Observable<void> {
     return this.http.delete<void>(environment.apiUrl + '/chats/remove-member', {
       body: data
     });

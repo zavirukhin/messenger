@@ -74,6 +74,9 @@ export class ChatSettingsPageComponent implements OnInit {
   public chat: ChatEvent | null = null;
   public listMembers: Members[] | null = null;
   public id: number | null = null;
+
+  public isOwner = false;
+
   private updateChat = (data: ChatEvent | UpdateChatPayload): void => {
     this.chatService
       .updateChat$(data)
@@ -120,6 +123,7 @@ export class ChatSettingsPageComponent implements OnInit {
       .subscribe(({ chat, listMembers, profile }) => {
         this.chat = chat;
         this.idUser = profile.id;
+        this.isOwner = (listMembers.find((member)=>member.chatRole === 'owner'))?.user.id === profile.id;
         this.listMembers = listMembers;
         this.form.setValue({
           name: chat?.name ?? '',
