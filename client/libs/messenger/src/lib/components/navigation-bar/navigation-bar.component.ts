@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TuiHint, TuiIcon } from '@taiga-ui/core';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Tab } from '../../types/tab.type';
+import { startWith } from 'rxjs';
 
 @Component({
   selector: 'lib-navigation-bar',
@@ -27,9 +28,10 @@ export class NavigationBarComponent {
 
   constructor() {
     this.router.events.pipe(
-      takeUntilDestroyed()
+      takeUntilDestroyed(),
+      startWith({ url: this.router.url })
     ).subscribe((e) => {
-      if (e instanceof NavigationEnd) {
+      if ('url' in e) {
         this.changeTab(e.url);
       }
     });
