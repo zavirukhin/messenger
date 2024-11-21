@@ -1,6 +1,6 @@
 <div *transloco="let t">
-  <form [formGroup]="testForm" class="addContact">
-    <tui-input formControlName="testValue" class="addContactInput">
+  <form [formGroup]="testForm" class="add-contact">
+    <tui-input formControlName="testValue" class="add-contact-input">
       {{ t('messenger.enterPhoneNumberNameId') }}
       <input tuiTextfieldLegacy type="text" />
     </tui-input>
@@ -10,7 +10,7 @@
   </form>
   <ng-container *ngIf="contacts$ | async as contacts">
     <ng-container *ngIf="contacts.length === 0; else contactList">
-      <div class="notContacts">
+      <div class="not-contacts">
         <h1 tuiTitle="l">{{ t('messenger.notContacts') }}</h1>
       </div>
     </ng-container>

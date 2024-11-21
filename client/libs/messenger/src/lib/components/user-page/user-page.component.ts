@@ -170,7 +170,7 @@ export class UserPageComponent {
       });
     }
     else {
-      this.profileService.addToContact(user.id).pipe(
+      this.profileService.addToContact$(user.id).pipe(
         finalize(() => this.isDisabled.set(false))
       ).subscribe(() => {
         this.user.set({

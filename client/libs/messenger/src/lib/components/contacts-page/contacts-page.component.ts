@@ -53,26 +53,32 @@ export class ContactsPageComponent implements OnInit {
   public contacts$: Observable<ProfileResponse[]> = of([]);
   public columns: string[] = ['avatar', 'firstName', 'lastName'];
   public listUsers: Users[] = [];
+  public profile: ProfileResponse | null = null;
   private readonly tuiAlertsService = inject(TuiAlertService);
   private readonly queue$ = new Subject<Observable<unknown>>();
   private readonly profileService = inject(ProfileService);
   protected testForm = new FormGroup({
     testValue: new FormControl('', Validators.required)
   });
-
   constructor(
     private readonly contactsService: ContactsService,
     private transloco: TranslocoService
-  ) {
-    this.queue$.pipe(takeUntilDestroyed()).subscribe();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.loadContacts();
     this.contactsService
       .getFullListUser$()
-      .subscribe((data) => (this.listUsers = data)),
-      take(1);
+      .pipe(take(1))
+      .subscribe((data) => (this.listUsers = data));
+    this.profileService
+      .getProfile()
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.profile = data;
+      });
+    this.queue$.pipe(takeUntilDestroyed()).pipe(take(1)).subscribe();
+
   }
 
   private loadContacts(): void {
@@ -83,17 +89,26 @@ export class ContactsPageComponent implements OnInit {
     let alertMessage = this.transloco.translate('messenger.userDoesNotExist');
     let oops = this.transloco.translate('messenger.oops');
     this.listUsers.forEach((user) => {
-      if (
+      const isExistUser =
         this.testForm.value.testValue &&
+        this.profile &&
         (String(user.id) === this.testForm.value.testValue ||
           String(user.phone) === this.testForm.value.testValue ||
-          String(user.customName) === this.testForm.value.testValue)
-      ) {
+          String(user.customName) === this.testForm.value.testValue) &&
+        (String(this.profile.id) !== this.testForm.value.testValue ||
+          String(this.profile.customName) === this.testForm.value.testValue ||
+          (String(user.phone) === this.testForm.value.testValue &&
+            user.id !== this.profile.id));
+
+      if (isExistUser) {
         alertMessage = this.transloco.translate('messenger.addingContact');
         oops = this.transloco.translate('messenger.hooray');
-        this.profileService.addToContact(+user.id).subscribe(() => {
-          this.loadContacts();
-        });
+        this.profileService
+          .addToContact$(+user.id)
+          .pipe(take(1))
+          .subscribe(() => {
+            this.loadContacts();
+          });
 
         return;
       }
@@ -102,8 +117,7 @@ export class ContactsPageComponent implements OnInit {
       .open(alertMessage, {
         label: oops
       })
-      .pipe(distinctUntilChanged())
-      .subscribe(),
-      take(1);
+      .pipe(distinctUntilChanged(), take(1))
+      .subscribe();
   }
 }

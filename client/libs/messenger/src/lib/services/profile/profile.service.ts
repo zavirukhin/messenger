@@ -59,7 +59,7 @@ export class ProfileService {
     return this.http.delete<void>(environment.apiUrl + `/blocked-users/unblock/${id}`);
   }
 
-  public addToContact(id: number): Observable<void> {
+  public addToContact$(id: number): Observable<void> {
     return this.http.post<void>(environment.apiUrl + '/contacts/add', {
       contactId: id
     });

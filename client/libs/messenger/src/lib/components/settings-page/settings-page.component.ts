@@ -33,7 +33,7 @@ import {
   TuiTextfield,
   TuiTitle
 } from '@taiga-ui/core';
-import { langReady } from '@social/shared';
+import { langReady, SwitchPanelComponent } from '@social/shared';
 import { ProfileService } from '../../services/profile/profile.service';
 import { Profile } from '../../types/profile.type';
 import { fileToBase64$ } from '../../utils/file-to-base64';
@@ -54,7 +54,8 @@ import { latinValidator } from '../../validators/latin.validator';
     TuiSkeleton,
     TuiFiles,
     TuiFieldErrorPipe,
-    TuiFallbackSrcPipe
+    TuiFallbackSrcPipe, 
+    SwitchPanelComponent
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.less',
