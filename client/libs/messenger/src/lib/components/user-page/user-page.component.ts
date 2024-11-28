@@ -82,7 +82,7 @@ export class UserPageComponent {
       map(params => params['id']),
       switchMap((id) => combineLatest([
         this.getUserData(id),
-        this.profileService.getProfile()
+        this.profileService.getProfile$()
       ]))
     ).subscribe(([user, currentProfile]) => {
       this.user.set(user);
@@ -170,7 +170,7 @@ export class UserPageComponent {
       });
     }
     else {
-      this.profileService.addToContact(user.id).pipe(
+      this.profileService.addToContact$(user.id).pipe(
         finalize(() => this.isDisabled.set(false))
       ).subscribe(() => {
         this.user.set({

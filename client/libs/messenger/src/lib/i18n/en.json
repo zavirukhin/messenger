@@ -24,5 +24,14 @@
   "selfProfile": "Yes, it's you",
   "contactList": "Contact List",
   "messenger": "Messenger",
-  "settings": "Settings"
+  "settings": "Settings",
+  "removeAvatarChat": "Delete chat photo",
+  "cancel": "Cancel",
+  "listContacts": "List members",
+  "removeChatMember": "Remove chat member",
+  "enterPhoneNumberNameId": "Enter your phone number (+), unique name or user id",
+  "userDoesNotExist": "It is not possible to add. Or the user does not exist. Check the correctness of the entered data.",
+  "oops": "Oops!",
+  "addingContact": "Contact added!",
+  "hooray": "Hooray!"
 }
