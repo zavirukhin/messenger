@@ -19,7 +19,7 @@ $  npm  install
 ## Компиляция и запуск проекта
 ```bash
 # development
-$  nx  server
+$  nx  serve
 
 # production
 $ nx build
